@@ -64,7 +64,7 @@ export function HomePage() {
               <div className="relative min-h-[470px]">
                 <div className="brand-gradient absolute bottom-2 right-0 h-[72%] w-[86%] rounded-tl-[50%] rounded-tr-[20%] rounded-br-[10%] rounded-bl-[34%]" />
                 <Image
-                  src="/brand/reference.png"
+                  src="/brand/generated/hero-family-meal.png"
                   alt="Foody Fam meal preview"
                   width={720}
                   height={820}

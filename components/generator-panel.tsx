@@ -171,77 +171,132 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Select aria-label="Baby profile" {...register("babyProfile")}>
-            <option>Emma</option>
-            <option>Noah</option>
-            <option>New baby</option>
-          </Select>
-          <Select aria-label="Baby age" {...register("babyAge")}>
-            <option>6-8 months</option>
-            <option>9-12 months</option>
-            <option>12-18 months</option>
-            <option>2+ years</option>
-          </Select>
-          <Select aria-label="Baby texture" {...register("babyTexture")}>
-            <option>Soft mashed</option>
-            <option>Smooth puree</option>
-            <option>Finger-food strips</option>
-            <option>Toddler bites</option>
-          </Select>
-          <Select aria-label="Feeding style" {...register("feedingStyle")}>
-            <option>Mixed</option>
-            <option>Puree</option>
-            <option>BLW</option>
-          </Select>
-          <Select aria-label="Servings" {...register("servings")}>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-          </Select>
-          <Select aria-label="Meal type" {...register("mealType")}>
-            <option>Dinner</option>
-            <option>Lunch</option>
-            <option>Breakfast</option>
-            <option>Batch prep</option>
-          </Select>
-          <Select aria-label="Cuisine" {...register("cuisine")}>
-            <option>Italian</option>
-            <option>Mediterranean</option>
-            <option>Asian inspired</option>
-            <option>Vegetarian</option>
-          </Select>
-          <Select aria-label="Cooking time" {...register("cookingTime")}>
-            <option>25 min or less</option>
-            <option>35 min or less</option>
-            <option>Batch cooking</option>
-          </Select>
-          <Select aria-label="Diet" {...register("diet")}>
-            <option>No egg</option>
-            <option>Vegetarian</option>
-            <option>Dairy free</option>
-            <option>Gluten free</option>
-            <option>No restrictions</option>
-          </Select>
-          <Select aria-label="Appliances" {...register("appliances")}>
-            <option>Stovetop</option>
-            <option>Oven</option>
-            <option>Air fryer</option>
-            <option>Instant Pot</option>
-            <option>Thermomix</option>
-          </Select>
-          <Select aria-label="Skill level" {...register("skillLevel")}>
-            <option>Easy</option>
-            <option>Confident home cook</option>
-            <option>Minimal prep</option>
-          </Select>
-          <Field aria-label="Allergies" placeholder="Allergies" {...register("allergies")} />
+          <FormBoxLabel label="Baby profile">
+            <Select aria-label="Baby profile" {...register("babyProfile")}>
+              <option>Any</option>
+              <option>Emma</option>
+              <option>Noah</option>
+              <option>New baby</option>
+            </Select>
+          </FormBoxLabel>
+          <FormBoxLabel label="Baby age">
+            <Select aria-label="Baby age" {...register("babyAge")}>
+              <option>Any</option>
+              <option>6-8 months</option>
+              <option>9-12 months</option>
+              <option>12-18 months</option>
+              <option>2+ years</option>
+            </Select>
+          </FormBoxLabel>
+          <FormBoxLabel label="Baby texture">
+            <Select aria-label="Baby texture" {...register("babyTexture")}>
+              <option>Any</option>
+              <option>Soft mashed</option>
+              <option>Smooth puree</option>
+              <option>Finger-food strips</option>
+              <option>Toddler bites</option>
+            </Select>
+          </FormBoxLabel>
+          <FormBoxLabel label="Feeding style">
+            <Select aria-label="Feeding style" {...register("feedingStyle")}>
+              <option>Any</option>
+              <option>Mixed</option>
+              <option>Puree</option>
+              <option>BLW</option>
+            </Select>
+          </FormBoxLabel>
+          <FormBoxLabel label="Servings">
+            <Select aria-label="Servings" {...register("servings")}>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+            </Select>
+          </FormBoxLabel>
+          <FormBoxLabel label="Meal type">
+            <Select aria-label="Meal type" {...register("mealType")}>
+              <option>Any</option>
+              <option>Dinner</option>
+              <option>Lunch</option>
+              <option>Breakfast</option>
+              <option>Snack</option>
+              <option>Dessert</option>
+              <option>Batch prep</option>
+            </Select>
+          </FormBoxLabel>
+          <FormBoxLabel label="Cuisine">
+            <Select aria-label="Cuisine" {...register("cuisine")}>
+              <option>Any</option>
+              <option>Italian</option>
+              <option>Mediterranean</option>
+              <option>Asian inspired</option>
+              <option>Mexican</option>
+              <option>Greek</option>
+              <option>American</option>
+              <option>Nordic</option>
+              <option>Indian inspired</option>
+              <option>British</option>
+              <option>Eastern European</option>
+              <option>Comfort food</option>
+              <option>Vegetarian</option>
+            </Select>
+          </FormBoxLabel>
+          <FormBoxLabel label="Cooking time">
+            <Select aria-label="Cooking time" {...register("cookingTime")}>
+              <option>Any</option>
+              <option>25 min or less</option>
+              <option>35 min or less</option>
+              <option>15 min or less</option>
+              <option>30 min or less</option>
+              <option>Batch cooking</option>
+            </Select>
+          </FormBoxLabel>
+          <FormBoxLabel label="Diet">
+            <Select aria-label="Diet" {...register("diet")}>
+              <option>None</option>
+              <option>Any</option>
+              <option>No egg</option>
+              <option>Vegetarian</option>
+              <option>Dairy free</option>
+              <option>Gluten free</option>
+              <option>No restrictions</option>
+            </Select>
+          </FormBoxLabel>
+          <FormBoxLabel label="Appliance">
+            <Select aria-label="Appliances" {...register("appliances")}>
+              <option>Any</option>
+              <option>None</option>
+              <option>Stovetop</option>
+              <option>Oven</option>
+              <option>Pan</option>
+              <option>Air fryer</option>
+              <option>Slow cooker</option>
+              <option>Instant Pot</option>
+              <option>Thermomix</option>
+              <option>No cook</option>
+            </Select>
+          </FormBoxLabel>
+          <FormBoxLabel label="Skill level">
+            <Select aria-label="Skill level" {...register("skillLevel")}>
+              <option>Any</option>
+              <option>Easy</option>
+              <option>Confident home cook</option>
+              <option>Minimal prep</option>
+            </Select>
+          </FormBoxLabel>
+          <FormBoxLabel label="Allergies">
+            <Field aria-label="Allergies" placeholder="Allergies" {...register("allergies")} />
+          </FormBoxLabel>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-2">
-          <Field aria-label="Avoid ingredients" placeholder="Avoid ingredients" {...register("avoidIngredients")} />
-          <Field aria-label="Recipe goal" placeholder="Recipe goal" {...register("goal")} />
+          <FormBoxLabel label="Avoid ingredients">
+            <Field aria-label="Avoid ingredients" placeholder="Avoid ingredients" {...register("avoidIngredients")} />
+          </FormBoxLabel>
+          <FormBoxLabel label="Recipe goal">
+            <Field aria-label="Recipe goal" placeholder="Recipe goal" {...register("goal")} />
+          </FormBoxLabel>
         </div>
 
         <Button type="submit" disabled={loading} className="w-full lg:w-fit">
@@ -262,6 +317,15 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
         />
       )}
     </Card>
+  );
+}
+
+function FormBoxLabel({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <label className="grid gap-2">
+      <span className="text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]">{label}</span>
+      {children}
+    </label>
   );
 }
 
@@ -327,6 +391,7 @@ function RecipeResult({
             <ResultMetric icon={<Baby size={17} />} label="Texture" value={recipe.babyTexture || "Baby-safe"} />
             <ResultMetric icon={<ShoppingBasket size={17} />} label="Servings" value={`${recipe.servings}`} />
           </div>
+          {recipe.databaseMatch && <DatabaseMatchPanel recipe={recipe} />}
         </div>
         <div className="rounded-[24px] bg-[#f7efe9] p-5">
           <p className="font-display text-xl font-black">Why this works for your family</p>
@@ -400,12 +465,36 @@ function RecipeResult({
   );
 }
 
+function DatabaseMatchPanel({ recipe }: { recipe: Recipe }) {
+  const match = recipe.databaseMatch;
+  if (!match) return null;
+  return (
+    <div className="mt-4 rounded-[22px] border border-[#78bea8]/35 bg-[#e8f4ef] p-4">
+      <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.14em] text-[#437967]">
+        <ShieldCheck size={15} />
+        Based on Foody Fam verified recipe
+      </p>
+      <div className="mt-3 grid gap-3 text-sm font-bold text-[#5c4a42] md:grid-cols-2">
+        <p><span className="font-black text-[#1f1d1c]">Base:</span> {match.baseRecipeTitle}</p>
+        <p><span className="font-black text-[#1f1d1c]">Pantry match:</span> {match.pantryMatch}%</p>
+        <p><span className="font-black text-[#1f1d1c]">Age path:</span> {match.ageAdaptation}</p>
+        <p><span className="font-black text-[#1f1d1c]">Allergy flags:</span> {match.allergyFlags.length ? match.allergyFlags.join(", ") : "Clear"}</p>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {match.aiChanges.map((item) => (
+          <Pill key={item} className="bg-white">{item}</Pill>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ResultMetric({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
     <div className="rounded-[18px] bg-[#f7efe9] p-3">
       <div className="text-[#78bea8]">{icon}</div>
       <p className="mt-2 text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]">{label}</p>
-      <p className="mt-1 font-display text-lg font-black">{value}</p>
+      <p className="mt-1 break-words text-sm font-black leading-5">{value}</p>
     </div>
   );
 }

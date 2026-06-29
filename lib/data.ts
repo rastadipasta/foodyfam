@@ -3,7 +3,7 @@ import type { BabyProfile, ChatMessage, FamilyMember, MealPlanDay, Recipe, Shopp
 export const brand = {
   colors: ["#FFCCB2", "#F59B78", "#E9C7B7", "#F7EFE9", "#5C4A42"],
   logo: "/brand/logo.png",
-  reference: "/brand/reference.png"
+  hero: "/brand/generated/hero-family-meal.png"
 };
 
 export const demoRecipes: Recipe[] = [
@@ -11,7 +11,7 @@ export const demoRecipes: Recipe[] = [
     id: "risotto",
     title: "Chicken & Broccoli Risotto",
     slug: "chicken-broccoli-risotto",
-    image: "/brand/reference.png",
+    image: "/brand/generated/hero-family-meal.png",
     time: "25 min",
     difficulty: "Easy",
     servings: 4,
@@ -39,7 +39,7 @@ export const demoRecipes: Recipe[] = [
     id: "pasta",
     title: "Sweet Tomato Turkey Pasta",
     slug: "sweet-tomato-turkey-pasta",
-    image: "/brand/reference.png",
+    image: "/brand/generated/ai-generator-ingredients.png",
     time: "30 min",
     difficulty: "Easy",
     servings: 4,
@@ -55,7 +55,7 @@ export const demoRecipes: Recipe[] = [
     id: "curry",
     title: "Mild Coconut Lentil Curry",
     slug: "mild-coconut-lentil-curry",
-    image: "/brand/reference.png",
+    image: "/brand/generated/nutrition-balance.png",
     time: "35 min",
     difficulty: "Medium",
     servings: 5,
@@ -114,19 +114,20 @@ export const blogPosts = [
 ];
 
 export const pagePhotos = {
-  generator: "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1100&q=80",
-  recipes: "https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=1100&q=80",
-  planner: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1100&q=80",
-  shopping: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1100&q=80",
-  pantry: "https://images.unsplash.com/photo-1584473457406-6240486418e9?auto=format&fit=crop&w=1100&q=80",
-  nutrition: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1100&q=80",
-  assistant: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1100&q=80",
-  pricing: "https://images.unsplash.com/photo-1506368249639-73a05d6f6488?auto=format&fit=crop&w=1100&q=80",
-  blog: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1100&q=80",
-  about: "https://images.unsplash.com/photo-1556911073-52527ac43761?auto=format&fit=crop&w=1100&q=80",
-  contact: "https://images.unsplash.com/photo-1528712306091-ed0763094c98?auto=format&fit=crop&w=1100&q=80",
-  auth: "https://images.unsplash.com/photo-1514986888952-8cd320577b68?auto=format&fit=crop&w=1100&q=80",
-  onboarding: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1100&q=80"
+  hero: "/brand/generated/hero-family-meal.png",
+  generator: "/brand/generated/ai-generator-ingredients.png",
+  recipes: "/brand/generated/hero-family-meal.png",
+  planner: "/brand/generated/weekly-planner.png",
+  shopping: "/brand/generated/shopping-pantry.png",
+  pantry: "/brand/generated/shopping-pantry.png",
+  nutrition: "/brand/generated/nutrition-balance.png",
+  assistant: "/brand/generated/ai-assistant-safety.png",
+  pricing: "/brand/generated/brand-editorial.png",
+  blog: "/brand/generated/brand-editorial.png",
+  about: "/brand/generated/onboarding-family.png",
+  contact: "/brand/generated/brand-editorial.png",
+  auth: "/brand/generated/onboarding-family.png",
+  onboarding: "/brand/generated/onboarding-family.png"
 };
 
 export const familyMoments = [

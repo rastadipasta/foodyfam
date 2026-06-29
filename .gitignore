@@ -10,6 +10,7 @@ coverage
 api.txt
 next-dev.log
 next-dev.err.log
+.dev-server-*.log
 .dev-server-port
 tsconfig.tsbuildinfo
 graphify-out/cache/

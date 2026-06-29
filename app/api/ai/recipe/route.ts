@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createDemoRecipe } from "@/lib/ai-demo";
-import type { Recipe } from "@/lib/types";
+import { databaseRecipeToRecipe, findBestRecipeMatch } from "@/lib/recipe-database";
+import type { Recipe, RecipeMatchInput } from "@/lib/types";
 
 const stringArray = { type: "array", items: { type: "string" } };
 
@@ -99,7 +100,7 @@ const recipeSchema = {
 };
 
 export async function POST(request: Request) {
-  const body = (await request.json().catch(() => ({}))) as {
+  const body = (await request.json().catch(() => ({}))) as RecipeMatchInput & {
     ingredients?: string;
     babyAge?: string;
     cuisine?: string;
@@ -117,9 +118,15 @@ export async function POST(request: Request) {
     mealType?: string;
     goal?: string;
   };
+  const matched = findBestRecipeMatch(body);
+  const matchedRecipe = matched ? databaseRecipeToRecipe(matched.recipe, matched.match) : createDemoRecipe(body);
 
   if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json({ recipe: createDemoRecipe(body), source: "demo" });
+    return NextResponse.json({
+      recipe: matchedRecipe,
+      source: "database-demo",
+      databaseMatch: matched?.match
+    });
   }
 
   try {
@@ -138,6 +145,7 @@ export async function POST(request: Request) {
               [
                 "You create Foody Fam recipes for the product promise: One meal, whole family.",
                 "Always design one shared cooking process with a gentle base, a baby portion removed before salt/spice, then adult finishing instructions.",
+                "Use the provided Foody Fam verified database recipe as the trusted base. Adapt it, but do not ignore it or invent an unrelated recipe.",
                 "Return practical family cooking language, not medical advice. Allergy and baby safety notes must be cautious and recommend checking with a qualified professional when needed.",
                 "Keep the recipe realistic, weeknight-friendly, and grounded in the provided pantry, appliances, timing, skill level, and avoid list.",
                 "The output must match the provided JSON schema exactly."
@@ -152,7 +160,9 @@ export async function POST(request: Request) {
               `Servings: ${body.servings || "4"}. Meal type: ${body.mealType || "dinner"}. Cuisine: ${body.cuisine || "flexible"}.`,
               `Time: ${body.cookingTime || "30 minutes"}. Appliances: ${body.appliances || "stovetop"}. Skill level: ${body.skillLevel || "easy"}.`,
               `Diet/allergy notes: ${body.diet || "none"}. Known allergies: ${body.allergies || "none"}. Avoid ingredients: ${body.avoidIngredients || "none"}.`,
-              `Goal: ${body.goal || "Cook once for baby and adults."}`
+              `Goal: ${body.goal || "Cook once for baby and adults."}`,
+              `Verified base recipe JSON: ${JSON.stringify(matched?.recipe || matchedRecipe)}.`,
+              `Match metadata: ${JSON.stringify(matched?.match || matchedRecipe.databaseMatch || null)}.`
             ].join(" ")
           }
         ],
@@ -168,17 +178,21 @@ export async function POST(request: Request) {
     });
 
     if (!response.ok) {
-      return NextResponse.json({ recipe: createDemoRecipe(body), source: "demo", warning: "OpenAI request failed" });
+      return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI request failed", databaseMatch: matched?.match });
     }
 
     const data = (await response.json()) as { output_text?: string; output?: Array<{ content?: Array<{ text?: string }> }> };
     const text = data.output_text || data.output?.flatMap((item) => item.content || []).find((item) => item.text)?.text;
-    const parsed = text ? (JSON.parse(text) as { recipe?: Recipe }) : { recipe: createDemoRecipe(body) };
+    const parsed = text ? (JSON.parse(text) as { recipe?: Recipe }) : { recipe: matchedRecipe };
     if (!parsed.recipe?.title || !parsed.recipe?.description || !Array.isArray(parsed.recipe.shoppingList)) {
-      return NextResponse.json({ recipe: createDemoRecipe(body), source: "demo", warning: "OpenAI schema validation failed" });
+      return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI schema validation failed", databaseMatch: matched?.match });
     }
-    return NextResponse.json({ recipe: { ...parsed.recipe, image: "/brand/reference.png" }, source: "openai" });
+    return NextResponse.json({
+      recipe: { ...parsed.recipe, image: "/brand/generated/hero-family-meal.png", databaseMatch: matched?.match },
+      source: "openai",
+      databaseMatch: matched?.match
+    });
   } catch {
-    return NextResponse.json({ recipe: createDemoRecipe(body), source: "demo", warning: "OpenAI parsing failed" });
+    return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI parsing failed", databaseMatch: matched?.match });
   }
 }

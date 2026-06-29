@@ -1,5 +1,5 @@
-import { SimpleMarketingPage } from "@/components/product-pages";
+import { AuthPage } from "@/components/auth-pages";
 
 export default function Page() {
-  return <SimpleMarketingPage type="forgot" />;
+  return <AuthPage mode="forgot" />;
 }
