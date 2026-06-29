@@ -1,0 +1,33 @@
+import type { Metadata } from "next";
+import { Nunito, Nunito_Sans } from "next/font/google";
+import "./globals.css";
+
+const display = Nunito({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["700", "800", "900"]
+});
+
+const body = Nunito_Sans({
+  subsets: ["latin"],
+  variable: "--font-body",
+  weight: ["400", "600", "700", "800"]
+});
+
+export const metadata: Metadata = {
+  title: "Foody Fam - One meal, whole family",
+  description:
+    "AI recipes that turn one cooking process into baby-friendly, kid-friendly, and adult-ready meals."
+};
+
+export default function RootLayout({
+  children
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body className={`${display.variable} ${body.variable}`}>{children}</body>
+    </html>
+  );
+}

@@ -1,0 +1,4237 @@
+{
+  "directed": true,
+  "nodes": [
+    {
+      "id": "app_layout_tsx",
+      "label": "layout.tsx",
+      "file_type": "code",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_layout_display",
+      "label": "display",
+      "file_type": "code",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L5"
+    },
+    {
+      "id": "app_layout_body",
+      "label": "body",
+      "file_type": "code",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L11"
+    },
+    {
+      "id": "app_layout_metadata",
+      "label": "metadata",
+      "file_type": "code",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L17"
+    },
+    {
+      "id": "app_layout_rootlayout",
+      "label": "RootLayout()",
+      "file_type": "code",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L23"
+    },
+    {
+      "id": "app_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_about_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\about\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "about_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\about\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_assistant_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\assistant\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "assistant_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\assistant\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_blog_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\blog\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "blog_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\blog\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_contact_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\contact\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "contact_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\contact\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_dashboard_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "dashboard_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_forgot_password_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\forgot-password\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "forgot_password_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\forgot-password\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_generator_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\generator\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "generator_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\generator\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_login_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\login\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "login_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\login\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_nutrition_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\nutrition\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "nutrition_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\nutrition\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_onboarding_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\onboarding\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "onboarding_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\onboarding\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_pantry_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\pantry\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "pantry_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\pantry\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_planner_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\planner\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "planner_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\planner\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_pricing_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\pricing\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "pricing_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\pricing\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_recipes_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\recipes\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "recipes_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\recipes\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_register_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\register\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "register_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\register\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_shopping_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\shopping\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "shopping_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\shopping\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_recipes_chicken_broccoli_risotto_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\recipes\\chicken-broccoli-risotto\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "chicken_broccoli_risotto_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\recipes\\chicken-broccoli-risotto\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_dashboard_assistant_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\assistant\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "assistant_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\assistant\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_dashboard_generator_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\generator\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "generator_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\generator\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_dashboard_nutrition_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\nutrition\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "nutrition_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\nutrition\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_dashboard_pantry_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\pantry\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "pantry_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\pantry\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_dashboard_planner_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\planner\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "planner_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\planner\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_dashboard_profiles_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\profiles\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "profiles_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\profiles\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_dashboard_recipes_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\recipes\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "recipes_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\recipes\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_dashboard_settings_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\settings\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "settings_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\settings\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_dashboard_shopping_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\shopping\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "shopping_page_page",
+      "label": "Page()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\shopping\\page.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "app_api_ai_assistant_route_ts",
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "app\\api\\ai\\assistant\\route.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "assistant_route_post",
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "app\\api\\ai\\assistant\\route.ts",
+      "source_location": "L4"
+    },
+    {
+      "id": "app_api_ai_recipe_route_ts",
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "app\\api\\ai\\recipe\\route.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "recipe_route_recipeschema",
+      "label": "recipeSchema",
+      "file_type": "code",
+      "source_file": "app\\api\\ai\\recipe\\route.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "recipe_route_post",
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "app\\api\\ai\\recipe\\route.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "components_dashboard_page_tsx",
+      "label": "dashboard-page.tsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_dashboard_page_dashboardnav",
+      "label": "dashboardNav",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L15"
+    },
+    {
+      "id": "components_dashboard_page_dashboardpage",
+      "label": "DashboardPage()",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L28"
+    },
+    {
+      "id": "components_dashboard_page_dashboardchrome",
+      "label": "DashboardChrome()",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L41"
+    },
+    {
+      "id": "components_dashboard_page_overview",
+      "label": "Overview()",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L74"
+    },
+    {
+      "id": "components_dashboard_page_recipesinner",
+      "label": "RecipesInner()",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L108"
+    },
+    {
+      "id": "components_dashboard_page_plannerinner",
+      "label": "PlannerInner()",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L121"
+    },
+    {
+      "id": "components_dashboard_page_shoppinginner",
+      "label": "ShoppingInner()",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L125"
+    },
+    {
+      "id": "components_dashboard_page_pantryinner",
+      "label": "PantryInner()",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L129"
+    },
+    {
+      "id": "components_dashboard_page_nutritioninner",
+      "label": "NutritionInner()",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L133"
+    },
+    {
+      "id": "components_dashboard_page_profilesinner",
+      "label": "ProfilesInner()",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L137"
+    },
+    {
+      "id": "components_dashboard_page_assistantinner",
+      "label": "AssistantInner()",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L141"
+    },
+    {
+      "id": "components_dashboard_page_settingsinner",
+      "label": "SettingsInner()",
+      "file_type": "code",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L145"
+    },
+    {
+      "id": "components_generator_panel_tsx",
+      "label": "generator-panel.tsx",
+      "file_type": "code",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_generator_panel_generatorschema",
+      "label": "generatorSchema",
+      "file_type": "code",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L11"
+    },
+    {
+      "id": "components_generator_panel_generatorform",
+      "label": "GeneratorForm",
+      "file_type": "code",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L19"
+    },
+    {
+      "id": "components_generator_panel_chips",
+      "label": "chips",
+      "file_type": "code",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L21"
+    },
+    {
+      "id": "components_generator_panel_generatorpanel",
+      "label": "GeneratorPanel()",
+      "file_type": "code",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L23"
+    },
+    {
+      "id": "components_home_page_tsx",
+      "label": "home-page.tsx",
+      "file_type": "code",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_home_page_features",
+      "label": "features",
+      "file_type": "code",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L13"
+    },
+    {
+      "id": "components_home_page_homepage",
+      "label": "HomePage()",
+      "file_type": "code",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L22"
+    },
+    {
+      "id": "components_layout_tsx",
+      "label": "layout.tsx",
+      "file_type": "code",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_layout_nav",
+      "label": "nav",
+      "file_type": "code",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L11"
+    },
+    {
+      "id": "components_layout_siteshell",
+      "label": "SiteShell()",
+      "file_type": "code",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L19"
+    },
+    {
+      "id": "components_layout_header",
+      "label": "Header()",
+      "file_type": "code",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L29"
+    },
+    {
+      "id": "components_layout_footer",
+      "label": "Footer()",
+      "file_type": "code",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L91"
+    },
+    {
+      "id": "components_product_pages_tsx",
+      "label": "product-pages.tsx",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_product_pages_nutritiondata",
+      "label": "nutritionData",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L15"
+    },
+    {
+      "id": "components_product_pages_piedata",
+      "label": "pieData",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L23"
+    },
+    {
+      "id": "components_product_pages_simplemarketingpage",
+      "label": "SimpleMarketingPage()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L29"
+    },
+    {
+      "id": "components_product_pages_generatorpage",
+      "label": "GeneratorPage()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L45"
+    },
+    {
+      "id": "components_product_pages_recipespage",
+      "label": "RecipesPage()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L64"
+    },
+    {
+      "id": "components_product_pages_recipedetailpage",
+      "label": "RecipeDetailPage()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L88"
+    },
+    {
+      "id": "components_product_pages_plannerpage",
+      "label": "PlannerPage()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L111"
+    },
+    {
+      "id": "components_product_pages_shoppingpage",
+      "label": "ShoppingPage()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L136"
+    },
+    {
+      "id": "components_product_pages_pantrypage",
+      "label": "PantryPage()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L169"
+    },
+    {
+      "id": "components_product_pages_nutritionpage",
+      "label": "NutritionPage()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L197"
+    },
+    {
+      "id": "components_product_pages_assistantpage",
+      "label": "AssistantPage()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L208"
+    },
+    {
+      "id": "components_product_pages_profilespage",
+      "label": "ProfilesPage()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L256"
+    },
+    {
+      "id": "components_product_pages_onboardingpage",
+      "label": "OnboardingPage()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L276"
+    },
+    {
+      "id": "components_product_pages_nutritioncharts",
+      "label": "NutritionCharts()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L310"
+    },
+    {
+      "id": "components_product_pages_pricing",
+      "label": "Pricing()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L346"
+    },
+    {
+      "id": "components_product_pages_blog",
+      "label": "Blog()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L367"
+    },
+    {
+      "id": "components_product_pages_about",
+      "label": "About()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L376"
+    },
+    {
+      "id": "components_product_pages_contact",
+      "label": "Contact()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L385"
+    },
+    {
+      "id": "components_product_pages_auth",
+      "label": "Auth()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L399"
+    },
+    {
+      "id": "components_product_pages_pagetitle",
+      "label": "PageTitle()",
+      "file_type": "code",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L419"
+    },
+    {
+      "id": "components_recipe_card_tsx",
+      "label": "recipe-card.tsx",
+      "file_type": "code",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_recipe_card_recipecard",
+      "label": "RecipeCard()",
+      "file_type": "code",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L10"
+    },
+    {
+      "id": "components_recipe_showcase_tsx",
+      "label": "recipe-showcase.tsx",
+      "file_type": "code",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_recipe_showcase_recipeshowcase",
+      "label": "RecipeShowcase()",
+      "file_type": "code",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L9"
+    },
+    {
+      "id": "components_ui_tsx",
+      "label": "ui.tsx",
+      "file_type": "code",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_ui_button",
+      "label": "Button()",
+      "file_type": "code",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L6"
+    },
+    {
+      "id": "components_ui_card",
+      "label": "Card()",
+      "file_type": "code",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L26"
+    },
+    {
+      "id": "components_ui_pill",
+      "label": "Pill()",
+      "file_type": "code",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L30"
+    },
+    {
+      "id": "components_ui_field",
+      "label": "Field()",
+      "file_type": "code",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L39"
+    },
+    {
+      "id": "components_ui_select",
+      "label": "Select()",
+      "file_type": "code",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L51"
+    },
+    {
+      "id": "components_ui_textarea",
+      "label": "TextArea()",
+      "file_type": "code",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L63"
+    },
+    {
+      "id": "lib_ai_demo_ts",
+      "label": "ai-demo.ts",
+      "file_type": "code",
+      "source_file": "lib\\ai-demo.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_ai_demo_createdemorecipe",
+      "label": "createDemoRecipe()",
+      "file_type": "code",
+      "source_file": "lib\\ai-demo.ts",
+      "source_location": "L4"
+    },
+    {
+      "id": "lib_ai_demo_createdemoassistantmessage",
+      "label": "createDemoAssistantMessage()",
+      "file_type": "code",
+      "source_file": "lib\\ai-demo.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "lib_data_ts",
+      "label": "data.ts",
+      "file_type": "code",
+      "source_file": "lib\\data.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_data_brand",
+      "label": "brand",
+      "file_type": "code",
+      "source_file": "lib\\data.ts",
+      "source_location": "L3"
+    },
+    {
+      "id": "lib_data_demorecipes",
+      "label": "demoRecipes",
+      "file_type": "code",
+      "source_file": "lib\\data.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "lib_data_babyprofiles",
+      "label": "babyProfiles",
+      "file_type": "code",
+      "source_file": "lib\\data.ts",
+      "source_location": "L72"
+    },
+    {
+      "id": "lib_data_familymembers",
+      "label": "familyMembers",
+      "file_type": "code",
+      "source_file": "lib\\data.ts",
+      "source_location": "L77"
+    },
+    {
+      "id": "lib_data_initialplanner",
+      "label": "initialPlanner",
+      "file_type": "code",
+      "source_file": "lib\\data.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "lib_data_initialshopping",
+      "label": "initialShopping",
+      "file_type": "code",
+      "source_file": "lib\\data.ts",
+      "source_location": "L93"
+    },
+    {
+      "id": "lib_data_initialchat",
+      "label": "initialChat",
+      "file_type": "code",
+      "source_file": "lib\\data.ts",
+      "source_location": "L102"
+    },
+    {
+      "id": "lib_data_blogposts",
+      "label": "blogPosts",
+      "file_type": "code",
+      "source_file": "lib\\data.ts",
+      "source_location": "L110"
+    },
+    {
+      "id": "lib_types_ts",
+      "label": "types.ts",
+      "file_type": "code",
+      "source_file": "lib\\types.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_types_babyprofile",
+      "label": "BabyProfile",
+      "file_type": "code",
+      "source_file": "lib\\types.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_types_familymember",
+      "label": "FamilyMember",
+      "file_type": "code",
+      "source_file": "lib\\types.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "lib_types_recipe",
+      "label": "Recipe",
+      "file_type": "code",
+      "source_file": "lib\\types.ts",
+      "source_location": "L16"
+    },
+    {
+      "id": "lib_types_mealplanday",
+      "label": "MealPlanDay",
+      "file_type": "code",
+      "source_file": "lib\\types.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "lib_types_shoppinglistitem",
+      "label": "ShoppingListItem",
+      "file_type": "code",
+      "source_file": "lib\\types.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "lib_types_chatmessage",
+      "label": "ChatMessage",
+      "file_type": "code",
+      "source_file": "lib\\types.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "lib_utils_ts",
+      "label": "utils.ts",
+      "file_type": "code",
+      "source_file": "lib\\utils.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_utils_cn",
+      "label": "cn()",
+      "file_type": "code",
+      "source_file": "lib\\utils.ts",
+      "source_location": "L4"
+    },
+    {
+      "id": "store_useappstore_ts",
+      "label": "useAppStore.ts",
+      "file_type": "code",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "store_useappstore_appstore",
+      "label": "AppStore",
+      "file_type": "code",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L8"
+    },
+    {
+      "id": "store_useappstore_useappstore",
+      "label": "useAppStore",
+      "file_type": "code",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L28"
+    }
+  ],
+  "links": [
+    {
+      "source": "app_layout_tsx",
+      "target": "next",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_layout_tsx",
+      "target": "google",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app_layout_tsx",
+      "target": "app_globals_css",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_layout_tsx",
+      "target": "app_layout_display",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_layout_tsx",
+      "target": "app_layout_body",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "app_layout_tsx",
+      "target": "app_layout_metadata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "app_layout_tsx",
+      "target": "app_layout_rootlayout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "app_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_home_page_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_page_tsx",
+      "target": "components_home_page_homepage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_page_tsx",
+      "target": "app_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_about_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\about\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_about_page_tsx",
+      "target": "components_product_pages_simplemarketingpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\about\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_about_page_tsx",
+      "target": "about_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\about\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_assistant_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\assistant\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_assistant_page_tsx",
+      "target": "components_product_pages_assistantpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\assistant\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_assistant_page_tsx",
+      "target": "assistant_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\assistant\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_blog_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\blog\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_blog_page_tsx",
+      "target": "components_product_pages_simplemarketingpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\blog\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_blog_page_tsx",
+      "target": "blog_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\blog\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_contact_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\contact\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_contact_page_tsx",
+      "target": "components_product_pages_simplemarketingpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\contact\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_contact_page_tsx",
+      "target": "contact_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\contact\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_dashboard_page_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_page_tsx",
+      "target": "components_dashboard_page_dashboardpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_page_tsx",
+      "target": "dashboard_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_forgot_password_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\forgot-password\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_forgot_password_page_tsx",
+      "target": "components_product_pages_simplemarketingpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\forgot-password\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_forgot_password_page_tsx",
+      "target": "forgot_password_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\forgot-password\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_generator_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\generator\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_generator_page_tsx",
+      "target": "components_product_pages_generatorpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\generator\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_generator_page_tsx",
+      "target": "generator_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\generator\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_login_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\login\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_login_page_tsx",
+      "target": "components_product_pages_simplemarketingpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\login\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_login_page_tsx",
+      "target": "login_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\login\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_nutrition_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\nutrition\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_nutrition_page_tsx",
+      "target": "components_product_pages_nutritionpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\nutrition\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_nutrition_page_tsx",
+      "target": "nutrition_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\nutrition\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_onboarding_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\onboarding\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_onboarding_page_tsx",
+      "target": "components_product_pages_onboardingpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\onboarding\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_onboarding_page_tsx",
+      "target": "onboarding_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\onboarding\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_pantry_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\pantry\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_pantry_page_tsx",
+      "target": "components_product_pages_pantrypage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\pantry\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_pantry_page_tsx",
+      "target": "pantry_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\pantry\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_planner_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\planner\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_planner_page_tsx",
+      "target": "components_product_pages_plannerpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\planner\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_planner_page_tsx",
+      "target": "planner_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\planner\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_pricing_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\pricing\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_pricing_page_tsx",
+      "target": "components_product_pages_simplemarketingpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\pricing\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_pricing_page_tsx",
+      "target": "pricing_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\pricing\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_recipes_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\recipes\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_recipes_page_tsx",
+      "target": "components_product_pages_recipespage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\recipes\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_recipes_page_tsx",
+      "target": "recipes_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\recipes\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_register_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\register\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_register_page_tsx",
+      "target": "components_product_pages_simplemarketingpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\register\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_register_page_tsx",
+      "target": "register_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\register\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_shopping_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\shopping\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_shopping_page_tsx",
+      "target": "components_product_pages_shoppingpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\shopping\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_shopping_page_tsx",
+      "target": "shopping_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\shopping\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_recipes_chicken_broccoli_risotto_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\recipes\\chicken-broccoli-risotto\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_recipes_chicken_broccoli_risotto_page_tsx",
+      "target": "components_product_pages_recipedetailpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\recipes\\chicken-broccoli-risotto\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_recipes_chicken_broccoli_risotto_page_tsx",
+      "target": "chicken_broccoli_risotto_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\recipes\\chicken-broccoli-risotto\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_assistant_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_dashboard_page_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\assistant\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_assistant_page_tsx",
+      "target": "components_dashboard_page_dashboardpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\assistant\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_assistant_page_tsx",
+      "target": "assistant_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\assistant\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_generator_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_dashboard_page_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\generator\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_generator_page_tsx",
+      "target": "components_dashboard_page_dashboardpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\generator\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_generator_page_tsx",
+      "target": "generator_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\generator\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_nutrition_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_dashboard_page_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\nutrition\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_nutrition_page_tsx",
+      "target": "components_dashboard_page_dashboardpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\nutrition\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_nutrition_page_tsx",
+      "target": "nutrition_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\nutrition\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_pantry_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_dashboard_page_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\pantry\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_pantry_page_tsx",
+      "target": "components_dashboard_page_dashboardpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\pantry\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_pantry_page_tsx",
+      "target": "pantry_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\pantry\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_planner_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_dashboard_page_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\planner\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_planner_page_tsx",
+      "target": "components_dashboard_page_dashboardpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\planner\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_planner_page_tsx",
+      "target": "planner_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\planner\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_profiles_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_dashboard_page_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\profiles\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_profiles_page_tsx",
+      "target": "components_dashboard_page_dashboardpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\profiles\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_profiles_page_tsx",
+      "target": "profiles_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\profiles\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_recipes_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_dashboard_page_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\recipes\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_recipes_page_tsx",
+      "target": "components_dashboard_page_dashboardpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\recipes\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_recipes_page_tsx",
+      "target": "recipes_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\recipes\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_settings_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_dashboard_page_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\settings\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_settings_page_tsx",
+      "target": "components_dashboard_page_dashboardpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\settings\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_settings_page_tsx",
+      "target": "settings_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\settings\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_shopping_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_components_dashboard_page_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\shopping\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_shopping_page_tsx",
+      "target": "components_dashboard_page_dashboardpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\shopping\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_shopping_page_tsx",
+      "target": "shopping_page_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\shopping\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_ai_assistant_route_ts",
+      "target": "server",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\ai\\assistant\\route.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_ai_assistant_route_ts",
+      "target": "c_users_marko_antigravity_foody_fam_lib_ai_demo_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\ai\\assistant\\route.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_ai_assistant_route_ts",
+      "target": "lib_ai_demo_createdemoassistantmessage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\ai\\assistant\\route.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_ai_assistant_route_ts",
+      "target": "assistant_route_post",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\ai\\assistant\\route.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_ai_recipe_route_ts",
+      "target": "server",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\ai\\recipe\\route.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_ai_recipe_route_ts",
+      "target": "c_users_marko_antigravity_foody_fam_lib_ai_demo_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\ai\\recipe\\route.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_ai_recipe_route_ts",
+      "target": "lib_ai_demo_createdemorecipe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\ai\\recipe\\route.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_ai_recipe_route_ts",
+      "target": "c_users_marko_antigravity_foody_fam_lib_types_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\ai\\recipe\\route.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_ai_recipe_route_ts",
+      "target": "lib_types_recipe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\ai\\recipe\\route.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_ai_recipe_route_ts",
+      "target": "recipe_route_recipeschema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\ai\\recipe\\route.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_ai_recipe_route_ts",
+      "target": "recipe_route_post",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\ai\\recipe\\route.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "link",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "navigation",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_ui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_ui_button",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_ui_card",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_ui_pill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_generator_panel_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_generator_panel_generatorpanel",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_recipe_card_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_recipe_card_recipecard",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_recipe_showcase_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_recipe_showcase_recipeshowcase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_lib_data_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "lib_data_demorecipes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_store_useappstore_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "store_useappstore_useappstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_lib_utils_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "lib_utils_cn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_product_pages_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_product_pages_assistantpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_product_pages_nutritionpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_product_pages_pantrypage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_product_pages_plannerpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_product_pages_profilespage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_product_pages_shoppingpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_dashboard_page_dashboardnav",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_dashboard_page_dashboardpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_dashboard_page_dashboardchrome",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_dashboard_page_overview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_dashboard_page_recipesinner",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_dashboard_page_plannerinner",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_dashboard_page_shoppinginner",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_dashboard_page_pantryinner",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_dashboard_page_nutritioninner",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_dashboard_page_profilesinner",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_dashboard_page_assistantinner",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_tsx",
+      "target": "components_dashboard_page_settingsinner",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "zod",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "react_hook_form",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "zod",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "components_ui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "components_ui_button",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "components_ui_card",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "components_ui_field",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "components_ui_pill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "components_ui_select",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_lib_types_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "lib_types_recipe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "components_generator_panel_generatorschema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "components_generator_panel_generatorform",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "components_generator_panel_chips",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "components_generator_panel_tsx",
+      "target": "components_generator_panel_generatorpanel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\generator-panel.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "image",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "link",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "framer_motion",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "components_layout_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "components_layout_siteshell",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "components_ui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "components_ui_button",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "components_ui_card",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "components_ui_pill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "components_generator_panel_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "components_generator_panel_generatorpanel",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "components_recipe_showcase_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "components_recipe_showcase_recipeshowcase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_lib_data_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "lib_data_demorecipes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "components_home_page_features",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_home_page_tsx",
+      "target": "components_home_page_homepage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\home-page.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "image",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "link",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "navigation",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "components_ui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "components_ui_button",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_lib_utils_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "lib_utils_cn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "components_layout_nav",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "components_layout_siteshell",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "components_layout_header",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layout_tsx",
+      "target": "components_layout_footer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout.tsx",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "link",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "recharts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_layout_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_layout_siteshell",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_ui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_ui_button",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_ui_card",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_ui_field",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_ui_pill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_ui_select",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_ui_textarea",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_generator_panel_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_generator_panel_generatorpanel",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_recipe_card_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_recipe_card_recipecard",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_recipe_showcase_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_recipe_showcase_recipeshowcase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_lib_data_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "lib_data_babyprofiles",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "lib_data_blogposts",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "lib_data_demorecipes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "lib_data_familymembers",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_store_useappstore_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "store_useappstore_useappstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_nutritiondata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_piedata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_simplemarketingpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_generatorpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_recipespage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_recipedetailpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_plannerpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_shoppingpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_pantrypage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L169",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_nutritionpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L197",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_assistantpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L208",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_profilespage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L256",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_onboardingpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L276",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_nutritioncharts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L310",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_pricing",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L346",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_blog",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L367",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_about",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L376",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_contact",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L385",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_auth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L399",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_tsx",
+      "target": "components_product_pages_pagetitle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L419",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_tsx",
+      "target": "image",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_tsx",
+      "target": "link",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_lib_types_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_tsx",
+      "target": "lib_types_recipe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_store_useappstore_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_tsx",
+      "target": "store_useappstore_useappstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_tsx",
+      "target": "components_ui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_tsx",
+      "target": "components_ui_button",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_tsx",
+      "target": "components_ui_card",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_tsx",
+      "target": "components_ui_pill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_tsx",
+      "target": "components_recipe_card_recipecard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_showcase_tsx",
+      "target": "image",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_showcase_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_showcase_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_lib_types_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_showcase_tsx",
+      "target": "lib_types_recipe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_showcase_tsx",
+      "target": "components_ui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_showcase_tsx",
+      "target": "components_ui_button",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_showcase_tsx",
+      "target": "components_ui_card",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_showcase_tsx",
+      "target": "components_ui_pill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_showcase_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_store_useappstore_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_showcase_tsx",
+      "target": "store_useappstore_useappstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_showcase_tsx",
+      "target": "components_recipe_showcase_recipeshowcase",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_tsx",
+      "target": "c_users_marko_antigravity_foody_fam_lib_utils_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_tsx",
+      "target": "lib_utils_cn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_tsx",
+      "target": "components_ui_button",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_tsx",
+      "target": "components_ui_card",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_tsx",
+      "target": "components_ui_pill",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_tsx",
+      "target": "components_ui_field",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_tsx",
+      "target": "components_ui_select",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_tsx",
+      "target": "components_ui_textarea",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui.tsx",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_ai_demo_ts",
+      "target": "lib_data_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\ai-demo.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_ai_demo_ts",
+      "target": "lib_data_demorecipes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\ai-demo.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_ai_demo_ts",
+      "target": "lib_types_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\ai-demo.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_ai_demo_ts",
+      "target": "lib_types_recipe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\ai-demo.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_ai_demo_ts",
+      "target": "lib_ai_demo_createdemorecipe",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\ai-demo.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_ai_demo_ts",
+      "target": "lib_ai_demo_createdemoassistantmessage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\ai-demo.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_types_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_types_babyprofile",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_types_chatmessage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_types_familymember",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_types_mealplanday",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_types_recipe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_types_shoppinglistitem",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_data_brand",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_data_demorecipes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_data_babyprofiles",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_data_familymembers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_data_initialplanner",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_data_initialshopping",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_data_initialchat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_data_ts",
+      "target": "lib_data_blogposts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\data.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_types_ts",
+      "target": "lib_types_babyprofile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\types.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_types_ts",
+      "target": "lib_types_familymember",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\types.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_types_ts",
+      "target": "lib_types_recipe",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\types.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_types_ts",
+      "target": "lib_types_mealplanday",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\types.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_types_ts",
+      "target": "lib_types_shoppinglistitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\types.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_types_ts",
+      "target": "lib_types_chatmessage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\types.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_utils_ts",
+      "target": "clsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\utils.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_utils_ts",
+      "target": "tailwind_merge",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\utils.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_utils_ts",
+      "target": "lib_utils_cn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\utils.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "zustand",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "middleware",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "c_users_marko_antigravity_foody_fam_lib_data_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "lib_data_babyprofiles",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "lib_data_demorecipes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "lib_data_familymembers",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "lib_data_initialchat",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "lib_data_initialplanner",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "lib_data_initialshopping",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "c_users_marko_antigravity_foody_fam_lib_types_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "lib_types_babyprofile",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "lib_types_chatmessage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "lib_types_familymember",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "lib_types_mealplanday",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "lib_types_recipe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "lib_types_shoppinglistitem",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "store_useappstore_appstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "store_useappstore_ts",
+      "target": "store_useappstore_useappstore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "store\\useAppStore.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "assistant_route_post",
+      "target": "lib_ai_demo_createdemoassistantmessage",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app\\api\\ai\\assistant\\route.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "recipe_route_post",
+      "target": "lib_ai_demo_createdemorecipe",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app\\api\\ai\\recipe\\route.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_overview",
+      "target": "store_useappstore_useappstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "components_dashboard_page_recipesinner",
+      "target": "store_useappstore_useappstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\dashboard-page.tsx",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_plannerpage",
+      "target": "store_useappstore_useappstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_shoppingpage",
+      "target": "store_useappstore_useappstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_pantrypage",
+      "target": "store_useappstore_useappstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_assistantpage",
+      "target": "store_useappstore_useappstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L211",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_onboardingpage",
+      "target": "store_useappstore_useappstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L278",
+      "weight": 1.0
+    },
+    {
+      "source": "components_product_pages_auth",
+      "target": "store_useappstore_useappstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\product-pages.tsx",
+      "source_location": "L400",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_card_recipecard",
+      "target": "store_useappstore_useappstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\recipe-card.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_recipe_showcase_recipeshowcase",
+      "target": "store_useappstore_useappstore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\recipe-showcase.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_button",
+      "target": "lib_utils_cn",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\ui.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_card",
+      "target": "lib_utils_cn",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\ui.tsx",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_pill",
+      "target": "lib_utils_cn",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\ui.tsx",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_field",
+      "target": "lib_utils_cn",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\ui.tsx",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_select",
+      "target": "lib_utils_cn",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\ui.tsx",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "components_ui_textarea",
+      "target": "lib_utils_cn",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components\\ui.tsx",
+      "source_location": "L66",
+      "weight": 1.0
+    }
+  ],
+  "meta": {
+    "mode": "low-cost-ast-only"
+  }
+}

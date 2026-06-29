@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --peach: #ffccb2;
+  --coral: #f59b78;
+  --blush: #e9c7b7;
+  --cream: #f7efe9;
+  --cocoa: #5c4a42;
+  --mint: #78bea8;
+  --sage: #9fcfbd;
+  --ink: #1f1d1c;
+  --paper: #fffaf6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 12% 2%, rgba(255, 204, 178, 0.35), transparent 28rem),
+    radial-gradient(circle at 92% 14%, rgba(120, 190, 168, 0.16), transparent 22rem),
+    var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), Arial, sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.font-display {
+  font-family: var(--font-display), var(--font-body), Arial, sans-serif;
+}
+
+.soft-card {
+  border: 1px solid rgba(92, 74, 66, 0.13);
+  background: rgba(255, 250, 246, 0.86);
+  box-shadow: 0 16px 45px rgba(92, 74, 66, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.brand-gradient {
+  background: linear-gradient(135deg, #f59b78 0%, #ffccb2 52%, #78bea8 100%);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.scrollbar-soft::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-soft::-webkit-scrollbar-thumb {
+  background: rgba(92, 74, 66, 0.22);
+  border-radius: 999px;
+}

@@ -1,0 +1,154 @@
+# Foody Fam Graphify Tree
+
+Low-cost deterministic AST tree. Semantic/image extraction skipped to avoid extra model spend.
+
+Corpus: 43 code files
+
+## File Communities
+
+- `components\product-pages.tsx`: 21 nodes, 52 edges
+- `components\dashboard-page.tsx`: 13 nodes, 40 edges
+- `lib\data.ts`: 9 nodes, 15 edges
+- `components\ui.tsx`: 7 nodes, 15 edges
+- `lib\types.ts`: 7 nodes, 6 edges
+- `app\layout.tsx`: 5 nodes, 7 edges
+- `components\generator-panel.tsx`: 5 nodes, 17 edges
+- `components\layout.tsx`: 5 nodes, 13 edges
+- `app\api\ai\recipe\route.ts`: 3 nodes, 8 edges
+- `components\home-page.tsx`: 3 nodes, 18 edges
+- `lib\ai-demo.ts`: 3 nodes, 6 edges
+- `store\useAppStore.ts`: 3 nodes, 18 edges
+- `app\about\page.tsx`: 2 nodes, 3 edges
+- `app\api\ai\assistant\route.ts`: 2 nodes, 5 edges
+- `app\assistant\page.tsx`: 2 nodes, 3 edges
+- `app\blog\page.tsx`: 2 nodes, 3 edges
+- `app\contact\page.tsx`: 2 nodes, 3 edges
+- `app\dashboard\assistant\page.tsx`: 2 nodes, 3 edges
+- `app\dashboard\generator\page.tsx`: 2 nodes, 3 edges
+- `app\dashboard\nutrition\page.tsx`: 2 nodes, 3 edges
+- `app\dashboard\page.tsx`: 2 nodes, 3 edges
+- `app\dashboard\pantry\page.tsx`: 2 nodes, 3 edges
+- `app\dashboard\planner\page.tsx`: 2 nodes, 3 edges
+- `app\dashboard\profiles\page.tsx`: 2 nodes, 3 edges
+- `app\dashboard\recipes\page.tsx`: 2 nodes, 3 edges
+- `app\dashboard\settings\page.tsx`: 2 nodes, 3 edges
+- `app\dashboard\shopping\page.tsx`: 2 nodes, 3 edges
+- `app\forgot-password\page.tsx`: 2 nodes, 3 edges
+- `app\generator\page.tsx`: 2 nodes, 3 edges
+- `app\login\page.tsx`: 2 nodes, 3 edges
+- `app\nutrition\page.tsx`: 2 nodes, 3 edges
+- `app\onboarding\page.tsx`: 2 nodes, 3 edges
+- `app\page.tsx`: 2 nodes, 3 edges
+- `app\pantry\page.tsx`: 2 nodes, 3 edges
+- `app\planner\page.tsx`: 2 nodes, 3 edges
+- `app\pricing\page.tsx`: 2 nodes, 3 edges
+- `app\recipes\chicken-broccoli-risotto\page.tsx`: 2 nodes, 3 edges
+- `app\recipes\page.tsx`: 2 nodes, 3 edges
+- `app\register\page.tsx`: 2 nodes, 3 edges
+- `app\shopping\page.tsx`: 2 nodes, 3 edges
+- `components\recipe-card.tsx`: 2 nodes, 13 edges
+- `components\recipe-showcase.tsx`: 2 nodes, 12 edges
+- `lib\utils.ts`: 2 nodes, 3 edges
+
+## Top Nodes
+
+- layout.tsx (`app\layout.tsx`)
+- display (`app\layout.tsx`)
+- body (`app\layout.tsx`)
+- metadata (`app\layout.tsx`)
+- RootLayout() (`app\layout.tsx`)
+- page.tsx (`app\page.tsx`)
+- Page() (`app\page.tsx`)
+- page.tsx (`app\about\page.tsx`)
+- Page() (`app\about\page.tsx`)
+- page.tsx (`app\assistant\page.tsx`)
+- Page() (`app\assistant\page.tsx`)
+- page.tsx (`app\blog\page.tsx`)
+- Page() (`app\blog\page.tsx`)
+- page.tsx (`app\contact\page.tsx`)
+- Page() (`app\contact\page.tsx`)
+- page.tsx (`app\dashboard\page.tsx`)
+- Page() (`app\dashboard\page.tsx`)
+- page.tsx (`app\forgot-password\page.tsx`)
+- Page() (`app\forgot-password\page.tsx`)
+- page.tsx (`app\generator\page.tsx`)
+- Page() (`app\generator\page.tsx`)
+- page.tsx (`app\login\page.tsx`)
+- Page() (`app\login\page.tsx`)
+- page.tsx (`app\nutrition\page.tsx`)
+- Page() (`app\nutrition\page.tsx`)
+- page.tsx (`app\onboarding\page.tsx`)
+- Page() (`app\onboarding\page.tsx`)
+- page.tsx (`app\pantry\page.tsx`)
+- Page() (`app\pantry\page.tsx`)
+- page.tsx (`app\planner\page.tsx`)
+- Page() (`app\planner\page.tsx`)
+- page.tsx (`app\pricing\page.tsx`)
+- Page() (`app\pricing\page.tsx`)
+- page.tsx (`app\recipes\page.tsx`)
+- Page() (`app\recipes\page.tsx`)
+- page.tsx (`app\register\page.tsx`)
+- Page() (`app\register\page.tsx`)
+- page.tsx (`app\shopping\page.tsx`)
+- Page() (`app\shopping\page.tsx`)
+- page.tsx (`app\recipes\chicken-broccoli-risotto\page.tsx`)
+- Page() (`app\recipes\chicken-broccoli-risotto\page.tsx`)
+- page.tsx (`app\dashboard\assistant\page.tsx`)
+- Page() (`app\dashboard\assistant\page.tsx`)
+- page.tsx (`app\dashboard\generator\page.tsx`)
+- Page() (`app\dashboard\generator\page.tsx`)
+- page.tsx (`app\dashboard\nutrition\page.tsx`)
+- Page() (`app\dashboard\nutrition\page.tsx`)
+- page.tsx (`app\dashboard\pantry\page.tsx`)
+- Page() (`app\dashboard\pantry\page.tsx`)
+- page.tsx (`app\dashboard\planner\page.tsx`)
+- Page() (`app\dashboard\planner\page.tsx`)
+- page.tsx (`app\dashboard\profiles\page.tsx`)
+- Page() (`app\dashboard\profiles\page.tsx`)
+- page.tsx (`app\dashboard\recipes\page.tsx`)
+- Page() (`app\dashboard\recipes\page.tsx`)
+- page.tsx (`app\dashboard\settings\page.tsx`)
+- Page() (`app\dashboard\settings\page.tsx`)
+- page.tsx (`app\dashboard\shopping\page.tsx`)
+- Page() (`app\dashboard\shopping\page.tsx`)
+- route.ts (`app\api\ai\assistant\route.ts`)
+- POST() (`app\api\ai\assistant\route.ts`)
+- route.ts (`app\api\ai\recipe\route.ts`)
+- recipeSchema (`app\api\ai\recipe\route.ts`)
+- POST() (`app\api\ai\recipe\route.ts`)
+- dashboard-page.tsx (`components\dashboard-page.tsx`)
+- dashboardNav (`components\dashboard-page.tsx`)
+- DashboardPage() (`components\dashboard-page.tsx`)
+- DashboardChrome() (`components\dashboard-page.tsx`)
+- Overview() (`components\dashboard-page.tsx`)
+- RecipesInner() (`components\dashboard-page.tsx`)
+- PlannerInner() (`components\dashboard-page.tsx`)
+- ShoppingInner() (`components\dashboard-page.tsx`)
+- PantryInner() (`components\dashboard-page.tsx`)
+- NutritionInner() (`components\dashboard-page.tsx`)
+- ProfilesInner() (`components\dashboard-page.tsx`)
+- AssistantInner() (`components\dashboard-page.tsx`)
+- SettingsInner() (`components\dashboard-page.tsx`)
+- generator-panel.tsx (`components\generator-panel.tsx`)
+- generatorSchema (`components\generator-panel.tsx`)
+- GeneratorForm (`components\generator-panel.tsx`)
+- chips (`components\generator-panel.tsx`)
+- GeneratorPanel() (`components\generator-panel.tsx`)
+- home-page.tsx (`components\home-page.tsx`)
+- features (`components\home-page.tsx`)
+- HomePage() (`components\home-page.tsx`)
+- layout.tsx (`components\layout.tsx`)
+- nav (`components\layout.tsx`)
+- SiteShell() (`components\layout.tsx`)
+- Header() (`components\layout.tsx`)
+- Footer() (`components\layout.tsx`)
+- product-pages.tsx (`components\product-pages.tsx`)
+- nutritionData (`components\product-pages.tsx`)
+- pieData (`components\product-pages.tsx`)
+- SimpleMarketingPage() (`components\product-pages.tsx`)
+- GeneratorPage() (`components\product-pages.tsx`)
+- RecipesPage() (`components\product-pages.tsx`)
+- RecipeDetailPage() (`components\product-pages.tsx`)
+- PlannerPage() (`components\product-pages.tsx`)
+- ShoppingPage() (`components\product-pages.tsx`)
+- PantryPage() (`components\product-pages.tsx`)
