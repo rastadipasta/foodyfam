@@ -46,6 +46,10 @@ a {
   font-family: var(--font-display), var(--font-body), Arial, sans-serif;
 }
 
+h1 {
+  font-family: "Dacherry", var(--font-display), var(--font-body), Arial, sans-serif;
+}
+
 .soft-card {
   border: 1px solid rgba(92, 74, 66, 0.13);
   background: rgba(255, 250, 246, 0.86);
