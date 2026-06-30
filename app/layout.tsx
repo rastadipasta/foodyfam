@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Nunito, Nunito_Sans } from "next/font/google";
+import { BackToTop } from "@/components/back-to-top";
 import "./globals.css";
 
 const display = Nunito({
@@ -34,7 +35,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${display.variable} ${body.variable} ${dacherry.variable}`}>{children}</body>
+      <body className={`${display.variable} ${body.variable} ${dacherry.variable}`}>
+        {children}
+        <BackToTop />
+      </body>
     </html>
   );
 }

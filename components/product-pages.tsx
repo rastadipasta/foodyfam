@@ -181,22 +181,30 @@ function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
   const saveRecipe = useAppStore((state) => state.saveRecipe);
   const savedRecipeIds = useAppStore((state) => state.savedRecipeIds);
   const addRecipeToPlanner = useAppStore((state) => state.addRecipeToPlanner);
+  const removeRecipeFromPlanner = useAppStore((state) => state.removeRecipeFromPlanner);
   const [selectedDay, setSelectedDay] = useState(planner[0]?.day || "Monday");
   const [plannerMessage, setPlannerMessage] = useState("");
   const saved = savedRecipeIds.includes(recipe.id);
+  const plannedDays = planner.filter((day) => day.recipeId === recipe.id).map((day) => day.day);
+  const isPlanned = plannedDays.length > 0;
 
   function addToPlanner() {
     addRecipeToPlanner(selectedDay, recipe);
     setPlannerMessage(`Added to ${selectedDay}`);
   }
 
+  function removeFromPlanner() {
+    removeRecipeFromPlanner(recipe.id);
+    setPlannerMessage("Removed from planner");
+  }
+
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-[#5c4a42]/30 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true">
-      <div className="max-h-[90vh] w-full max-w-4xl overflow-auto rounded-[32px] border border-[#e9c7b7] bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_55%,#ffccb2_150%)] p-5 shadow-[0_30px_90px_rgba(92,74,66,0.28)]">
-        <div className="flex items-start justify-between gap-4">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-[#5c4a42]/30 px-3 py-4 backdrop-blur-sm sm:px-4 sm:py-6" role="dialog" aria-modal="true">
+      <div className="max-h-[92vh] w-full max-w-4xl overflow-auto rounded-[24px] border border-[#e9c7b7] bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_55%,#ffccb2_150%)] p-4 shadow-[0_30px_90px_rgba(92,74,66,0.28)] sm:rounded-[32px] sm:p-5">
+        <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#78bea8]">Recipe cloud</p>
-            <h2 className="mt-2 font-display text-4xl font-black leading-tight">{recipe.title}</h2>
+            <h2 className="mt-2 font-display text-3xl font-black leading-tight sm:text-4xl">{recipe.title}</h2>
             <p className="mt-3 max-w-2xl font-bold leading-7 text-[#5c4a42]">{recipe.description || recipe.familyPitch}</p>
           </div>
           <button className="rounded-full bg-white p-3 text-[#5c4a42] shadow-sm transition hover:scale-105" aria-label="Close recipe" onClick={onClose}>
@@ -208,7 +216,7 @@ function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
           {recipe.tags.slice(0, 8).map((tag) => <Pill key={tag}>{tag}</Pill>)}
         </div>
 
-        <div className="mt-5 grid gap-3 rounded-[24px] bg-white/78 p-4 shadow-sm md:grid-cols-[1fr_auto_auto] md:items-end">
+        <div className="mt-5 grid gap-3 rounded-[22px] bg-white/78 p-4 shadow-sm md:grid-cols-[1fr_auto_auto] md:items-end">
           <FilterField label="Add to meal planner">
             <Select aria-label="Planner day" value={selectedDay} onChange={(event) => setSelectedDay(event.target.value)}>
               {planner.map((day) => <option key={day.day}>{day.day}</option>)}
@@ -218,11 +226,19 @@ function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
             <Heart size={17} fill={saved ? "currentColor" : "none"} />
             {saved ? "Saved" : "Save"}
           </Button>
-          <Button onClick={addToPlanner}>
-            <CalendarPlus size={17} />
-            Add to planner
-          </Button>
+          {isPlanned ? (
+            <Button variant="coral" onClick={removeFromPlanner}>
+              <X size={17} />
+              Remove from planner
+            </Button>
+          ) : (
+            <Button onClick={addToPlanner}>
+              <CalendarPlus size={17} />
+              Add to planner
+            </Button>
+          )}
           {plannerMessage && <p className="text-sm font-extrabold text-[#78bea8] md:col-span-3">{plannerMessage}</p>}
+          {isPlanned && !plannerMessage && <p className="text-sm font-extrabold text-[#5c4a42] md:col-span-3">Planned for {plannedDays.join(", ")}</p>}
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-4">
@@ -314,6 +330,7 @@ export function PlannerPage() {
                 <p className="mt-2 text-sm font-bold text-[#5c4a42]">{day.meal}</p>
               </div>
               <Select aria-label={`Choose meal for ${day.day}`} value={day.recipeId} onChange={(event) => setPlannerMeal(day.day, event.target.value)}>
+                <option value="">Choose a meal</option>
                 {plannerRecipes.map((recipe) => <option key={recipe.id} value={recipe.id}>{recipe.title}</option>)}
               </Select>
             </Card>

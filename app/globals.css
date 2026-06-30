@@ -50,6 +50,26 @@ h1 {
   font-family: var(--font-dacherry), var(--font-display), var(--font-body), Arial, sans-serif;
 }
 
+h1,
+h2,
+h3,
+p,
+button,
+a,
+span {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  h1 {
+    line-height: 1.05;
+  }
+
+  .soft-card {
+    border-radius: 20px;
+  }
+}
+
 .soft-card {
   border: 1px solid rgba(92, 74, 66, 0.13);
   background: rgba(255, 250, 246, 0.86);

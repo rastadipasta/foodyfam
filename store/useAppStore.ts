@@ -52,6 +52,7 @@ type AppStore = {
   removePantryItem: (label: string) => void;
   setPlannerMeal: (day: string, recipeId: string) => void;
   addRecipeToPlanner: (day: string, recipe: Recipe) => void;
+  removeRecipeFromPlanner: (recipeId: string) => void;
   addChatMessage: (message: ChatMessage) => void;
   setActiveUser: (name: string | null) => void;
   loginDemoUser: (user: AuthUser, onboardingCompleted?: boolean) => void;
@@ -107,6 +108,13 @@ export const useAppStore = create<AppStore>()(
       removePantryItem: (label) => set((state) => ({ pantry: state.pantry.filter((item) => item !== label) })),
       setPlannerMeal: (day, recipeId) =>
         set((state) => {
+          if (!recipeId) {
+            return {
+              planner: state.planner.map((item) =>
+                item.day === day ? { ...item, recipeId: "", meal: "Choose a meal" } : item
+              )
+            };
+          }
           const recipe = state.recipes.find((item) => item.id === recipeId);
           return {
             planner: state.planner.map((item) =>
@@ -120,6 +128,12 @@ export const useAppStore = create<AppStore>()(
           savedRecipeIds: Array.from(new Set([recipe.id, ...state.savedRecipeIds])),
           planner: state.planner.map((item) =>
             item.day === day ? { ...item, recipeId: recipe.id, meal: recipe.title } : item
+          )
+        })),
+      removeRecipeFromPlanner: (recipeId) =>
+        set((state) => ({
+          planner: state.planner.map((item) =>
+            item.recipeId === recipeId ? { ...item, recipeId: "", meal: "Choose a meal" } : item
           )
         })),
       addChatMessage: (message) => set((state) => ({ chat: [...state.chat, message] })),
