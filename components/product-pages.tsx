@@ -652,11 +652,24 @@ function Pricing() {
           ["Free", "$0", ["5 recipes per week", "Basic recipes", "Shopping lists", "Nutrition info"]],
           ["Premium", "$6.99 / month", ["Unlimited recipes", "Meal planner", "PDF export", "Priority support"]]
         ].map(([name, price, points]) => (
-          <Card key={name as string}>
+          <Card
+            key={name as string}
+            className={
+              name === "Premium"
+                ? "relative overflow-hidden !border-[#f59b78]/65 !bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_44%,#ffccb2_118%)] !shadow-[0_26px_70px_rgba(245,155,120,0.24)] ring-2 ring-[#f59b78]/18"
+                : "!bg-white/88"
+            }
+          >
+            {name === "Premium" && (
+              <span className="absolute right-4 top-4 rounded-full bg-[#5c4a42] px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-white shadow-sm">
+                Best value
+              </span>
+            )}
             <h2 className="font-display text-3xl font-black">{name as string}</h2>
-            <p className="mt-2 text-2xl font-black text-[#f59b78]">{price as string}</p>
-            <ul className="mt-5 grid gap-3">{(points as string[]).map((point) => <li key={point} className="flex gap-2 font-bold"><Check className="text-[#78bea8]" size={18} />{point}</li>)}</ul>
-            <Button className="mt-6 w-full" variant={name === "Premium" ? "coral" : "primary"}>{name === "Premium" ? "Start free trial" : "Get started"}</Button>
+            <p className={`mt-2 text-2xl font-black ${name === "Premium" ? "text-[#5c4a42]" : "text-[#f59b78]"}`}>{price as string}</p>
+            {name === "Premium" && <p className="mt-3 max-w-sm text-sm font-extrabold leading-6 text-[#5c4a42]">For families who want planning, saving, and recipe generation to feel automatic every week.</p>}
+            <ul className="mt-5 grid gap-3">{(points as string[]).map((point) => <li key={point} className="flex gap-2 font-bold text-[#3d3632]"><Check className="shrink-0 text-[#78bea8]" size={18} />{point}</li>)}</ul>
+            <Button className={`mt-6 w-full ${name === "Premium" ? "min-h-12 shadow-[0_16px_34px_rgba(245,155,120,0.34)]" : ""}`} variant={name === "Premium" ? "coral" : "primary"}>{name === "Premium" ? "Start free trial" : "Get started"}</Button>
           </Card>
         ))}
       </div>

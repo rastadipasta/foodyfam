@@ -102,7 +102,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.2fr_2fr_1.2fr]">
         <div>
           <Image src="/brand/logo.png" alt="Foody Fam" width={142} height={70} className="mb-3 h-16 w-auto object-contain" />
-          <p className="max-w-xs text-sm font-bold text-[#5c4a42]">One meal, whole family.</p>
+          <p className="max-w-xs [font-family:var(--font-dacherry),var(--font-display),var(--font-body),Arial,sans-serif] text-2xl font-black leading-none text-[#5c4a42]">One meal, whole family.</p>
         </div>
         <div className="grid gap-8 sm:grid-cols-3">
           {columns.map((column, index) => (

@@ -24,15 +24,15 @@ export function HomePage() {
   return (
     <SiteShell>
       <main>
-        <section className="relative overflow-hidden px-4 pb-16 pt-8 sm:px-6 lg:px-8">
-          <div className="absolute right-[-8rem] top-28 h-96 w-96 rounded-full bg-[#f59b78]/55 blur-3xl" />
-          <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1fr_1.05fr]">
-            <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+        <section className="relative overflow-hidden px-4 pb-14 pt-7 sm:px-6 sm:pb-16 sm:pt-8 lg:px-8">
+          <div className="pointer-events-none absolute right-[-8rem] top-28 hidden h-96 w-96 rounded-full bg-[#f59b78]/45 blur-3xl sm:block" />
+          <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[1fr_1.05fr] lg:gap-10">
+            <motion.div className="relative z-10 rounded-[28px] bg-[#fffaf6]/88 py-2 sm:bg-transparent sm:py-0" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
               <Pill className="mb-5 bg-[#e8f4ef] text-[#5c4a42]">
                 <Sparkles size={14} className="mr-1 text-[#f59b78]" />
                 AI recipes for busy families
               </Pill>
-              <h1 className="font-display max-w-2xl text-balance text-5xl font-black leading-[0.96] text-[#1f1d1c] sm:text-6xl lg:text-7xl">
+              <h1 className="max-w-2xl text-balance [font-family:var(--font-dacherry),var(--font-display),var(--font-body),Arial,sans-serif] text-[4.1rem] font-black leading-[0.88] text-[#1f1d1c] sm:text-6xl lg:text-7xl">
                 One meal, <span className="text-[#78bea8]">whole family.</span>
               </h1>
               <p className="mt-6 max-w-xl text-xl font-bold leading-8 text-[#3d3632]">
@@ -60,15 +60,15 @@ export function HomePage() {
                 <span>95% parents cook only once</span>
               </div>
             </motion.div>
-            <motion.div initial={false} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
-              <div className="relative min-h-[470px]">
-                <div className="brand-gradient absolute bottom-2 right-0 h-[72%] w-[86%] rounded-tl-[50%] rounded-tr-[20%] rounded-br-[10%] rounded-bl-[34%]" />
+            <motion.div className="relative z-0" initial={false} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
+              <div className="relative min-h-[300px] sm:min-h-[430px] lg:min-h-[470px]">
+                <div className="brand-gradient pointer-events-none absolute bottom-0 right-[-1rem] h-[58%] w-[78%] rounded-tl-[50%] rounded-tr-[20%] rounded-br-[10%] rounded-bl-[34%] opacity-80 sm:bottom-2 sm:right-0 sm:h-[72%] sm:w-[86%] sm:opacity-100" />
                 <Image
                   src="/brand/generated/hero-family-meal.png"
                   alt="Foody Fam meal preview"
                   width={720}
                   height={820}
-                  className="relative z-10 ml-auto h-[520px] w-full max-w-[680px] rounded-[32px] object-cover object-top shadow-[0_26px_70px_rgba(92,74,66,0.18)]"
+                  className="relative z-10 ml-auto h-[320px] w-full max-w-[680px] rounded-[26px] object-cover object-top shadow-[0_22px_58px_rgba(92,74,66,0.16)] sm:h-[460px] sm:rounded-[32px] lg:h-[520px]"
                   priority
                 />
               </div>
