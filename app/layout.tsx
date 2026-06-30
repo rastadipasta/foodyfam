@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import { Nunito, Nunito_Sans } from "next/font/google";
 import "./globals.css";
 
@@ -14,6 +15,12 @@ const body = Nunito_Sans({
   weight: ["400", "600", "700", "800"]
 });
 
+const dacherry = localFont({
+  src: "../resources/Dacherry/Dacherry.ttf",
+  variable: "--font-dacherry",
+  display: "swap"
+});
+
 export const metadata: Metadata = {
   title: "Foody Fam - One meal, whole family",
   description:
@@ -27,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${display.variable} ${body.variable}`}>{children}</body>
+      <body className={`${display.variable} ${body.variable} ${dacherry.variable}`}>{children}</body>
     </html>
   );
 }

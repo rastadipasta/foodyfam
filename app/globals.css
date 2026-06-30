@@ -47,7 +47,7 @@ a {
 }
 
 h1 {
-  font-family: "Dacherry", var(--font-display), var(--font-body), Arial, sans-serif;
+  font-family: var(--font-dacherry), var(--font-display), var(--font-body), Arial, sans-serif;
 }
 
 .soft-card {
