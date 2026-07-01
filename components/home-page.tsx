@@ -32,7 +32,7 @@ export function HomePage() {
                 <Sparkles size={14} className="mr-1 text-[#f59b78]" />
                 AI recipes for busy families
               </Pill>
-              <h1 className="max-w-2xl text-balance [font-family:var(--font-dacherry),var(--font-display),var(--font-body),Arial,sans-serif] text-[4.1rem] font-black leading-[0.88] text-[#1f1d1c] sm:text-6xl lg:text-7xl">
+              <h1 className="font-display max-w-2xl text-balance text-[4.1rem] font-black leading-[0.88] text-[#1f1d1c] sm:text-6xl lg:text-7xl">
                 One meal, <span className="text-[#78bea8]">whole family.</span>
               </h1>
               <p className="mt-6 max-w-xl text-xl font-bold leading-8 text-[#3d3632]">

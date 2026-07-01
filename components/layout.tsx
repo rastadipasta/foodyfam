@@ -126,7 +126,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-5 rounded-[28px] border border-white/70 bg-white/46 p-4 shadow-[0_24px_70px_rgba(92,74,66,0.10)] backdrop-blur sm:gap-10 sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none lg:grid-cols-[1.2fr_2fr_1.2fr]">
         <div className="rounded-[22px] border border-[#e9c7b7]/70 bg-[#fffaf6]/88 p-4 sm:border-0 sm:bg-transparent sm:p-0">
           <Image src="/brand/logo.png" alt="Foody Fam" width={142} height={70} className="mx-auto mb-3 h-16 w-auto object-contain sm:mx-0" />
-          <p className="mx-auto max-w-xs text-center [font-family:var(--font-dacherry),var(--font-display),var(--font-body),Arial,sans-serif] text-3xl font-black leading-none text-[#5c4a42] sm:mx-0 sm:text-left sm:text-2xl">One meal, whole family.</p>
+          <p className="font-display mx-auto max-w-xs text-center text-3xl font-black leading-none text-[#5c4a42] sm:mx-0 sm:text-left sm:text-2xl">One meal, whole family.</p>
           <p className="mx-auto mt-3 max-w-xs text-center text-sm font-bold leading-6 text-[#5c4a42] sm:mx-0 sm:text-left">
             AI meals that keep baby portions, adult finishes, and shopping lists in one calm flow.
           </p>
