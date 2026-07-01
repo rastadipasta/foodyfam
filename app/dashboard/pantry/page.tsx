@@ -1,5 +1,5 @@
-import { DashboardPage } from "@/components/dashboard-page";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <DashboardPage section="pantry" />;
+  redirect("/dashboard/shopping");
 }

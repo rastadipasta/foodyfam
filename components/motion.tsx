@@ -39,11 +39,11 @@ export function FloatingPhoto({
 }) {
   return (
     <motion.div
-      className="group relative overflow-hidden rounded-[28px] shadow-[0_24px_70px_rgba(92,74,66,0.18)]"
+      className="group relative w-full max-w-full overflow-hidden rounded-[28px] shadow-[0_24px_70px_rgba(92,74,66,0.18)]"
       whileHover={{ y: -8, rotate: -0.4 }}
       transition={{ duration: 0.25 }}
     >
-      <Image src={src} alt={title} width={900} height={640} className="h-full min-h-[260px] w-full object-cover transition duration-700 group-hover:scale-105" />
+      <Image src={src} alt={title} width={900} height={640} className="h-full min-h-[260px] w-full max-w-full object-cover transition duration-700 group-hover:scale-105" />
       <div className="absolute inset-0 bg-gradient-to-t from-[#1f1d1c]/64 via-[#1f1d1c]/12 to-transparent" />
       <div className="absolute bottom-5 left-5 right-5">
         <Pill className="mb-3 bg-white/90">

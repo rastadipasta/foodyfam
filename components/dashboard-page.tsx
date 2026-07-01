@@ -2,17 +2,18 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { BarChart3, Bot, CalendarDays, ChefHat, Home, LayoutDashboard, ListChecks, LogOut, Settings, ShoppingBag, Sparkles, Target, Users, Utensils } from "lucide-react";
+import { useState } from "react";
+import { BarChart3, Bot, CalendarDays, ChefHat, Home, LayoutDashboard, LogOut, Settings, ShoppingBag, Sparkles, Target, Users, Utensils } from "lucide-react";
 import { Button, Card, Pill } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
-import { RecipeShowcase } from "./recipe-showcase";
 import { demoRecipes } from "@/lib/data";
 import { pagePhotos } from "@/lib/data";
 import { databaseRecipes } from "@/lib/recipe-database";
+import type { MealPlanDay, MealSlotType } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 import { cn } from "@/lib/utils";
-import { AssistantPage, NutritionPage, PantryPage, PlannerPage, ProfilesPage, ShoppingPage } from "./product-pages";
+import { AssistantPage, NutritionPage, PlannerPage, ProfilesPage, RecipeCloud, ShoppingPage } from "./product-pages";
 import { FloatingPhoto, MetricCard } from "./motion";
 
 const dashboardNav = [
@@ -21,7 +22,6 @@ const dashboardNav = [
   { href: "/dashboard/recipes", label: "Saved Recipes", icon: Home },
   { href: "/dashboard/planner", label: "Weekly Planner", icon: CalendarDays },
   { href: "/dashboard/shopping", label: "Shopping Lists", icon: ShoppingBag },
-  { href: "/dashboard/pantry", label: "Pantry", icon: ListChecks },
   { href: "/dashboard/profiles", label: "Profiles", icon: Users },
   { href: "/dashboard/nutrition", label: "Nutrition", icon: BarChart3 },
   { href: "/dashboard/assistant", label: "AI Assistant", icon: Bot },
@@ -32,7 +32,6 @@ export function DashboardPage({ section = "overview" }: { section?: string }) {
   if (section === "generator") return <DashboardChrome><GeneratorInner /></DashboardChrome>;
   if (section === "planner") return <DashboardChrome embedded="planner"><PlannerInner /></DashboardChrome>;
   if (section === "shopping") return <DashboardChrome embedded="shopping"><ShoppingInner /></DashboardChrome>;
-  if (section === "pantry") return <DashboardChrome embedded="pantry"><PantryInner /></DashboardChrome>;
   if (section === "recipes") return <DashboardChrome><RecipesInner /></DashboardChrome>;
   if (section === "nutrition") return <DashboardChrome embedded="nutrition"><NutritionInner /></DashboardChrome>;
   if (section === "profiles") return <DashboardChrome embedded="profiles"><ProfilesInner /></DashboardChrome>;
@@ -70,29 +69,29 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
               </Link>
             ))}
           </nav>
-          <div className="mt-6 grid gap-3 rounded-[22px] border border-[#e9c7b7] bg-white p-4 lg:mt-auto">
-            <div className="flex items-center gap-3">
-              <div className="grid h-11 w-11 place-items-center rounded-full bg-[#ffccb2] font-black text-[#5c4a42]">
+          <div className="mt-5 grid gap-2 rounded-[18px] border border-[#e9c7b7] bg-white p-3 lg:mt-auto">
+            <div className="flex items-center gap-2.5">
+              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#ffccb2] text-sm font-black text-[#5c4a42]">
                 {(authUser?.displayName || "P").slice(0, 1)}
               </div>
               <div className="min-w-0">
                 <p className="truncate text-sm font-black">{authUser?.displayName || "Demo Parent"}</p>
-                <p className="text-xs font-bold capitalize text-[#5c4a42]/65">{authProvider || "demo"} account</p>
+                <p className="truncate text-[11px] font-bold capitalize text-[#5c4a42]/65">
+                  {onboardingCompleted ? "Profile complete" : "Onboarding open"} · {authProvider || "demo"}
+                </p>
               </div>
+              <button
+                type="button"
+                className="ml-auto rounded-full bg-[#f7efe9] p-2 text-[#5c4a42] transition hover:bg-[#ffccb2]"
+                aria-label="Log out"
+                onClick={() => {
+                  logout();
+                  router.push("/login");
+                }}
+              >
+                <LogOut size={15} />
+              </button>
             </div>
-            <Pill className={onboardingCompleted ? "w-fit bg-[#e8f4ef]" : "w-fit bg-[#fff0eb]"}>
-              {onboardingCompleted ? "Profile complete" : "Onboarding open"}
-            </Pill>
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={() => {
-                logout();
-                router.push("/login");
-              }}
-            >
-              <LogOut size={17} /> Log out
-            </Button>
           </div>
         </aside>
         <main className="min-w-0 p-4 sm:p-6 lg:p-8">
@@ -106,9 +105,10 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
 function DashboardOverview() {
   const planner = useAppStore((state) => state.planner);
   const shopping = useAppStore((state) => state.shopping);
-  const pantry = useAppStore((state) => state.pantry);
   const recipes = useAppStore((state) => state.recipes);
   const savedIds = useAppStore((state) => state.savedRecipeIds);
+  const addRecipeToPlanner = useAppStore((state) => state.addRecipeToPlanner);
+  const addRecipeToShoppingList = useAppStore((state) => state.addRecipeToShoppingList);
   const babyProfiles = useAppStore((state) => state.babyProfiles);
   const familyMembers = useAppStore((state) => state.familyMembers);
   const authUser = useAppStore((state) => state.authUser);
@@ -117,10 +117,12 @@ function DashboardOverview() {
   const unchecked = shopping.filter((item) => !item.checked).length;
   const checked = shopping.length - unchecked;
   const shoppingProgress = shopping.length ? Math.round((checked / shopping.length) * 100) : 0;
-  const pantryMatch = Math.min(96, 48 + pantry.length * 7);
   const todayRecipe = recipes[0] || demoRecipes[0];
   const savedRecipes = recipes.filter((recipe) => savedIds.includes(recipe.id)).slice(0, 3);
   const profileCompleteness = onboardingCompleted ? 100 : 62;
+  const plannedSlots = planner.flatMap((day) => plannerSlots(day).filter((slot) => slot.recipeId));
+  const [openToday, setOpenToday] = useState(false);
+  const [todayMessage, setTodayMessage] = useState("");
   const recommendedBaseRecipes = databaseRecipes
     .filter((recipe) => recipe.cuisine === (preferences.favoriteCuisines[0] || "Italian") || preferences.appliances.some((item) => recipe.appliances.includes(item)))
     .slice(0, 3);
@@ -141,22 +143,56 @@ function DashboardOverview() {
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="Profile" value={`${profileCompleteness}%`} body={onboardingCompleted ? "Family setup complete and ready for AI recipes." : "Finish onboarding to unlock stronger personalization."} />
         <MetricCard label="Shopping" value={`${shoppingProgress}%`} body={`${unchecked} items left before the weekly shop is done.`} />
-        <MetricCard label="Pantry match" value={`${pantryMatch}%`} body="Generator will prioritize ingredients already at home." />
+        <MetricCard label="Planner" value={`${plannedSlots.length}/21`} body="Breakfast, lunch, and dinner slots planned this week." />
         <MetricCard label="Recipe DB" value={`${databaseRecipes.length}`} body="Verified local base recipes ready for AI matching." />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
-        <Card className="overflow-hidden p-0">
-          <div className="p-5">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">Today&apos;s meal</p>
-                <h2 className="font-display text-3xl font-black">{todayRecipe.title}</h2>
-              </div>
+        <Card className="grid content-between gap-6 !bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_52%,#ffccb2_132%)] !p-7">
+          <div>
+            <div className="mb-5 flex flex-wrap items-center gap-2">
+              <Pill className="bg-[#e8f4ef]">Today&apos;s meal</Pill>
               <Pill>{todayRecipe.time}</Pill>
+              <Pill>{todayRecipe.difficulty}</Pill>
+              <Pill>{todayRecipe.servings} servings</Pill>
+            </div>
+            <h2 className="font-display text-4xl font-black leading-tight md:text-5xl">{todayRecipe.title}</h2>
+            <p className="mt-4 max-w-3xl text-lg font-bold leading-8 text-[#5c4a42]">
+              {todayRecipe.description || todayRecipe.familyPitch || "One shared base, one baby-safe portion, and one adult finish for a calmer dinner."}
+            </p>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <div className="rounded-[22px] bg-white/78 p-4">
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#78bea8]">Baby version</p>
+                <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">{(todayRecipe.babyVersion || todayRecipe.baby).slice(0, 2).join(" · ")}</p>
+              </div>
+              <div className="rounded-[22px] bg-white/78 p-4">
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#f59b78]">Adult finish</p>
+                <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">{(todayRecipe.adultVersion || todayRecipe.adults).slice(0, 2).join(" · ")}</p>
+              </div>
             </div>
           </div>
-          <RecipeShowcase recipe={todayRecipe} />
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Button onClick={() => setOpenToday(true)}>Open recipe</Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                addRecipeToPlanner(currentPlannerDay(), todayRecipe);
+                setTodayMessage(`Added to ${currentPlannerDay()} dinner`);
+              }}
+            >
+              <CalendarDays size={17} /> Add to planner
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                addRecipeToShoppingList(todayRecipe);
+                setTodayMessage("Shopping list updated");
+              }}
+            >
+              <ShoppingBag size={17} /> Add to shopping list
+            </Button>
+            {todayMessage && <p className="w-full text-sm font-extrabold text-[#78bea8]">{todayMessage}</p>}
+          </div>
         </Card>
         <div className="grid gap-5">
           <Card>
@@ -164,13 +200,14 @@ function DashboardOverview() {
               <h2 className="font-display text-2xl font-black">Weekly planner</h2>
               <Link href="/dashboard/planner" className="text-sm font-extrabold text-[#78bea8]">Open</Link>
             </div>
-            <div className="mt-4 grid gap-2">{planner.slice(0, 5).map((item) => <Pill key={item.day} className="w-fit">{item.day}: {item.meal}</Pill>)}</div>
+            <div className="mt-4 grid gap-2">
+              {planner.slice(0, 5).map((item) => <Pill key={item.day} className="w-fit">{item.day}: {primaryPlannerMeal(item)}</Pill>)}
+            </div>
           </Card>
           <Card>
             <h2 className="font-display text-2xl font-black">Quick actions</h2>
             <div className="mt-4 grid gap-2">
               <QuickAction href="/dashboard/generator" label="Generate meal" icon={Utensils} />
-              <QuickAction href="/dashboard/pantry" label="Add pantry item" icon={ListChecks} />
               <QuickAction href="/dashboard/planner" label="Create weekly plan" icon={CalendarDays} />
               <QuickAction href="/dashboard/profiles" label="Add baby profile" icon={Users} />
               <QuickAction href="/dashboard/shopping" label="Open shopping list" icon={ShoppingBag} />
@@ -219,6 +256,7 @@ function DashboardOverview() {
           </div>
         </Card>
       </div>
+      {openToday && <RecipeCloud recipe={todayRecipe} onClose={() => setOpenToday(false)} />}
     </div>
   );
 }
@@ -235,7 +273,6 @@ function QuickAction({ href, label, icon: Icon }: { href: string; label: string;
 export function Overview() {
   const planner = useAppStore((state) => state.planner);
   const shopping = useAppStore((state) => state.shopping);
-  const pantry = useAppStore((state) => state.pantry);
   return (
     <div className="grid gap-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -246,17 +283,19 @@ export function Overview() {
         <Link href="/dashboard/generator"><Button>Generate today’s meal</Button></Link>
       </div>
       <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
-        <RecipeShowcase recipe={demoRecipes[0]} />
+        <Card>
+          <h2 className="font-display text-3xl font-black">{demoRecipes[0].title}</h2>
+          <p className="mt-3 font-bold leading-7 text-[#5c4a42]">One shared family meal with baby and adult instructions.</p>
+        </Card>
         <div className="grid gap-5">
           <Card>
             <h2 className="font-display text-2xl font-black">Weekly plan</h2>
-            <div className="mt-4 grid gap-2">{planner.slice(0, 4).map((item) => <Pill key={item.day} className="w-fit">{item.day}: {item.meal}</Pill>)}</div>
+            <div className="mt-4 grid gap-2">{planner.slice(0, 4).map((item) => <Pill key={item.day} className="w-fit">{item.day}: {primaryPlannerMeal(item)}</Pill>)}</div>
           </Card>
           <Card>
             <h2 className="font-display text-2xl font-black">Kitchen status</h2>
             <div className="mt-4 grid gap-2 text-sm font-bold text-[#5c4a42]">
               <p>{shopping.filter((item) => !item.checked).length} shopping items left</p>
-              <p>{pantry.length} pantry items ready</p>
               <p>2 baby profiles active</p>
             </div>
           </Card>
@@ -283,12 +322,36 @@ function GeneratorInner() {
 
 function RecipesInner() {
   const savedIds = useAppStore((state) => state.savedRecipeIds);
-  const recipes = demoRecipes.filter((recipe) => savedIds.includes(recipe.id));
+  const recipes = useAppStore((state) => state.recipes);
+  const generatedRecipes = useAppStore((state) => state.generatedRecipes);
+  const savedRecipes = recipes.filter((recipe) => savedIds.includes(recipe.id));
   return (
-    <div>
+    <div className="grid gap-8">
       <h1 className="font-display text-4xl font-black">Saved recipes</h1>
-      <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {(recipes.length ? recipes : demoRecipes).map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)}
+      <div>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="font-display text-2xl font-black">Saved</h2>
+          <Pill>{savedRecipes.length || demoRecipes.length} recipes</Pill>
+        </div>
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {(savedRecipes.length ? savedRecipes : demoRecipes).map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)}
+        </div>
+      </div>
+      <div>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="font-display text-2xl font-black">Generated history</h2>
+          <Pill>{generatedRecipes.length} generated</Pill>
+        </div>
+        {generatedRecipes.length ? (
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {generatedRecipes.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)}
+          </div>
+        ) : (
+          <Card>
+            <p className="font-bold leading-7 text-[#5c4a42]">Generate your first family recipe and it will appear here automatically.</p>
+            <Link href="/dashboard/generator" className="mt-4 inline-flex"><Button><Sparkles size={17} /> Generate recipe</Button></Link>
+          </Card>
+        )}
       </div>
     </div>
   );
@@ -300,10 +363,6 @@ function PlannerInner() {
 
 function ShoppingInner() {
   return <div className="-m-4 sm:-m-6 lg:-m-8"><ShoppingPage /></div>;
-}
-
-function PantryInner() {
-  return <div className="-m-4 sm:-m-6 lg:-m-8"><PantryPage /></div>;
 }
 
 function NutritionInner() {
@@ -378,4 +437,22 @@ function SettingsInner() {
       </Card>
     </div>
   );
+}
+
+function plannerSlots(day: MealPlanDay) {
+  if (day.slots?.length) return day.slots;
+  return (["Breakfast", "Lunch", "Dinner"] as MealSlotType[]).map((mealType) => ({
+    mealType,
+    meal: mealType === "Dinner" ? day.meal : "Choose a meal",
+    recipeId: mealType === "Dinner" ? day.recipeId : ""
+  }));
+}
+
+function primaryPlannerMeal(day: MealPlanDay) {
+  const dinner = plannerSlots(day).find((slot) => slot.mealType === "Dinner" && slot.recipeId);
+  return dinner?.meal || day.meal || "Choose a meal";
+}
+
+function currentPlannerDay() {
+  return new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(new Date());
 }

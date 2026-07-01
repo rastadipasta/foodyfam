@@ -1,5 +1,5 @@
-import { PantryPage } from "@/components/product-pages";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <PantryPage />;
+  redirect("/shopping");
 }

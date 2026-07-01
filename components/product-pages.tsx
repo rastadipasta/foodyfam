@@ -12,7 +12,7 @@ import { RecipeCard } from "./recipe-card";
 import { RecipeShowcase } from "./recipe-showcase";
 import { babyProfiles as demoBabyProfiles, blogPosts, demoRecipes, pagePhotos } from "@/lib/data";
 import { databaseRecipes, databaseRecipeToRecipe } from "@/lib/recipe-database";
-import type { BabyProfile, FamilyMember, FamilyPreferences, Recipe, RecipeDatabaseMatch } from "@/lib/types";
+import type { BabyProfile, FamilyMember, FamilyPreferences, MealPlanDay, MealSlotType, Recipe, RecipeDatabaseMatch } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 import { FloatingPhoto, MetricCard, MomentStrip, Reveal } from "./motion";
 
@@ -176,16 +176,20 @@ function FilterField({ label, children }: { label: string; children: React.React
   );
 }
 
-function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () => void }) {
+export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () => void }) {
   const planner = useAppStore((state) => state.planner);
   const saveRecipe = useAppStore((state) => state.saveRecipe);
   const savedRecipeIds = useAppStore((state) => state.savedRecipeIds);
   const addRecipeToPlanner = useAppStore((state) => state.addRecipeToPlanner);
   const removeRecipeFromPlanner = useAppStore((state) => state.removeRecipeFromPlanner);
+  const addRecipeToShoppingList = useAppStore((state) => state.addRecipeToShoppingList);
   const [selectedDay, setSelectedDay] = useState(planner[0]?.day || "Monday");
   const [plannerMessage, setPlannerMessage] = useState("");
+  const [shoppingMessage, setShoppingMessage] = useState("");
   const saved = savedRecipeIds.includes(recipe.id);
-  const plannedDays = planner.filter((day) => day.recipeId === recipe.id).map((day) => day.day);
+  const plannedDays = planner
+    .filter((day) => plannerSlots(day).some((slot) => slot.recipeId === recipe.id))
+    .map((day) => day.day);
   const isPlanned = plannedDays.length > 0;
 
   function addToPlanner() {
@@ -196,6 +200,11 @@ function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
   function removeFromPlanner() {
     removeRecipeFromPlanner(recipe.id);
     setPlannerMessage("Removed from planner");
+  }
+
+  function addToShoppingList() {
+    addRecipeToShoppingList(recipe);
+    setShoppingMessage("Ingredients added to shopping list");
   }
 
   return (
@@ -216,7 +225,7 @@ function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
           {recipe.tags.slice(0, 8).map((tag) => <Pill key={tag}>{tag}</Pill>)}
         </div>
 
-        <div className="mt-5 grid gap-3 rounded-[22px] bg-white/78 p-4 shadow-sm md:grid-cols-[1fr_auto_auto] md:items-end">
+        <div className="mt-5 grid gap-3 rounded-[22px] bg-white/78 p-4 shadow-sm md:grid-cols-[1fr_auto_auto_auto] md:items-end">
           <FilterField label="Add to meal planner">
             <Select aria-label="Planner day" value={selectedDay} onChange={(event) => setSelectedDay(event.target.value)}>
               {planner.map((day) => <option key={day.day}>{day.day}</option>)}
@@ -237,8 +246,16 @@ function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
               Add to planner
             </Button>
           )}
-          {plannerMessage && <p className="text-sm font-extrabold text-[#78bea8] md:col-span-3">{plannerMessage}</p>}
-          {isPlanned && !plannerMessage && <p className="text-sm font-extrabold text-[#5c4a42] md:col-span-3">Planned for {plannedDays.join(", ")}</p>}
+          <Button variant="secondary" onClick={addToShoppingList}>
+            <ShoppingBasket size={17} />
+            Add to shopping list
+          </Button>
+          {(plannerMessage || shoppingMessage) && (
+            <p className="text-sm font-extrabold text-[#78bea8] md:col-span-4">
+              {[plannerMessage, shoppingMessage].filter(Boolean).join(" · ")}
+            </p>
+          )}
+          {isPlanned && !plannerMessage && !shoppingMessage && <p className="text-sm font-extrabold text-[#5c4a42] md:col-span-4">Planned for {plannedDays.join(", ")}</p>}
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-4">
@@ -315,24 +332,59 @@ export function RecipeDetailPage() {
 export function PlannerPage() {
   const planner = useAppStore((state) => state.planner);
   const recipes = useAppStore((state) => state.recipes);
-  const setPlannerMeal = useAppStore((state) => state.setPlannerMeal);
+  const setPlannerSlot = useAppStore((state) => state.setPlannerSlot);
+  const clearPlannerSlot = useAppStore((state) => state.clearPlannerSlot);
   const plannerRecipes = recipes.length ? recipes : demoRecipes;
   return (
     <SiteShell>
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <PageTitle eyebrow="Weekly meal planner" title="One week, one calmer kitchen" />
-        <div className="mt-8"><FloatingPhoto src={pagePhotos.planner} title="Drag the week into shape" caption="Swap meals by day and keep the family grocery list aligned automatically." /></div>
-        <div className="mt-8 grid gap-4 lg:grid-cols-7">
+        <Card className="mt-8 !bg-[linear-gradient(145deg,rgba(255,250,246,0.94)_0%,rgba(247,239,233,0.9)_55%,rgba(255,204,178,0.44)_135%)]">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="font-display text-3xl font-black">Breakfast, lunch, dinner</h2>
+              <p className="mt-2 max-w-2xl font-bold leading-7 text-[#5c4a42]">
+                Plan the whole week in one calendar view. Empty slots stay calm until you choose a meal.
+              </p>
+            </div>
+            <Pill className="w-fit bg-[#e8f4ef]">7 days · 21 meal slots</Pill>
+          </div>
+        </Card>
+        <div className="mt-6 grid gap-4 xl:grid-cols-7">
           {planner.map((day) => (
-            <Card key={day.day} className="grid content-between gap-4">
-              <div>
+            <Card key={day.day} className="grid content-start gap-4 !p-4">
+              <div className="border-b border-[#5c4a42]/10 pb-3">
                 <p className="font-display text-xl font-black">{day.day}</p>
-                <p className="mt-2 text-sm font-bold text-[#5c4a42]">{day.meal}</p>
+                <p className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-[#78bea8]">Weekly calendar</p>
               </div>
-              <Select aria-label={`Choose meal for ${day.day}`} value={day.recipeId} onChange={(event) => setPlannerMeal(day.day, event.target.value)}>
-                <option value="">Choose a meal</option>
-                {plannerRecipes.map((recipe) => <option key={recipe.id} value={recipe.id}>{recipe.title}</option>)}
-              </Select>
+              <div className="grid gap-3">
+                {plannerSlots(day).map((slot) => (
+                  <div key={`${day.day}-${slot.mealType}`} className="rounded-[20px] bg-white/78 p-3 shadow-sm">
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <p className="text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]">{slot.mealType}</p>
+                      {slot.recipeId && (
+                        <button
+                          type="button"
+                          className="rounded-full p-1 text-[#f59b78] transition hover:bg-[#fff0eb]"
+                          aria-label={`Clear ${slot.mealType} for ${day.day}`}
+                          onClick={() => clearPlannerSlot(day.day, slot.mealType)}
+                        >
+                          <X size={15} />
+                        </button>
+                      )}
+                    </div>
+                    <p className="mb-3 min-h-10 text-sm font-black leading-5 text-[#1f1d1c]">{slot.meal}</p>
+                    <Select
+                      aria-label={`Choose ${slot.mealType} for ${day.day}`}
+                      value={slot.recipeId}
+                      onChange={(event) => setPlannerSlot(day.day, slot.mealType, event.target.value)}
+                    >
+                      <option value="">Choose a meal</option>
+                      {plannerRecipes.map((recipe) => <option key={recipe.id} value={recipe.id}>{recipe.title}</option>)}
+                    </Select>
+                  </div>
+                ))}
+              </div>
             </Card>
           ))}
         </div>
@@ -505,9 +557,19 @@ export function AssistantPage() {
             ))}
             {loading && <div className="max-w-[82%] rounded-[22px] bg-white p-4 text-sm font-bold text-[#5c4a42]">Thinking through a family-safe answer...</div>}
           </div>
-          <div className="flex gap-3">
-            <Field placeholder="Can I replace broccoli? Can I freeze this?" value={text} onChange={(event) => setText(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") void send(); }} />
-            <Button onClick={() => void send()}><Send size={17} /> Send</Button>
+          <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
+            <Field
+              placeholder="Can I replace broccoli? Can I freeze this?"
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") void send();
+              }}
+            />
+            <Button className="w-full sm:w-auto" disabled={loading || !text.trim()} onClick={() => void send()}>
+              <Send size={17} />
+              Ask assistant
+            </Button>
           </div>
         </Card>
       </main>
@@ -1045,4 +1107,13 @@ function PageTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
       <h1 className="mt-2 font-display text-balance text-4xl font-black leading-tight sm:text-5xl">{title}</h1>
     </div>
   );
+}
+
+function plannerSlots(day: MealPlanDay) {
+  if (day.slots?.length) return day.slots;
+  return (["Breakfast", "Lunch", "Dinner"] as MealSlotType[]).map((mealType) => ({
+    mealType,
+    meal: mealType === "Dinner" ? day.meal : "Choose a meal",
+    recipeId: mealType === "Dinner" ? day.recipeId : ""
+  }));
 }

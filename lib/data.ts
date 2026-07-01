@@ -81,13 +81,76 @@ export const familyMembers: FamilyMember[] = [
 ];
 
 export const initialPlanner: MealPlanDay[] = [
-  { day: "Monday", meal: "Chicken & Broccoli Risotto", recipeId: "risotto" },
-  { day: "Tuesday", meal: "Sweet Tomato Turkey Pasta", recipeId: "pasta" },
-  { day: "Wednesday", meal: "Mild Coconut Lentil Curry", recipeId: "curry" },
-  { day: "Thursday", meal: "Leftover risotto cakes", recipeId: "risotto" },
-  { day: "Friday", meal: "Family veggie tray", recipeId: "curry" },
-  { day: "Saturday", meal: "Pantry pasta night", recipeId: "pasta" },
-  { day: "Sunday", meal: "Cook-once roast bowl", recipeId: "risotto" }
+  {
+    day: "Monday",
+    meal: "Chicken & Broccoli Risotto",
+    recipeId: "risotto",
+    slots: [
+      { mealType: "Breakfast", meal: "Choose a meal", recipeId: "" },
+      { mealType: "Lunch", meal: "Mild Coconut Lentil Curry", recipeId: "curry" },
+      { mealType: "Dinner", meal: "Chicken & Broccoli Risotto", recipeId: "risotto" }
+    ]
+  },
+  {
+    day: "Tuesday",
+    meal: "Sweet Tomato Turkey Pasta",
+    recipeId: "pasta",
+    slots: [
+      { mealType: "Breakfast", meal: "Choose a meal", recipeId: "" },
+      { mealType: "Lunch", meal: "Chicken & Broccoli Risotto", recipeId: "risotto" },
+      { mealType: "Dinner", meal: "Sweet Tomato Turkey Pasta", recipeId: "pasta" }
+    ]
+  },
+  {
+    day: "Wednesday",
+    meal: "Mild Coconut Lentil Curry",
+    recipeId: "curry",
+    slots: [
+      { mealType: "Breakfast", meal: "Choose a meal", recipeId: "" },
+      { mealType: "Lunch", meal: "Sweet Tomato Turkey Pasta", recipeId: "pasta" },
+      { mealType: "Dinner", meal: "Mild Coconut Lentil Curry", recipeId: "curry" }
+    ]
+  },
+  {
+    day: "Thursday",
+    meal: "Chicken & Broccoli Risotto",
+    recipeId: "risotto",
+    slots: [
+      { mealType: "Breakfast", meal: "Choose a meal", recipeId: "" },
+      { mealType: "Lunch", meal: "Choose a meal", recipeId: "" },
+      { mealType: "Dinner", meal: "Chicken & Broccoli Risotto", recipeId: "risotto" }
+    ]
+  },
+  {
+    day: "Friday",
+    meal: "Mild Coconut Lentil Curry",
+    recipeId: "curry",
+    slots: [
+      { mealType: "Breakfast", meal: "Choose a meal", recipeId: "" },
+      { mealType: "Lunch", meal: "Choose a meal", recipeId: "" },
+      { mealType: "Dinner", meal: "Mild Coconut Lentil Curry", recipeId: "curry" }
+    ]
+  },
+  {
+    day: "Saturday",
+    meal: "Sweet Tomato Turkey Pasta",
+    recipeId: "pasta",
+    slots: [
+      { mealType: "Breakfast", meal: "Choose a meal", recipeId: "" },
+      { mealType: "Lunch", meal: "Choose a meal", recipeId: "" },
+      { mealType: "Dinner", meal: "Sweet Tomato Turkey Pasta", recipeId: "pasta" }
+    ]
+  },
+  {
+    day: "Sunday",
+    meal: "Chicken & Broccoli Risotto",
+    recipeId: "risotto",
+    slots: [
+      { mealType: "Breakfast", meal: "Choose a meal", recipeId: "" },
+      { mealType: "Lunch", meal: "Choose a meal", recipeId: "" },
+      { mealType: "Dinner", meal: "Chicken & Broccoli Risotto", recipeId: "risotto" }
+    ]
+  }
 ];
 
 export const initialShopping: ShoppingListItem[] = [

@@ -54,7 +54,12 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
   const [result, setResult] = useState<Recipe | null>(null);
   const [activeTab, setActiveTab] = useState<(typeof resultTabs)[number]>("Overview");
   const [saved, setSaved] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [shoppingMessage, setShoppingMessage] = useState("");
   const upsertRecipe = useAppStore((state) => state.upsertRecipe);
+  const addGeneratedRecipe = useAppStore((state) => state.addGeneratedRecipe);
+  const addRecipeToShoppingList = useAppStore((state) => state.addRecipeToShoppingList);
+  const generatedRecipes = useAppStore((state) => state.generatedRecipes);
   const babyProfiles = useAppStore((state) => state.babyProfiles);
   const preferences = useAppStore((state) => state.familyPreferences);
   const primaryBaby = babyProfiles[0];
@@ -122,7 +127,9 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
       });
       const data = (await response.json()) as { recipe: Recipe };
       setResult(data.recipe);
+      addGeneratedRecipe(data.recipe);
       setActiveTab("Overview");
+      setShoppingMessage("");
       onResult?.(data.recipe);
     } finally {
       setLoading(false);
@@ -140,6 +147,12 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
     if (!result) return;
     upsertRecipe(result, true);
     setSaved(true);
+  }
+
+  function addResultToShoppingList() {
+    if (!result) return;
+    addRecipeToShoppingList(result);
+    setShoppingMessage("Shopping list updated");
   }
 
   async function shareResult() {
@@ -330,7 +343,19 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
           setActiveTab={setActiveTab}
           saved={saved}
           onSave={saveResult}
+          onAddToShoppingList={addResultToShoppingList}
           onShare={() => void shareResult()}
+          historyOpen={historyOpen}
+          onToggleHistory={() => setHistoryOpen((open) => !open)}
+          generatedRecipes={generatedRecipes}
+          onSelectHistory={(recipe) => {
+            setResult(recipe);
+            setActiveTab("Overview");
+            setSaved(false);
+            setShoppingMessage("");
+            setHistoryOpen(false);
+          }}
+          shoppingMessage={shoppingMessage}
         />
       )}
     </Card>
@@ -375,14 +400,26 @@ function RecipeResult({
   setActiveTab,
   saved,
   onSave,
-  onShare
+  onAddToShoppingList,
+  onShare,
+  historyOpen,
+  onToggleHistory,
+  generatedRecipes,
+  onSelectHistory,
+  shoppingMessage
 }: {
   recipe: Recipe;
   activeTab: (typeof resultTabs)[number];
   setActiveTab: (tab: (typeof resultTabs)[number]) => void;
   saved: boolean;
   onSave: () => void;
+  onAddToShoppingList: () => void;
   onShare: () => void;
+  historyOpen: boolean;
+  onToggleHistory: () => void;
+  generatedRecipes: Recipe[];
+  onSelectHistory: (recipe: Recipe) => void;
+  shoppingMessage: string;
 }) {
   const babyItems = recipe.babyVersion?.length ? recipe.babyVersion : recipe.baby;
   const adultItems = recipe.adultVersion?.length ? recipe.adultVersion : recipe.adults;
@@ -469,6 +506,14 @@ function RecipeResult({
           {saved ? <Check size={17} /> : <Save size={17} />}
           {saved ? "Saved" : "Save recipe"}
         </Button>
+        <Button type="button" variant="secondary" onClick={onAddToShoppingList}>
+          <ShoppingBasket size={17} />
+          Add to shopping list
+        </Button>
+        <Button type="button" variant="secondary" onClick={onToggleHistory}>
+          <Clock size={17} />
+          View history
+        </Button>
         <Button type="button" variant="secondary" onClick={() => window.print()}>
           <Printer size={17} />
           Print
@@ -478,6 +523,27 @@ function RecipeResult({
           Share
         </Button>
       </div>
+      {shoppingMessage && <p className="text-sm font-extrabold text-[#78bea8]">{shoppingMessage}</p>}
+      {historyOpen && (
+        <div className="rounded-[24px] border border-[#e9c7b7]/60 bg-[#fffaf6] p-4">
+          <p className="font-display text-xl font-black">Generated recipe history</p>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {(generatedRecipes.length ? generatedRecipes : [recipe]).map((historyRecipe) => (
+              <button
+                key={historyRecipe.id}
+                type="button"
+                className="rounded-[20px] bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                onClick={() => onSelectHistory(historyRecipe)}
+              >
+                <p className="font-black">{historyRecipe.title}</p>
+                <p className="mt-1 text-xs font-bold leading-5 text-[#5c4a42]/72">
+                  {historyRecipe.time} · {historyRecipe.difficulty} · {historyRecipe.servings} servings
+                </p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

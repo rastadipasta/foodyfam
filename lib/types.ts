@@ -160,10 +160,19 @@ export type RecipeDatabaseMatch = {
   aiChanges: string[];
 };
 
+export type MealSlotType = "Breakfast" | "Lunch" | "Dinner";
+
+export type MealPlanSlot = {
+  mealType: MealSlotType;
+  meal: string;
+  recipeId: string;
+};
+
 export type MealPlanDay = {
   day: string;
   meal: string;
   recipeId: string;
+  slots: MealPlanSlot[];
 };
 
 export type ShoppingListItem = {
