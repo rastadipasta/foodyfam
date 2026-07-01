@@ -4,6 +4,21 @@ import { databaseRecipeToRecipe, findBestRecipeMatch } from "@/lib/recipe-databa
 import type { Recipe, RecipeMatchInput } from "@/lib/types";
 
 const stringArray = { type: "array", items: { type: "string" } };
+const ingredientDetailsSchema = {
+  type: "array",
+  items: {
+    type: "object",
+    additionalProperties: false,
+    required: ["name", "quantity", "unit", "note", "optional"],
+    properties: {
+      name: { type: "string" },
+      quantity: { type: "number" },
+      unit: { type: "string" },
+      note: { type: "string" },
+      optional: { type: "boolean" }
+    }
+  }
+};
 
 const recipeSchema = {
   type: "object",
@@ -38,6 +53,7 @@ const recipeSchema = {
         "rating",
         "tags",
         "ingredients",
+        "ingredientDetails",
         "steps",
         "baby",
         "adults",
@@ -79,6 +95,7 @@ const recipeSchema = {
         rating: { type: "number" },
         tags: { type: "array", items: { type: "string" } },
         ingredients: { type: "array", items: { type: "string" } },
+        ingredientDetails: ingredientDetailsSchema,
         steps: { type: "array", items: { type: "string" } },
         baby: { type: "array", items: { type: "string" } },
         adults: { type: "array", items: { type: "string" } },
@@ -145,6 +162,8 @@ export async function POST(request: Request) {
               [
                 "You create Foody Fam recipes for the product promise: One meal, whole family.",
                 "Always design one shared cooking process with a gentle base, a baby portion removed before salt/spice, then adult finishing instructions.",
+                "The main recipe value is ingredients with quantities and ordered steps. Steps must explicitly label 'Baby portion:' and 'Adult finish:' moments.",
+                "Always include ingredientDetails with practical metric quantities, units, note as an empty string when not needed, and optional false unless it is truly optional.",
                 "Use the provided Foody Fam verified database recipe as the trusted base. Adapt it, but do not ignore it or invent an unrelated recipe.",
                 "Return practical family cooking language, not medical advice. Allergy and baby safety notes must be cautious and recommend checking with a qualified professional when needed.",
                 "Keep the recipe realistic, weeknight-friendly, and grounded in the provided pantry, appliances, timing, skill level, and avoid list.",

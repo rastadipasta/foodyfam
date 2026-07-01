@@ -13,7 +13,8 @@ import {
   ShieldCheck,
   ShoppingBasket,
   Sparkles,
-  Utensils
+  Utensils,
+  X
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
@@ -63,33 +64,18 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
   const babyProfiles = useAppStore((state) => state.babyProfiles);
   const preferences = useAppStore((state) => state.familyPreferences);
   const primaryBaby = babyProfiles[0];
+  const defaultValues = buildDefaultGeneratorValues(primaryBaby, preferences);
 
   const {
     register,
     handleSubmit,
     setValue,
     getValues,
+    reset,
     formState: { errors }
   } = useForm<GeneratorForm>({
     resolver: zodResolver(generatorSchema),
-    defaultValues: {
-      ingredients: "Chicken, broccoli, rice, carrots",
-      pantryItems: "Eggs, milk, rice, olive oil",
-      babyProfile: primaryBaby?.name || "Any",
-      babyAge: primaryBaby?.age || "6-8 months",
-      babyTexture: primaryBaby?.style === "Puree" ? "Smooth puree" : primaryBaby?.style === "BLW" ? "Finger foods" : "Soft mashed",
-      feedingStyle: primaryBaby?.style || "Mixed",
-      allergies: preferences.allergies.length ? `${preferences.allergies.join(", ")} allergy` : primaryBaby?.allergies.join(", ") || "",
-      avoidIngredients: "Honey, whole nuts, added salt",
-      servings: "4",
-      mealType: "Dinner",
-      cuisine: preferences.favoriteCuisines[0] || "Italian",
-      cookingTime: "25 min or less",
-      diet: preferences.dietPreferences[0] || "None",
-      appliances: preferences.appliances[0] || "Stovetop",
-      skillLevel: "Easy",
-      goal: preferences.cookingGoals[0] || "Cook once for baby and adults with leftovers for lunch."
-    }
+    defaultValues
   });
 
   useEffect(() => {
@@ -329,10 +315,25 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
           </FormBoxLabel>
         </div>
 
-        <Button type="submit" disabled={loading} className="w-full lg:w-fit">
-          {loading ? <Loader2 className="animate-spin" size={17} /> : <Sparkles size={17} />}
-          {loading ? loadingStages[stage] : "Generate family recipe"}
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Button type="submit" disabled={loading} className="w-full lg:w-fit">
+            {loading ? <Loader2 className="animate-spin" size={17} /> : <Sparkles size={17} />}
+            {loading ? loadingStages[stage] : "Generate family recipe"}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            className="w-full lg:w-fit"
+            onClick={() => {
+              reset(buildDefaultGeneratorValues(babyProfiles[0], preferences));
+              setResult(null);
+              setShoppingMessage("");
+            }}
+          >
+            <X size={17} />
+            Clear fields
+          </Button>
+        </div>
       </form>
 
       {loading && <PremiumLoader stage={stage} />}
@@ -369,6 +370,36 @@ function FormBoxLabel({ label, children }: { label: string; children: ReactNode 
       {children}
     </label>
   );
+}
+
+function buildDefaultGeneratorValues(
+  primaryBaby: { name: string; age: string; style: "Puree" | "BLW" | "Mixed"; allergies: string[] } | undefined,
+  preferences: {
+    allergies: string[];
+    dietPreferences: string[];
+    favoriteCuisines: string[];
+    appliances: string[];
+    cookingGoals: string[];
+  }
+): GeneratorForm {
+  return {
+    ingredients: "Chicken, broccoli, rice, carrots",
+    pantryItems: "Eggs, milk, rice, olive oil",
+    babyProfile: primaryBaby?.name || "Any",
+    babyAge: primaryBaby?.age || "6-8 months",
+    babyTexture: primaryBaby?.style === "Puree" ? "Smooth puree" : primaryBaby?.style === "BLW" ? "Finger foods" : "Soft mashed",
+    feedingStyle: primaryBaby?.style || "Mixed",
+    allergies: preferences.allergies.length ? `${preferences.allergies.join(", ")} allergy` : primaryBaby?.allergies.join(", ") || "",
+    avoidIngredients: "Honey, whole nuts, added salt",
+    servings: "4",
+    mealType: "Dinner",
+    cuisine: preferences.favoriteCuisines[0] || "Italian",
+    cookingTime: "25 min or less",
+    diet: preferences.dietPreferences[0] || "None",
+    appliances: preferences.appliances[0] || "Stovetop",
+    skillLevel: "Easy",
+    goal: preferences.cookingGoals[0] || "Cook once for baby and adults with leftovers for lunch."
+  };
 }
 
 function PremiumLoader({ stage }: { stage: number }) {
@@ -470,10 +501,8 @@ function RecipeResult({
 
       {activeTab === "Overview" && (
         <div className="grid gap-5 lg:grid-cols-2">
-          <StepCard title="Prep steps" items={recipe.prepSteps?.length ? recipe.prepSteps : recipe.steps.slice(0, 2)} />
+          <IngredientCard recipe={recipe} />
           <StepCard title="Cooking steps" items={cookingSteps} />
-          <StepCard title="Storage" items={recipe.storage || ["Cool quickly and refrigerate leftovers."]} />
-          <StepCard title="Leftovers" items={recipe.leftovers || ["Use leftovers for lunch bowls."]} />
         </div>
       )}
 
@@ -537,7 +566,7 @@ function RecipeResult({
               >
                 <p className="font-black">{historyRecipe.title}</p>
                 <p className="mt-1 text-xs font-bold leading-5 text-[#5c4a42]/72">
-                  {historyRecipe.time} · {historyRecipe.difficulty} · {historyRecipe.servings} servings
+                  {historyRecipe.time} / {historyRecipe.difficulty} / {historyRecipe.servings} servings
                 </p>
               </button>
             ))}
@@ -582,6 +611,27 @@ function ResultMetric({ icon, label, value }: { icon: ReactNode; label: string; 
   );
 }
 
+function IngredientCard({ recipe }: { recipe: Recipe }) {
+  const items = recipe.ingredientDetails?.length
+    ? recipe.ingredientDetails.map((item) => `${formatQuantity(item.quantity)} ${item.unit} ${item.name}${item.note ? ` - ${item.note}` : ""}`)
+    : recipe.ingredients;
+  return (
+    <div className="rounded-[22px] bg-[#f7efe9] p-5">
+      <p className="font-display text-xl font-black">Ingredients</p>
+      <ul className="mt-4 grid gap-3 text-sm font-bold leading-6 text-[#5c4a42]">
+        {items.map((item) => (
+          <li key={item} className="flex gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-black text-[#78bea8]">
+              <ShoppingBasket size={13} />
+            </span>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function StepCard({ title, items, accent }: { title: string; items: string[]; accent?: "mint" | "coral" }) {
   return (
     <div className={`rounded-[22px] p-5 ${accent === "coral" ? "bg-[#ffccb2]/65" : accent === "mint" ? "bg-[#e8f4ef]" : "bg-[#f7efe9]"}`}>
@@ -590,10 +640,21 @@ function StepCard({ title, items, accent }: { title: string; items: string[]; ac
         {items.map((item, index) => (
           <li key={`${title}-${item}`} className="flex gap-3">
             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-black text-[#78bea8]">{index + 1}</span>
-            {item}
+            <span className={stepClassName(item)}>{item}</span>
           </li>
         ))}
       </ol>
     </div>
   );
+}
+
+function stepClassName(item: string) {
+  const lower = item.toLowerCase();
+  if (lower.includes("baby portion")) return "rounded-xl bg-[#e8f4ef] px-2 py-1 text-[#315f52]";
+  if (lower.includes("adult finish")) return "rounded-xl bg-[#ffccb2]/70 px-2 py-1 text-[#5c4a42]";
+  return "";
+}
+
+function formatQuantity(value: number) {
+  return Number.isInteger(value) ? `${value}` : value.toFixed(1);
 }

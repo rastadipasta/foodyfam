@@ -58,8 +58,9 @@ export function createDemoRecipe(input?: {
     cookingSteps: [
       `Cook ${ingredients.slice(0, 3).join(", ") || "the ingredients"} gently until soft.`,
       "Add liquid as needed so the base stays tender and easy to mash.",
-      "Remove the baby portion before final seasoning.",
-      "Finish the adult pan with herbs, acid, and optional cheese."
+      "Baby portion: remove the baby's serving before final seasoning.",
+      "Baby portion: mash, blend, or cut the serving to match the feeding stage.",
+      "Adult finish: finish the adult pan with salt, pepper, herbs, acid, and optional cheese."
     ],
     babyVersion: [
       `Adapt for ${input?.babyAge || "6-8 months"} using ${input?.babyTexture || "a soft mashed texture"}.`,
@@ -91,13 +92,21 @@ export function createDemoRecipe(input?: {
       input?.avoidIngredients ? `Avoid requested ingredients: ${input.avoidIngredients}.` : "Use clean utensils when preparing allergy-sensitive portions."
     ],
     ingredients: ingredients.length ? ingredients : base.ingredients,
+    ingredientDetails: (ingredients.length ? ingredients : base.ingredients).map((ingredient, index) => ({
+      name: ingredient,
+      quantity: index === 0 ? 450 : index < 4 ? 220 : 1,
+      unit: index === 0 || index < 4 ? "g" : "tbsp",
+      note: index === 0 ? "main family protein or base" : "",
+      optional: false
+    })),
     time: input?.cookingTime?.replace(" or less", "") || base.time,
     tags: [cuisine, input?.diet || "Family-safe", input?.babyAge || "Baby adapted"],
     steps: [
       `Prep ${ingredients.slice(0, 3).join(", ") || "the ingredients"} into soft, baby-safe pieces.`,
       "Cook everything until tender before adding salt or spicy seasoning.",
-      "Remove the baby portion and adjust texture by blending, mashing, or cutting.",
-      "Finish the adult portion with herbs, acid, and seasoning.",
+      "Baby portion: remove the baby's serving before salt, pepper, chili, hard toppings, or strong seasoning.",
+      "Baby portion: adjust texture by blending, mashing, or cutting to the baby's stage.",
+      "Adult finish: add salt, pepper, herbs, acid, and optional cheese only after the baby portion is separate.",
       "Serve warm from one shared cooking process."
     ],
     servings: Number(input?.servings) || base.servings,

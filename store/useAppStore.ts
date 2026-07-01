@@ -15,6 +15,7 @@ import type {
   MealSlotType,
   OnboardingDraft,
   Recipe,
+  SettingsPreferences,
   ShoppingListItem
 } from "@/lib/types";
 
@@ -50,6 +51,7 @@ type AppStore = {
   onboardingStep: number;
   onboardingDraft: OnboardingDraft;
   familyPreferences: FamilyPreferences;
+  settingsPreferences: SettingsPreferences;
   saveRecipe: (id: string) => void;
   toggleShoppingItem: (id: string) => void;
   addShoppingItem: (item: Omit<ShoppingListItem, "id" | "checked"> & { id?: string; checked?: boolean }) => void;
@@ -78,6 +80,7 @@ type AppStore = {
   updateBabyProfile: (id: string, profile: Partial<BabyProfile>) => void;
   removeBabyProfile: (id: string) => void;
   updateFamilyPreferences: (preferences: Partial<FamilyPreferences>) => void;
+  updateSettingsPreferences: (preferences: Partial<SettingsPreferences>) => void;
   setOnboardingStep: (step: number) => void;
   updateOnboardingDraft: (draft: Partial<OnboardingDraft>) => void;
   updateDashboardPreferences: (draft: Partial<OnboardingDraft>) => void;
@@ -112,6 +115,11 @@ export const useAppStore = create<AppStore>()(
         favoriteCuisines: defaultOnboardingDraft.favoriteCuisines,
         appliances: defaultOnboardingDraft.appliances,
         cookingGoals: defaultOnboardingDraft.cookingGoals
+      },
+      settingsPreferences: {
+        measurementSystem: "metric",
+        temperatureUnit: "celsius",
+        subscriptionStatus: "Free"
       },
       saveRecipe: (id) =>
         set((state) => ({
@@ -324,6 +332,10 @@ export const useAppStore = create<AppStore>()(
           familyPreferences: { ...state.familyPreferences, ...preferences },
           onboardingDraft: { ...state.onboardingDraft, ...preferences }
         })),
+      updateSettingsPreferences: (preferences) =>
+        set((state) => ({
+          settingsPreferences: { ...state.settingsPreferences, ...preferences }
+        })),
       setOnboardingStep: (step) => set({ onboardingStep: Math.max(0, Math.min(6, step)) }),
       updateOnboardingDraft: (draft) =>
         set((state) => ({ onboardingDraft: { ...state.onboardingDraft, ...draft } })),
@@ -395,9 +407,19 @@ function normalizePlannerDay(day: MealPlanDay) {
 }
 
 function recipeShoppingItems(recipe: Recipe) {
+  if (recipe.ingredientDetails?.length) {
+    return recipe.ingredientDetails.map((item) => ({
+      label: `${formatQuantity(item.quantity)} ${item.unit} ${item.name}${item.note ? ` (${item.note})` : ""}`,
+      category: "Recipe"
+    }));
+  }
   const grouped = recipe.shoppingList?.flatMap((group) =>
     group.items.map((label) => ({ label, category: group.category || "Recipe" }))
   );
   const items = grouped?.length ? grouped : recipe.ingredients.map((label) => ({ label, category: "Recipe" }));
   return items.filter((item) => item.label.trim());
+}
+
+function formatQuantity(value: number) {
+  return Number.isInteger(value) ? `${value}` : value.toFixed(1);
 }

@@ -18,12 +18,20 @@ export const demoRecipes: Recipe[] = [
     rating: 4.9,
     tags: ["Italian", "Baby-led", "Iron rich"],
     ingredients: ["Chicken", "Broccoli", "Rice", "Carrots", "Onion", "Parmesan"],
+    ingredientDetails: [
+      { name: "Chicken breast", quantity: 450, unit: "g", note: "diced small" },
+      { name: "Broccoli", quantity: 220, unit: "g", note: "tiny florets" },
+      { name: "Risotto rice", quantity: 280, unit: "g" },
+      { name: "Carrots", quantity: 2, unit: "medium", note: "finely diced" },
+      { name: "Onion", quantity: 1, unit: "small", note: "finely diced" },
+      { name: "Parmesan", quantity: 40, unit: "g", note: "adult finish", optional: true }
+    ],
     steps: [
       "Cook rice until soft and creamy.",
       "Add chicken and vegetables until tender.",
-      "Remove baby's portion before seasoning.",
-      "Blend or mash baby's portion to the right texture.",
-      "Season the adult portion and finish warm."
+      "Baby portion: remove a salt-free serving before adding parmesan or pepper.",
+      "Baby portion: blend or mash with cooking liquid to the right texture.",
+      "Adult finish: add parmesan, black pepper, and a small pinch of salt, then serve warm."
     ],
     baby: ["Blend until smooth", "No salt", "Small soft flakes", "Serve lukewarm"],
     adults: ["Add parmesan", "Salt and pepper", "Optional chili flakes", "Serve hot"],
@@ -46,7 +54,14 @@ export const demoRecipes: Recipe[] = [
     rating: 4.8,
     tags: ["Freezer friendly", "Toddler favorite", "Protein"],
     ingredients: ["Turkey", "Pasta", "Tomatoes", "Zucchini", "Basil"],
-    steps: ["Simmer turkey sauce.", "Cook pasta soft.", "Separate baby portion.", "Cut pasta safely.", "Season family plates."],
+    ingredientDetails: [
+      { name: "Ground turkey", quantity: 400, unit: "g" },
+      { name: "Small pasta", quantity: 320, unit: "g" },
+      { name: "Crushed tomatoes", quantity: 400, unit: "g" },
+      { name: "Zucchini", quantity: 1, unit: "medium", note: "grated" },
+      { name: "Basil", quantity: 10, unit: "g", note: "adult finish", optional: true }
+    ],
+    steps: ["Simmer turkey sauce until fully cooked.", "Cook pasta soft.", "Baby portion: separate pasta and sauce before salt or pepper.", "Baby portion: cut pasta safely and mash zucchini into sauce.", "Adult finish: add basil, olive oil, pepper, and salt to family plates."],
     baby: ["Tiny pasta cuts", "No added salt", "Mash zucchini", "Cool before serving"],
     adults: ["Add basil", "Finish with olive oil", "Black pepper", "Serve with salad"],
     nutrition: { protein: 86, iron: "Good", vitaminC: "Medium", fiber: "High", calories: 560 }
@@ -62,7 +77,14 @@ export const demoRecipes: Recipe[] = [
     rating: 4.7,
     tags: ["Vegetarian", "Dairy free", "Batch cook"],
     ingredients: ["Lentils", "Coconut milk", "Spinach", "Rice", "Carrots"],
-    steps: ["Cook lentils with carrots.", "Stir in coconut milk.", "Remove baby portion.", "Add spinach.", "Season adult bowls."],
+    ingredientDetails: [
+      { name: "Red lentils", quantity: 260, unit: "g", note: "rinsed" },
+      { name: "Coconut milk", quantity: 400, unit: "ml" },
+      { name: "Spinach", quantity: 120, unit: "g", note: "chopped" },
+      { name: "Rice", quantity: 280, unit: "g" },
+      { name: "Carrots", quantity: 2, unit: "medium", note: "diced" }
+    ],
+    steps: ["Cook lentils with carrots until very soft.", "Stir in coconut milk and simmer gently.", "Baby portion: remove a mild portion before curry paste, salt, or chili.", "Baby portion: mash lentils with soft rice and check texture.", "Adult finish: add curry paste, lime, cilantro, and seasoning to adult bowls."],
     baby: ["Mash lentils", "Mild spices only", "Serve with soft rice", "Check texture"],
     adults: ["Add curry paste", "Lime finish", "Fresh cilantro", "Serve warm"],
     nutrition: { protein: 78, iron: "Excellent", vitaminC: "Good", fiber: "Very high", calories: 490 }

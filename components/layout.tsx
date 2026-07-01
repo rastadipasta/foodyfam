@@ -77,6 +77,19 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
+            <div className="grid gap-2 pt-2">
+              <Link href="/login" onClick={() => setOpen(false)}>
+                <Button variant="secondary" className="w-full">
+                  Log in
+                </Button>
+              </Link>
+              <Link href="/register" onClick={() => setOpen(false)}>
+                <Button className="w-full">
+                  <Sparkles size={16} />
+                  Sign up
+                </Button>
+              </Link>
+            </div>
             <Link href="/onboarding" onClick={() => setOpen(false)}>
               <Button className="w-full">
                 <Sparkles size={16} />

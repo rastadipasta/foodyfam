@@ -107,6 +107,7 @@ export function findBestRecipeMatch(input: RecipeMatchInput) {
 export function databaseRecipeToRecipe(recipe: DatabaseRecipe, match: RecipeDatabaseMatch): Recipe {
   const babyText = recipe.babyAdaptations[match.ageAdaptation];
   const time = recipe.cookTime ? `${recipe.prepTime + recipe.cookTime} min` : `${recipe.prepTime} min`;
+  const familySteps = buildFamilySteps(recipe.steps, babyText, recipe.adultFinishing.steps);
 
   return {
     id: recipe.id,
@@ -124,7 +125,7 @@ export function databaseRecipeToRecipe(recipe: DatabaseRecipe, match: RecipeData
     babyTexture: recipe.blwStatus === "BLW-friendly" ? "Soft, easy-squash BLW pieces or mash" : "Age-adjusted puree, mash, or small soft pieces",
     shoppingList: recipe.shoppingList,
     prepSteps: recipe.steps.slice(0, 2),
-    cookingSteps: recipe.steps,
+    cookingSteps: familySteps,
     babyVersion: [babyText, recipe.toddlerAdaptation],
     adultVersion: [...recipe.adultFinishing.seasoning, ...recipe.adultFinishing.steps],
     storage: recipe.freezerFriendly
@@ -146,7 +147,13 @@ export function databaseRecipeToRecipe(recipe: DatabaseRecipe, match: RecipeData
     rating: 4.8,
     tags: recipe.tags,
     ingredients: recipe.ingredients,
-    steps: recipe.steps,
+    ingredientDetails: recipe.ingredients.map((ingredient, index) => ({
+      name: ingredient,
+      quantity: estimateIngredientQuantity(ingredient, index),
+      unit: estimateIngredientUnit(ingredient),
+      note: index === recipe.ingredients.length - 1 ? "adjust for family taste" : undefined
+    })),
+    steps: familySteps,
     baby: [babyText],
     adults: recipe.adultFinishing.steps,
     nutrition: {
@@ -158,4 +165,31 @@ export function databaseRecipeToRecipe(recipe: DatabaseRecipe, match: RecipeData
     },
     databaseMatch: match
   };
+}
+
+function buildFamilySteps(baseSteps: string[], babyText: string, adultSteps: string[]) {
+  const firstSteps = baseSteps.slice(0, Math.max(2, Math.min(3, baseSteps.length)));
+  return [
+    ...firstSteps,
+    "Baby portion: remove a salt-free, mild portion before adding salt, pepper, chili, strong spices, honey, or crunchy toppings.",
+    `Baby portion: ${babyText}`,
+    `Adult finish: ${adultSteps.join(" ")} Add salt, pepper, herbs, or stronger seasoning only after the baby portion is separate.`
+  ];
+}
+
+function estimateIngredientQuantity(ingredient: string, index: number) {
+  const text = ingredient.toLowerCase();
+  if (/oil|spice|herb|basil|cilantro|parsley/.test(text)) return 1;
+  if (/milk|stock|sauce|tomato/.test(text)) return 400;
+  if (/rice|pasta|lentil|oat|grain|flour/.test(text)) return 280;
+  if (/chicken|turkey|beef|fish|salmon/.test(text)) return 450;
+  return index < 3 ? 250 : 1;
+}
+
+function estimateIngredientUnit(ingredient: string) {
+  const text = ingredient.toLowerCase();
+  if (/oil|spice|herb|basil|cilantro|parsley/.test(text)) return "tbsp";
+  if (/milk|stock|sauce/.test(text)) return "ml";
+  if (/onion|carrot|zucchini|banana|apple|egg/.test(text)) return "piece";
+  return "g";
 }

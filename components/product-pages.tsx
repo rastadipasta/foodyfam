@@ -50,7 +50,7 @@ export function GeneratorPage() {
         <Card className="h-fit">
           <h1 className="font-display text-3xl font-black">Family setup</h1>
           <div className="mt-5 grid gap-4">
-            <Select aria-label="Baby profile">{demoBabyProfiles.map((profile) => <option key={profile.id}>{profile.name} · {profile.age}</option>)}</Select>
+            <Select aria-label="Baby profile">{demoBabyProfiles.map((profile) => <option key={profile.id}>{profile.name} / {profile.age}</option>)}</Select>
             <Select aria-label="Difficulty"><option>Easy</option><option>Medium</option><option>Any</option></Select>
             <Select aria-label="Appliance"><option>Stovetop</option><option>Oven</option><option>Air fryer</option><option>Thermomix</option></Select>
             <Pill className="w-fit bg-[#e8f4ef]">Allergy-aware mode on</Pill>
@@ -208,9 +208,9 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
   }
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-[#5c4a42]/30 px-3 py-4 backdrop-blur-sm sm:px-4 sm:py-6" role="dialog" aria-modal="true">
-      <div className="max-h-[92vh] w-full max-w-4xl overflow-auto rounded-[24px] border border-[#e9c7b7] bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_55%,#ffccb2_150%)] p-4 shadow-[0_30px_90px_rgba(92,74,66,0.28)] sm:rounded-[32px] sm:p-5">
-        <div className="flex items-start justify-between gap-3">
+    <div className="fixed inset-0 z-50 grid place-items-end bg-[#5c4a42]/30 px-0 py-0 backdrop-blur-sm sm:place-items-center sm:px-4 sm:py-6" role="dialog" aria-modal="true">
+      <div className="max-h-[94vh] w-full max-w-4xl overflow-hidden rounded-t-[28px] border border-[#e9c7b7] bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_55%,#ffccb2_150%)] shadow-[0_30px_90px_rgba(92,74,66,0.28)] sm:rounded-[32px]">
+        <div className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-[#e9c7b7]/70 bg-[#fffaf6]/92 p-4 backdrop-blur sm:p-5">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#78bea8]">Recipe cloud</p>
             <h2 className="mt-2 font-display text-3xl font-black leading-tight sm:text-4xl">{recipe.title}</h2>
@@ -220,6 +220,7 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
             <X size={20} />
           </button>
         </div>
+        <div className="max-h-[calc(94vh-132px)] overflow-y-auto p-4 [scrollbar-color:#f59b78_#f7efe9] [scrollbar-width:thin] sm:p-5">
 
         <div className="mt-5 flex flex-wrap gap-2">
           {recipe.tags.slice(0, 8).map((tag) => <Pill key={tag}>{tag}</Pill>)}
@@ -252,7 +253,7 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
           </Button>
           {(plannerMessage || shoppingMessage) && (
             <p className="text-sm font-extrabold text-[#78bea8] md:col-span-4">
-              {[plannerMessage, shoppingMessage].filter(Boolean).join(" · ")}
+              {[plannerMessage, shoppingMessage].filter(Boolean).join(" / ")}
             </p>
           )}
           {isPlanned && !plannerMessage && !shoppingMessage && <p className="text-sm font-extrabold text-[#5c4a42] md:col-span-4">Planned for {plannedDays.join(", ")}</p>}
@@ -266,12 +267,13 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
         </div>
 
         <div className="mt-6 grid gap-5 lg:grid-cols-2">
-          <CloudSection title="Ingredients" items={recipe.ingredients} />
+          <CloudSection title="Ingredients" items={ingredientLines(recipe)} />
           <CloudSection title="Cooking steps" items={recipe.cookingSteps?.length ? recipe.cookingSteps : recipe.steps} ordered />
           <CloudSection title="Baby version" items={recipe.babyVersion?.length ? recipe.babyVersion : recipe.baby} />
           <CloudSection title="Adult finish" items={recipe.adultVersion?.length ? recipe.adultVersion : recipe.adults} />
-          <CloudSection title="Shopping list" items={(recipe.shoppingList || []).flatMap((group) => group.items.map((item) => `${group.category}: ${item}`))} icon={<ShoppingBasket size={15} />} />
+          <CloudSection title="Shopping list" items={shoppingLines(recipe)} icon={<ShoppingBasket size={15} />} />
           <CloudSection title="Safety notes" items={recipe.safetyNotes || recipe.allergyWarnings || ["Review allergens and texture before serving."]} />
+        </div>
         </div>
       </div>
     </div>
@@ -298,12 +300,28 @@ function CloudSection({ title, items, ordered = false, icon }: { title: string; 
             <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e8f4ef] text-xs font-black text-[#78bea8]">
               {icon || (ordered ? index + 1 : <Check size={13} />)}
             </span>
-            {item}
+            <span className={item.toLowerCase().includes("baby portion") ? "rounded-xl bg-[#e8f4ef] px-2 py-1 text-[#315f52]" : item.toLowerCase().includes("adult finish") ? "rounded-xl bg-[#ffccb2]/70 px-2 py-1 text-[#5c4a42]" : ""}>{item}</span>
           </li>
         ))}
       </List>
     </div>
   );
+}
+
+function ingredientLines(recipe: Recipe) {
+  if (recipe.ingredientDetails?.length) {
+    return recipe.ingredientDetails.map((item) => `${formatQuantity(item.quantity)} ${item.unit} ${item.name}${item.note ? ` - ${item.note}` : ""}`);
+  }
+  return recipe.ingredients;
+}
+
+function shoppingLines(recipe: Recipe) {
+  const lines = (recipe.shoppingList || []).flatMap((group) => group.items.map((item) => `${group.category}: ${item}`));
+  return lines.length ? lines : ingredientLines(recipe);
+}
+
+function formatQuantity(value: number) {
+  return Number.isInteger(value) ? `${value}` : value.toFixed(1);
 }
 
 export function RecipeDetailPage() {
@@ -334,63 +352,146 @@ export function PlannerPage() {
   const recipes = useAppStore((state) => state.recipes);
   const setPlannerSlot = useAppStore((state) => state.setPlannerSlot);
   const clearPlannerSlot = useAppStore((state) => state.clearPlannerSlot);
+  const [openDay, setOpenDay] = useState<MealPlanDay | null>(null);
+  const [openRecipe, setOpenRecipe] = useState<Recipe | null>(null);
   const plannerRecipes = recipes.length ? recipes : demoRecipes;
+  const weekRange = "This week";
   return (
     <SiteShell>
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <PageTitle eyebrow="Weekly meal planner" title="One week, one calmer kitchen" />
-        <Card className="mt-8 !bg-[linear-gradient(145deg,rgba(255,250,246,0.94)_0%,rgba(247,239,233,0.9)_55%,rgba(255,204,178,0.44)_135%)]">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <h2 className="font-display text-3xl font-black">Breakfast, lunch, dinner</h2>
-              <p className="mt-2 max-w-2xl font-bold leading-7 text-[#5c4a42]">
-                Plan the whole week in one calendar view. Empty slots stay calm until you choose a meal.
-              </p>
-            </div>
-            <Pill className="w-fit bg-[#e8f4ef]">7 days · 21 meal slots</Pill>
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <PageTitle eyebrow="Weekly meal planner" title="One week, one calmer kitchen" />
+          <div className="flex flex-wrap gap-2">
+            <Button variant="secondary">Week</Button>
+            <Button variant="ghost">Month</Button>
+            <Button variant="secondary">Today</Button>
           </div>
-        </Card>
-        <div className="mt-6 grid gap-4 xl:grid-cols-7">
-          {planner.map((day) => (
-            <Card key={day.day} className="grid content-start gap-4 !p-4">
-              <div className="border-b border-[#5c4a42]/10 pb-3">
-                <p className="font-display text-xl font-black">{day.day}</p>
-                <p className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-[#78bea8]">Weekly calendar</p>
-              </div>
-              <div className="grid gap-3">
-                {plannerSlots(day).map((slot) => (
-                  <div key={`${day.day}-${slot.mealType}`} className="rounded-[20px] bg-white/78 p-3 shadow-sm">
-                    <div className="mb-2 flex items-center justify-between gap-2">
-                      <p className="text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]">{slot.mealType}</p>
-                      {slot.recipeId && (
-                        <button
-                          type="button"
-                          className="rounded-full p-1 text-[#f59b78] transition hover:bg-[#fff0eb]"
-                          aria-label={`Clear ${slot.mealType} for ${day.day}`}
-                          onClick={() => clearPlannerSlot(day.day, slot.mealType)}
-                        >
-                          <X size={15} />
-                        </button>
-                      )}
-                    </div>
-                    <p className="mb-3 min-h-10 text-sm font-black leading-5 text-[#1f1d1c]">{slot.meal}</p>
-                    <Select
-                      aria-label={`Choose ${slot.mealType} for ${day.day}`}
-                      value={slot.recipeId}
-                      onChange={(event) => setPlannerSlot(day.day, slot.mealType, event.target.value)}
-                    >
-                      <option value="">Choose a meal</option>
-                      {plannerRecipes.map((recipe) => <option key={recipe.id} value={recipe.id}>{recipe.title}</option>)}
-                    </Select>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          ))}
         </div>
+        <section className="mt-8 overflow-hidden rounded-[28px] bg-[#242321] p-4 text-white shadow-[0_30px_90px_rgba(31,29,28,0.24)] sm:p-5">
+          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#ffccb2]">{weekRange}</p>
+              <h2 className="font-display text-3xl font-black">Family meal calendar</h2>
+            </div>
+            <Pill className="w-fit bg-white/12 text-white">Breakfast / Lunch / Dinner</Pill>
+          </div>
+          <div className="grid grid-cols-[64px_1fr] overflow-x-auto rounded-[20px] border border-white/10">
+            <div className="grid grid-rows-[44px_repeat(3,150px)] border-r border-white/10 bg-black/16 text-xs font-bold text-white/52">
+              <div />
+              {["8 AM", "Noon", "6 PM"].map((time) => <div key={time} className="border-t border-white/10 p-3">{time}</div>)}
+            </div>
+            <div className="grid min-w-[860px] grid-cols-7">
+              {planner.map((day) => (
+                <button
+                  key={day.day}
+                  type="button"
+                  className="border-r border-white/10 text-left last:border-r-0"
+                  onClick={() => setOpenDay(day)}
+                >
+                  <div className="h-11 border-b border-white/10 px-3 py-2">
+                    <p className="text-xs font-black text-white/70">{day.day}</p>
+                  </div>
+                  {plannerSlots(day).map((slot) => {
+                    const recipe = plannerRecipes.find((item) => item.id === slot.recipeId);
+                    return (
+                      <div key={`${day.day}-${slot.mealType}`} className="relative h-[150px] border-b border-white/10 p-3 last:border-b-0">
+                        <div className={`h-full rounded-sm p-3 text-left text-[#1f1d1c] shadow-sm ${slotColor(slot.mealType)}`}>
+                          <p className="text-xs font-black uppercase tracking-[0.08em]">{slot.mealType}</p>
+                          <p className="mt-2 text-sm font-black leading-5">{slot.meal}</p>
+                          {recipe && (
+                            <ul className="mt-2 grid gap-1 text-[11px] font-bold">
+                              {(recipe.ingredientDetails?.map((item) => item.name) || recipe.ingredients).slice(0, 3).map((item) => <li key={item}>• {item}</li>)}
+                            </ul>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+        {openDay && (
+          <PlannerDrawer
+            day={openDay}
+            recipes={plannerRecipes}
+            onClose={() => setOpenDay(null)}
+            onChoose={(mealType, recipeId) => setPlannerSlot(openDay.day, mealType, recipeId)}
+            onClear={(mealType) => clearPlannerSlot(openDay.day, mealType)}
+            onOpenRecipe={(recipe) => setOpenRecipe(recipe)}
+          />
+        )}
+        {openRecipe && <RecipeCloud recipe={openRecipe} onClose={() => setOpenRecipe(null)} />}
       </main>
     </SiteShell>
   );
+}
+
+function PlannerDrawer({
+  day,
+  recipes,
+  onClose,
+  onChoose,
+  onClear,
+  onOpenRecipe
+}: {
+  day: MealPlanDay;
+  recipes: Recipe[];
+  onClose: () => void;
+  onChoose: (mealType: MealSlotType, recipeId: string) => void;
+  onClear: (mealType: MealSlotType) => void;
+  onOpenRecipe: (recipe: Recipe) => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 bg-[#5c4a42]/28 backdrop-blur-sm" role="dialog" aria-modal="true">
+      <button className="absolute inset-0 cursor-default" aria-label="Close planner drawer" onClick={onClose} />
+      <aside className="absolute bottom-0 right-0 grid max-h-[86vh] w-full gap-4 overflow-auto rounded-t-[28px] border border-[#e9c7b7] bg-[#fffaf6] p-5 shadow-[0_30px_90px_rgba(92,74,66,0.24)] lg:bottom-auto lg:top-0 lg:h-full lg:max-h-none lg:w-[440px] lg:rounded-l-[28px] lg:rounded-tr-none">
+        <div className="sticky top-0 z-10 -mx-5 -mt-5 flex items-start justify-between gap-3 border-b border-[#e9c7b7]/70 bg-[#fffaf6]/95 p-5 backdrop-blur">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Plan day</p>
+            <h2 className="font-display text-3xl font-black">{day.day}</h2>
+          </div>
+          <button className="rounded-full bg-white p-3 text-[#5c4a42] shadow-sm" aria-label="Close drawer" onClick={onClose}>
+            <X size={18} />
+          </button>
+        </div>
+        {plannerSlots(day).map((slot) => {
+          const recipe = recipes.find((item) => item.id === slot.recipeId);
+          return (
+            <div key={`${day.day}-${slot.mealType}`} className="rounded-[22px] border border-[#e9c7b7]/70 bg-white/80 p-4">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.14em] text-[#f59b78]">{slot.mealType}</p>
+                  <p className="font-black">{slot.meal}</p>
+                </div>
+                {slot.recipeId && (
+                  <button className="rounded-full p-2 text-[#f59b78] hover:bg-[#fff0eb]" aria-label={`Clear ${slot.mealType}`} onClick={() => onClear(slot.mealType)}>
+                    <X size={16} />
+                  </button>
+                )}
+              </div>
+              <Select aria-label={`Choose ${slot.mealType} for ${day.day}`} value={slot.recipeId} onChange={(event) => onChoose(slot.mealType, event.target.value)}>
+                <option value="">Choose a meal</option>
+                {recipes.map((recipeOption) => <option key={recipeOption.id} value={recipeOption.id}>{recipeOption.title}</option>)}
+              </Select>
+              {recipe && (
+                <Button className="mt-3 w-full" variant="secondary" onClick={() => onOpenRecipe(recipe)}>
+                  Open recipe
+                </Button>
+              )}
+            </div>
+          );
+        })}
+      </aside>
+    </div>
+  );
+}
+
+function slotColor(mealType: MealSlotType) {
+  if (mealType === "Breakfast") return "bg-[#f6b7e8]";
+  if (mealType === "Lunch") return "bg-[#ffc76f]";
+  return "bg-[#75c0ef]";
 }
 
 export function ShoppingPage() {

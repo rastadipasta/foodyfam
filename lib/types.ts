@@ -48,6 +48,20 @@ export type FamilyMember = {
   preferences: string[];
 };
 
+export type IngredientDetail = {
+  name: string;
+  quantity: number;
+  unit: string;
+  note?: string;
+  optional?: boolean;
+};
+
+export type SettingsPreferences = {
+  measurementSystem: "metric" | "us";
+  temperatureUnit: "celsius" | "fahrenheit";
+  subscriptionStatus: "Free" | "Premium" | "Unlimited";
+};
+
 export type Recipe = {
   id: string;
   title: string;
@@ -76,6 +90,7 @@ export type Recipe = {
   rating: number;
   tags: string[];
   ingredients: string[];
+  ingredientDetails?: IngredientDetail[];
   steps: string[];
   baby: string[];
   adults: string[];

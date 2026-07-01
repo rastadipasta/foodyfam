@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { BarChart3, Bot, CalendarDays, ChefHat, Home, LayoutDashboard, LogOut, Settings, ShoppingBag, Sparkles, Target, Users, Utensils } from "lucide-react";
+import { BarChart3, BookOpen, Bot, CalendarDays, ChefHat, Home, LayoutDashboard, LogOut, Settings, ShoppingBag, Sparkles, Target, Users, Utensils } from "lucide-react";
 import { Button, Card, Pill } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
 import { demoRecipes } from "@/lib/data";
 import { pagePhotos } from "@/lib/data";
 import { databaseRecipes } from "@/lib/recipe-database";
-import type { MealPlanDay, MealSlotType } from "@/lib/types";
+import type { MealPlanDay, MealSlotType, Recipe } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 import { cn } from "@/lib/utils";
 import { AssistantPage, NutritionPage, PlannerPage, ProfilesPage, RecipeCloud, ShoppingPage } from "./product-pages";
@@ -20,6 +20,7 @@ const dashboardNav = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/dashboard/generator", label: "AI Generator", icon: ChefHat },
   { href: "/dashboard/recipes", label: "Saved Recipes", icon: Home },
+  { href: "/recipes", label: "Recipe Library", icon: BookOpen },
   { href: "/dashboard/planner", label: "Weekly Planner", icon: CalendarDays },
   { href: "/dashboard/shopping", label: "Shopping Lists", icon: ShoppingBag },
   { href: "/dashboard/profiles", label: "Profiles", icon: Users },
@@ -77,7 +78,7 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
               <div className="min-w-0">
                 <p className="truncate text-sm font-black">{authUser?.displayName || "Demo Parent"}</p>
                 <p className="truncate text-[11px] font-bold capitalize text-[#5c4a42]/65">
-                  {onboardingCompleted ? "Profile complete" : "Onboarding open"} · {authProvider || "demo"}
+                  {onboardingCompleted ? "Profile complete" : "Onboarding open"} / {authProvider || "demo"}
                 </p>
               </div>
               <button
@@ -163,11 +164,11 @@ function DashboardOverview() {
             <div className="mt-6 grid gap-4 md:grid-cols-2">
               <div className="rounded-[22px] bg-white/78 p-4">
                 <p className="text-xs font-black uppercase tracking-[0.14em] text-[#78bea8]">Baby version</p>
-                <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">{(todayRecipe.babyVersion || todayRecipe.baby).slice(0, 2).join(" · ")}</p>
+                <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">{(todayRecipe.babyVersion || todayRecipe.baby).slice(0, 2).join(" / ")}</p>
               </div>
               <div className="rounded-[22px] bg-white/78 p-4">
                 <p className="text-xs font-black uppercase tracking-[0.14em] text-[#f59b78]">Adult finish</p>
-                <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">{(todayRecipe.adultVersion || todayRecipe.adults).slice(0, 2).join(" · ")}</p>
+                <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">{(todayRecipe.adultVersion || todayRecipe.adults).slice(0, 2).join(" / ")}</p>
               </div>
             </div>
           </div>
@@ -223,7 +224,7 @@ function DashboardOverview() {
             {(savedRecipes.length ? savedRecipes : recipes.slice(0, 3)).map((recipe) => (
               <div key={recipe.id} className="rounded-2xl bg-white p-3">
                 <p className="font-black">{recipe.title}</p>
-                <p className="text-xs font-bold text-[#5c4a42]/65">{recipe.tags.slice(0, 3).join(" · ")}</p>
+                <p className="text-xs font-bold text-[#5c4a42]/65">{recipe.tags.slice(0, 3).join(" / ")}</p>
               </div>
             ))}
           </div>
@@ -242,7 +243,7 @@ function DashboardOverview() {
             {recommendedBaseRecipes.map((recipe) => (
               <div key={recipe.slug} className="rounded-2xl bg-white p-3">
                 <p className="font-black">{recipe.title}</p>
-                <p className="text-xs font-bold text-[#5c4a42]/65">{recipe.mealType} · {recipe.proteinType} · {recipe.appliances[0]}</p>
+                <p className="text-xs font-bold text-[#5c4a42]/65">{recipe.mealType} / {recipe.proteinType} / {recipe.appliances[0]}</p>
               </div>
             ))}
           </div>
@@ -324,6 +325,7 @@ function RecipesInner() {
   const savedIds = useAppStore((state) => state.savedRecipeIds);
   const recipes = useAppStore((state) => state.recipes);
   const generatedRecipes = useAppStore((state) => state.generatedRecipes);
+  const [openRecipe, setOpenRecipe] = useState<Recipe | null>(null);
   const savedRecipes = recipes.filter((recipe) => savedIds.includes(recipe.id));
   return (
     <div className="grid gap-8">
@@ -334,7 +336,7 @@ function RecipesInner() {
           <Pill>{savedRecipes.length || demoRecipes.length} recipes</Pill>
         </div>
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {(savedRecipes.length ? savedRecipes : demoRecipes).map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)}
+          {(savedRecipes.length ? savedRecipes : demoRecipes).map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} onOpen={setOpenRecipe} />)}
         </div>
       </div>
       <div>
@@ -344,7 +346,7 @@ function RecipesInner() {
         </div>
         {generatedRecipes.length ? (
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {generatedRecipes.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)}
+            {generatedRecipes.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} onOpen={setOpenRecipe} />)}
           </div>
         ) : (
           <Card>
@@ -353,6 +355,7 @@ function RecipesInner() {
           </Card>
         )}
       </div>
+      {openRecipe && <RecipeCloud recipe={openRecipe} onClose={() => setOpenRecipe(null)} />}
     </div>
   );
 }
@@ -387,6 +390,8 @@ function SettingsInner() {
   const babyProfiles = useAppStore((state) => state.babyProfiles);
   const familyMembers = useAppStore((state) => state.familyMembers);
   const preferences = useAppStore((state) => state.familyPreferences);
+  const settingsPreferences = useAppStore((state) => state.settingsPreferences);
+  const updateSettingsPreferences = useAppStore((state) => state.updateSettingsPreferences);
   const logout = useAppStore((state) => state.logout);
   return (
     <div className="grid gap-5">
@@ -424,6 +429,59 @@ function SettingsInner() {
           </div>
         </Card>
       </div>
+      <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+        <Card>
+          <h2 className="font-display text-2xl font-black">Measurement units</h2>
+          <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">Used for recipe amounts, generated recipe display, and shopping list labels.</p>
+          <div className="mt-5 grid gap-4">
+            <SettingToggle
+              label="Measurement system"
+              value={settingsPreferences.measurementSystem}
+              options={[
+                ["metric", "Metric"],
+                ["us", "US"]
+              ]}
+              onChange={(value) => updateSettingsPreferences({ measurementSystem: value as "metric" | "us" })}
+            />
+            <SettingToggle
+              label="Temperature"
+              value={settingsPreferences.temperatureUnit}
+              options={[
+                ["celsius", "Celsius"],
+                ["fahrenheit", "Fahrenheit"]
+              ]}
+              onChange={(value) => updateSettingsPreferences({ temperatureUnit: value as "celsius" | "fahrenheit" })}
+            />
+          </div>
+        </Card>
+        <Card>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h2 className="font-display text-2xl font-black">Subscription status</h2>
+              <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">Demo billing state for the local SaaS flow.</p>
+            </div>
+            <Pill className="w-fit bg-[#e8f4ef]">{settingsPreferences.subscriptionStatus}</Pill>
+          </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            {(["Free", "Premium", "Unlimited"] as const).map((status) => (
+              <button
+                key={status}
+                type="button"
+                aria-label={status}
+                className={`rounded-[20px] border p-4 text-left transition active:scale-[0.98] ${
+                  settingsPreferences.subscriptionStatus === status
+                    ? "border-[#78bea8] bg-[#e8f4ef] shadow-sm"
+                    : "border-[#e9c7b7] bg-white/80 hover:border-[#78bea8]/70"
+                }`}
+                onClick={() => updateSettingsPreferences({ subscriptionStatus: status })}
+              >
+                <p className="font-black">{status}</p>
+                <p className="mt-2 text-xs font-bold leading-5 text-[#5c4a42]/72">{subscriptionCopy(status)}</p>
+              </button>
+            ))}
+          </div>
+        </Card>
+      </div>
       <Card>
         <h2 className="font-display text-2xl font-black">Integration status</h2>
         <div className="mt-4 grid gap-3 text-sm font-bold text-[#5c4a42] sm:grid-cols-2">
@@ -437,6 +495,44 @@ function SettingsInner() {
       </Card>
     </div>
   );
+}
+
+function SettingToggle({
+  label,
+  value,
+  options,
+  onChange
+}: {
+  label: string;
+  value: string;
+  options: [string, string][];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div>
+      <p className="mb-2 text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]">{label}</p>
+      <div className="grid gap-2 sm:grid-cols-2">
+        {options.map(([optionValue, optionLabel]) => (
+          <button
+            key={optionValue}
+            type="button"
+            className={`rounded-full px-4 py-3 text-sm font-extrabold transition active:scale-[0.98] ${
+              value === optionValue ? "bg-[#78bea8] text-white shadow-sm" : "bg-white text-[#5c4a42] hover:bg-[#f7efe9]"
+            }`}
+            onClick={() => onChange(optionValue)}
+          >
+            {optionLabel}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function subscriptionCopy(status: "Free" | "Premium" | "Unlimited") {
+  if (status === "Free") return "3 meal generations and basic AI results.";
+  if (status === "Premium") return "14 weekly generations, planner, nutrition, and assistant.";
+  return "All recipes, shopping list, planner, saving, sharing, and priority AI.";
 }
 
 function plannerSlots(day: MealPlanDay) {
