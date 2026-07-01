@@ -10,9 +10,9 @@ import { Button, Card, Field, Pill, Select, TextArea } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
 import { RecipeShowcase } from "./recipe-showcase";
-import { babyProfiles, blogPosts, demoRecipes, familyMembers, pagePhotos } from "@/lib/data";
+import { babyProfiles as demoBabyProfiles, blogPosts, demoRecipes, pagePhotos } from "@/lib/data";
 import { databaseRecipes, databaseRecipeToRecipe } from "@/lib/recipe-database";
-import type { Recipe, RecipeDatabaseMatch } from "@/lib/types";
+import type { BabyProfile, FamilyMember, FamilyPreferences, Recipe, RecipeDatabaseMatch } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 import { FloatingPhoto, MetricCard, MomentStrip, Reveal } from "./motion";
 
@@ -50,7 +50,7 @@ export function GeneratorPage() {
         <Card className="h-fit">
           <h1 className="font-display text-3xl font-black">Family setup</h1>
           <div className="mt-5 grid gap-4">
-            <Select aria-label="Baby profile">{babyProfiles.map((profile) => <option key={profile.id}>{profile.name} · {profile.age}</option>)}</Select>
+            <Select aria-label="Baby profile">{demoBabyProfiles.map((profile) => <option key={profile.id}>{profile.name} · {profile.age}</option>)}</Select>
             <Select aria-label="Difficulty"><option>Easy</option><option>Medium</option><option>Any</option></Select>
             <Select aria-label="Appliance"><option>Stovetop</option><option>Oven</option><option>Air fryer</option><option>Thermomix</option></Select>
             <Pill className="w-fit bg-[#e8f4ef]">Allergy-aware mode on</Pill>
@@ -469,24 +469,237 @@ export function AssistantPage() {
 }
 
 export function ProfilesPage() {
+  const authUser = useAppStore((state) => state.authUser);
+  const authProvider = useAppStore((state) => state.authProvider);
+  const lastLoginAt = useAppStore((state) => state.lastLoginAt);
+  const babyProfiles = useAppStore((state) => state.babyProfiles);
+  const familyMembers = useAppStore((state) => state.familyMembers);
+  const preferences = useAppStore((state) => state.familyPreferences);
+  const updateAuthUser = useAppStore((state) => state.updateAuthUser);
+  const addFamilyMember = useAppStore((state) => state.addFamilyMember);
+  const updateFamilyMember = useAppStore((state) => state.updateFamilyMember);
+  const removeFamilyMember = useAppStore((state) => state.removeFamilyMember);
+  const addBabyProfile = useAppStore((state) => state.addBabyProfile);
+  const updateBabyProfile = useAppStore((state) => state.updateBabyProfile);
+  const removeBabyProfile = useAppStore((state) => state.removeBabyProfile);
+  const updateFamilyPreferences = useAppStore((state) => state.updateFamilyPreferences);
+  const [accountDraft, setAccountDraft] = useState({
+    displayName: "",
+    email: "",
+    avatarUrl: ""
+  });
+  const [familyDraft, setFamilyDraft] = useState<FamilyMember>({ id: "", name: "", role: "Parent", preferences: [] });
+  const [babyDraft, setBabyDraft] = useState<BabyProfile>({ id: "", name: "", age: "", style: "Mixed", allergies: [] });
+  const [preferenceDraft, setPreferenceDraft] = useState<FamilyPreferences | null>(null);
+  const providerLabel = authProvider || authUser?.provider || "password";
+  const accountValues = {
+    displayName: accountDraft.displayName || authUser?.displayName || "Demo Parent",
+    email: accountDraft.email || authUser?.email || "parent@foodyfam.demo",
+    avatarUrl: accountDraft.avatarUrl || authUser?.avatarUrl || ""
+  };
+  const preferenceValues = preferenceDraft || preferences;
+
+  function resetFamilyDraft() {
+    setFamilyDraft({ id: "", name: "", role: "Parent", preferences: [] });
+  }
+
+  function resetBabyDraft() {
+    setBabyDraft({ id: "", name: "", age: "", style: "Mixed", allergies: [] });
+  }
+
+  function saveFamilyMember() {
+    const member = {
+      ...familyDraft,
+      id: familyDraft.id || createLocalId("family"),
+      name: familyDraft.name.trim() || "Family member",
+      role: familyDraft.role.trim() || "Family",
+      preferences: familyDraft.preferences.filter(Boolean)
+    };
+    if (familyDraft.id) updateFamilyMember(familyDraft.id, member);
+    else addFamilyMember(member);
+    resetFamilyDraft();
+  }
+
+  function saveBabyProfile() {
+    const profile = {
+      ...babyDraft,
+      id: babyDraft.id || createLocalId("baby"),
+      name: babyDraft.name.trim() || "Baby",
+      age: babyDraft.age.trim() || "8 months",
+      allergies: babyDraft.allergies.filter(Boolean)
+    };
+    if (babyDraft.id) updateBabyProfile(babyDraft.id, profile);
+    else addBabyProfile(profile);
+    resetBabyDraft();
+  }
+
   return (
     <SiteShell>
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <PageTitle eyebrow="Profiles" title="Foody Fam remembers everyone" />
         <div className="mt-8"><MomentStrip /></div>
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
-          <Card>
-            <h2 className="font-display text-2xl font-black">Baby profiles</h2>
-            <div className="mt-4 grid gap-3">{babyProfiles.map((profile) => <Pill key={profile.id} className="w-fit">{profile.name} · {profile.age} · {profile.style} · {profile.allergies.join(", ") || "No allergies"}</Pill>)}</div>
+        <div className="mt-8 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
+          <Card className="grid content-start gap-4">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Account</p>
+              <h2 className="font-display text-2xl font-black">Parent profile</h2>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field aria-label="Display name" value={accountValues.displayName} onChange={(event) => setAccountDraft((draft) => ({ ...draft, displayName: event.target.value }))} />
+              <Field aria-label="Email" type="email" value={accountValues.email} onChange={(event) => setAccountDraft((draft) => ({ ...draft, email: event.target.value }))} />
+              <Field aria-label="Avatar URL" className="sm:col-span-2" placeholder="Avatar URL" value={accountValues.avatarUrl} onChange={(event) => setAccountDraft((draft) => ({ ...draft, avatarUrl: event.target.value }))} />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Pill className="bg-[#e8f4ef] capitalize">{providerLabel} account</Pill>
+              <Pill>{authUser?.emailVerified ? "Email verified" : "Demo email"}</Pill>
+              <Pill>{lastLoginAt ? `Last login ${new Date(lastLoginAt).toLocaleDateString()}` : "Not logged in"}</Pill>
+            </div>
+            <Button
+              className="w-fit"
+              onClick={() =>
+                updateAuthUser({
+                  displayName: accountValues.displayName,
+                  email: accountValues.email,
+                  avatarUrl: accountValues.avatarUrl || undefined
+                })
+              }
+            >
+              Save account
+            </Button>
           </Card>
-          <Card>
-            <h2 className="font-display text-2xl font-black">Family profiles</h2>
-            <div className="mt-4 grid gap-3">{familyMembers.map((member) => <Pill key={member.id} className="w-fit">{member.name} · {member.role} · {member.preferences.join(", ")}</Pill>)}</div>
+
+          <Card className="grid content-start gap-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Family</p>
+                <h2 className="font-display text-2xl font-black">Family members</h2>
+              </div>
+              <Pill>{familyMembers.length} active</Pill>
+            </div>
+            <ProfileRows
+              empty="Add the people Foody Fam should plan portions for."
+              rows={familyMembers.map((member) => ({
+                id: member.id,
+                title: member.name,
+                meta: `${member.role} / ${member.preferences.join(", ") || "No preferences yet"}`,
+                onEdit: () => setFamilyDraft(member),
+                onRemove: () => removeFamilyMember(member.id)
+              }))}
+            />
+            <div className="grid gap-3 rounded-[22px] bg-white/76 p-4">
+              <p className="font-black">{familyDraft.id ? "Edit family member" : "Add family member"}</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field aria-label="Family member name" placeholder="Name" value={familyDraft.name} onChange={(event) => setFamilyDraft((draft) => ({ ...draft, name: event.target.value }))} />
+                <Field aria-label="Family member role" placeholder="Role" value={familyDraft.role} onChange={(event) => setFamilyDraft((draft) => ({ ...draft, role: event.target.value }))} />
+              </div>
+              <Field aria-label="Family member preferences" placeholder="Preferences, comma separated" value={familyDraft.preferences.join(", ")} onChange={(event) => setFamilyDraft((draft) => ({ ...draft, preferences: splitList(event.target.value) }))} />
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={saveFamilyMember}>{familyDraft.id ? "Save member" : "Add member"}</Button>
+                {familyDraft.id && <Button variant="secondary" onClick={resetFamilyDraft}>Cancel</Button>}
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        <div className="mt-5 grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
+          <Card className="grid content-start gap-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Children</p>
+                <h2 className="font-display text-2xl font-black">Baby profiles</h2>
+              </div>
+              <Pill>{babyProfiles.length} profiles</Pill>
+            </div>
+            <ProfileRows
+              empty="Add a baby or toddler profile to guide texture and allergy decisions."
+              rows={babyProfiles.map((profile) => ({
+                id: profile.id,
+                title: profile.name,
+                meta: `${profile.age} / ${profile.style} / ${profile.allergies.join(", ") || "No allergies"}`,
+                onEdit: () => setBabyDraft(profile),
+                onRemove: () => removeBabyProfile(profile.id)
+              }))}
+            />
+            <div className="grid gap-3 rounded-[22px] bg-white/76 p-4">
+              <p className="font-black">{babyDraft.id ? "Edit baby profile" : "Add baby profile"}</p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <Field aria-label="Baby name" placeholder="Name" value={babyDraft.name} onChange={(event) => setBabyDraft((draft) => ({ ...draft, name: event.target.value }))} />
+                <Field aria-label="Baby age" placeholder="Age" value={babyDraft.age} onChange={(event) => setBabyDraft((draft) => ({ ...draft, age: event.target.value }))} />
+                <Select aria-label="Baby feeding style" value={babyDraft.style} onChange={(event) => setBabyDraft((draft) => ({ ...draft, style: event.target.value as BabyProfile["style"] }))}>
+                  <option>Puree</option>
+                  <option>BLW</option>
+                  <option>Mixed</option>
+                </Select>
+              </div>
+              <Field aria-label="Baby allergies" placeholder="Allergies, comma separated" value={babyDraft.allergies.join(", ")} onChange={(event) => setBabyDraft((draft) => ({ ...draft, allergies: splitList(event.target.value) }))} />
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={saveBabyProfile}>{babyDraft.id ? "Save baby profile" : "Add baby profile"}</Button>
+                {babyDraft.id && <Button variant="secondary" onClick={resetBabyDraft}>Cancel</Button>}
+              </div>
+            </div>
+          </Card>
+
+          <Card className="grid content-start gap-4">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Preferences</p>
+              <h2 className="font-display text-2xl font-black">Family food rules</h2>
+            </div>
+            <PreferenceEditor label="Allergies" value={preferenceValues.allergies} onChange={(items) => setPreferenceDraft({ ...preferenceValues, allergies: items })} />
+            <PreferenceEditor label="Diet preferences" value={preferenceValues.dietPreferences} onChange={(items) => setPreferenceDraft({ ...preferenceValues, dietPreferences: items })} />
+            <PreferenceEditor label="Favorite cuisines" value={preferenceValues.favoriteCuisines} onChange={(items) => setPreferenceDraft({ ...preferenceValues, favoriteCuisines: items })} />
+            <PreferenceEditor label="Kitchen appliances" value={preferenceValues.appliances} onChange={(items) => setPreferenceDraft({ ...preferenceValues, appliances: items })} />
+            <PreferenceEditor label="Cooking goals" value={preferenceValues.cookingGoals} onChange={(items) => setPreferenceDraft({ ...preferenceValues, cookingGoals: items })} />
+            <Button className="w-fit" onClick={() => updateFamilyPreferences(preferenceValues)}>Save preferences</Button>
           </Card>
         </div>
       </main>
     </SiteShell>
   );
+}
+
+function ProfileRows({
+  rows,
+  empty
+}: {
+  rows: { id: string; title: string; meta: string; onEdit: () => void; onRemove: () => void }[];
+  empty: string;
+}) {
+  if (!rows.length) {
+    return <p className="rounded-[20px] bg-white/76 p-4 text-sm font-bold leading-6 text-[#5c4a42]">{empty}</p>;
+  }
+  return (
+    <div className="grid gap-3">
+      {rows.map((row) => (
+        <div key={row.id} className="grid gap-3 rounded-[20px] bg-white/82 p-4 sm:grid-cols-[1fr_auto] sm:items-center">
+          <div>
+            <p className="font-black">{row.title}</p>
+            <p className="text-sm font-bold leading-6 text-[#5c4a42]/75">{row.meta}</p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={row.onEdit}>Edit</Button>
+            <Button variant="ghost" onClick={row.onRemove}><Trash2 size={16} /> Remove</Button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function PreferenceEditor({ label, value, onChange }: { label: string; value: string[]; onChange: (items: string[]) => void }) {
+  return (
+    <label className="grid gap-2">
+      <span className="text-sm font-black text-[#5c4a42]">{label}</span>
+      <Field value={value.join(", ")} onChange={(event) => onChange(splitList(event.target.value))} />
+    </label>
+  );
+}
+
+function splitList(value: string) {
+  return value.split(",").map((item) => item.trim()).filter(Boolean);
+}
+
+function createLocalId(prefix: string) {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
 export function OnboardingPage() {

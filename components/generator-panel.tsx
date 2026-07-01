@@ -55,6 +55,9 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
   const [activeTab, setActiveTab] = useState<(typeof resultTabs)[number]>("Overview");
   const [saved, setSaved] = useState(false);
   const upsertRecipe = useAppStore((state) => state.upsertRecipe);
+  const babyProfiles = useAppStore((state) => state.babyProfiles);
+  const preferences = useAppStore((state) => state.familyPreferences);
+  const primaryBaby = babyProfiles[0];
 
   const {
     register,
@@ -67,20 +70,20 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
     defaultValues: {
       ingredients: "Chicken, broccoli, rice, carrots",
       pantryItems: "Eggs, milk, rice, olive oil",
-      babyProfile: "Emma",
-      babyAge: "6-8 months",
-      babyTexture: "Soft mashed",
-      feedingStyle: "Mixed",
-      allergies: "Egg allergy",
+      babyProfile: primaryBaby?.name || "Any",
+      babyAge: primaryBaby?.age || "6-8 months",
+      babyTexture: primaryBaby?.style === "Puree" ? "Smooth puree" : primaryBaby?.style === "BLW" ? "Finger foods" : "Soft mashed",
+      feedingStyle: primaryBaby?.style || "Mixed",
+      allergies: preferences.allergies.length ? `${preferences.allergies.join(", ")} allergy` : primaryBaby?.allergies.join(", ") || "",
       avoidIngredients: "Honey, whole nuts, added salt",
       servings: "4",
       mealType: "Dinner",
-      cuisine: "Italian",
+      cuisine: preferences.favoriteCuisines[0] || "Italian",
       cookingTime: "25 min or less",
-      diet: "No egg",
-      appliances: "Stovetop",
+      diet: preferences.dietPreferences[0] || "None",
+      appliances: preferences.appliances[0] || "Stovetop",
       skillLevel: "Easy",
-      goal: "Cook once for baby and adults with leftovers for lunch."
+      goal: preferences.cookingGoals[0] || "Cook once for baby and adults with leftovers for lunch."
     }
   });
 
@@ -91,6 +94,21 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
     }, 850);
     return () => window.clearInterval(timer);
   }, [loading]);
+
+  useEffect(() => {
+    const latestBaby = babyProfiles[0];
+    if (latestBaby) {
+      setValue("babyProfile", latestBaby.name);
+      setValue("babyAge", latestBaby.age);
+      setValue("feedingStyle", latestBaby.style);
+      setValue("babyTexture", latestBaby.style === "Puree" ? "Smooth puree" : latestBaby.style === "BLW" ? "Finger foods" : "Soft mashed");
+    }
+    setValue("allergies", preferences.allergies.length ? `${preferences.allergies.join(", ")} allergy` : latestBaby?.allergies.join(", ") || "");
+    setValue("cuisine", preferences.favoriteCuisines[0] || "Any");
+    setValue("diet", preferences.dietPreferences[0] || "None");
+    setValue("appliances", preferences.appliances[0] || "Any");
+    setValue("goal", preferences.cookingGoals[0] || "Cook once for baby and adults with leftovers for lunch.");
+  }, [babyProfiles, preferences, setValue]);
 
   async function submit(values: GeneratorForm) {
     setLoading(true);
@@ -174,8 +192,7 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
           <FormBoxLabel label="Baby profile">
             <Select aria-label="Baby profile" {...register("babyProfile")}>
               <option>Any</option>
-              <option>Emma</option>
-              <option>Noah</option>
+              {babyProfiles.map((profile) => <option key={profile.id}>{profile.name}</option>)}
               <option>New baby</option>
             </Select>
           </FormBoxLabel>

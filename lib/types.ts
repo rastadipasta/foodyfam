@@ -33,6 +33,14 @@ export type OnboardingDraft = {
   cookingGoals: string[];
 };
 
+export type FamilyPreferences = {
+  allergies: string[];
+  dietPreferences: string[];
+  favoriteCuisines: string[];
+  appliances: string[];
+  cookingGoals: string[];
+};
+
 export type FamilyMember = {
   id: string;
   name: string;

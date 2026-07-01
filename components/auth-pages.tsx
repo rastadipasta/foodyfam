@@ -107,6 +107,7 @@ function AuthCard({ mode }: { mode: AuthMode }) {
   const registerDemoUser = useAppStore((state) => state.registerDemoUser);
   const loginWithProvider = useAppStore((state) => state.loginWithProvider);
   const requestPasswordReset = useAppStore((state) => state.requestPasswordReset);
+  const onboardingCompleted = useAppStore((state) => state.onboardingCompleted);
   const [loading, setLoading] = useState<LoadingTarget>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -125,8 +126,9 @@ function AuthCard({ mode }: { mode: AuthMode }) {
     setError("");
     try {
       const user = await demoAuthAdapter.signInWithOAuth(provider);
-      loginWithProvider(user, mode === "register" ? false : true);
-      router.push(mode === "register" ? "/onboarding" : "/dashboard");
+      const completed = mode === "register" ? false : onboardingCompleted;
+      loginWithProvider(user, completed);
+      router.push(completed ? "/dashboard" : "/onboarding");
     } catch {
       setError(`Could not connect ${provider}. Try again.`);
     } finally {
@@ -152,8 +154,8 @@ function AuthCard({ mode }: { mode: AuthMode }) {
             setError("");
             try {
               const user = await demoAuthAdapter.signInWithPassword(values);
-              loginDemoUser(user, true);
-              router.push("/dashboard");
+              loginDemoUser(user, onboardingCompleted);
+              router.push(onboardingCompleted ? "/dashboard" : "/onboarding");
             } catch {
               setError("Login failed. Check your details and try again.");
             } finally {

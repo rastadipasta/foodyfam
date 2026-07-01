@@ -9,6 +9,7 @@ import type {
   AuthUser,
   BabyProfile,
   ChatMessage,
+  FamilyPreferences,
   FamilyMember,
   MealPlanDay,
   OnboardingDraft,
@@ -46,6 +47,7 @@ type AppStore = {
   authProvider: AuthProvider | null;
   onboardingStep: number;
   onboardingDraft: OnboardingDraft;
+  familyPreferences: FamilyPreferences;
   saveRecipe: (id: string) => void;
   toggleShoppingItem: (id: string) => void;
   addPantryItem: (label: string) => void;
@@ -60,6 +62,14 @@ type AppStore = {
   loginWithProvider: (user: AuthUser, onboardingCompleted?: boolean) => void;
   logout: () => void;
   requestPasswordReset: (email: string) => void;
+  updateAuthUser: (user: Partial<AuthUser>) => void;
+  addFamilyMember: (member: FamilyMember) => void;
+  updateFamilyMember: (id: string, member: Partial<FamilyMember>) => void;
+  removeFamilyMember: (id: string) => void;
+  addBabyProfile: (profile: BabyProfile) => void;
+  updateBabyProfile: (id: string, profile: Partial<BabyProfile>) => void;
+  removeBabyProfile: (id: string) => void;
+  updateFamilyPreferences: (preferences: Partial<FamilyPreferences>) => void;
   setOnboardingStep: (step: number) => void;
   updateOnboardingDraft: (draft: Partial<OnboardingDraft>) => void;
   updateDashboardPreferences: (draft: Partial<OnboardingDraft>) => void;
@@ -87,6 +97,13 @@ export const useAppStore = create<AppStore>()(
       authProvider: null,
       onboardingStep: 0,
       onboardingDraft: defaultOnboardingDraft,
+      familyPreferences: {
+        allergies: defaultOnboardingDraft.allergies,
+        dietPreferences: defaultOnboardingDraft.dietPreferences,
+        favoriteCuisines: defaultOnboardingDraft.favoriteCuisines,
+        appliances: defaultOnboardingDraft.appliances,
+        cookingGoals: defaultOnboardingDraft.cookingGoals
+      },
       saveRecipe: (id) =>
         set((state) => ({
           savedRecipeIds: state.savedRecipeIds.includes(id)
@@ -178,6 +195,43 @@ export const useAppStore = create<AppStore>()(
           authProvider: null
         }),
       requestPasswordReset: () => set({}),
+      updateAuthUser: (user) =>
+        set((state) => {
+          const nextUser = state.authUser ? { ...state.authUser, ...user } : null;
+          return {
+            authUser: nextUser,
+            activeUser: nextUser?.displayName || state.activeUser
+          };
+        }),
+      addFamilyMember: (member) =>
+        set((state) => ({
+          familyMembers: [member, ...state.familyMembers.filter((item) => item.id !== member.id)]
+        })),
+      updateFamilyMember: (id, member) =>
+        set((state) => ({
+          familyMembers: state.familyMembers.map((item) => (item.id === id ? { ...item, ...member } : item))
+        })),
+      removeFamilyMember: (id) =>
+        set((state) => ({
+          familyMembers: state.familyMembers.filter((item) => item.id !== id)
+        })),
+      addBabyProfile: (profile) =>
+        set((state) => ({
+          babyProfiles: [profile, ...state.babyProfiles.filter((item) => item.id !== profile.id)]
+        })),
+      updateBabyProfile: (id, profile) =>
+        set((state) => ({
+          babyProfiles: state.babyProfiles.map((item) => (item.id === id ? { ...item, ...profile } : item))
+        })),
+      removeBabyProfile: (id) =>
+        set((state) => ({
+          babyProfiles: state.babyProfiles.filter((item) => item.id !== id)
+        })),
+      updateFamilyPreferences: (preferences) =>
+        set((state) => ({
+          familyPreferences: { ...state.familyPreferences, ...preferences },
+          onboardingDraft: { ...state.onboardingDraft, ...preferences }
+        })),
       setOnboardingStep: (step) => set({ onboardingStep: Math.max(0, Math.min(6, step)) }),
       updateOnboardingDraft: (draft) =>
         set((state) => ({ onboardingDraft: { ...state.onboardingDraft, ...draft } })),
@@ -188,7 +242,15 @@ export const useAppStore = create<AppStore>()(
           activeUser: state.authUser?.displayName || "Parent",
           onboardingCompleted: true,
           onboardingStep: 6,
+          familyMembers: buildFamilyMembersFromDraft(state.onboardingDraft, state.authUser?.displayName),
           babyProfiles: [profile, ...state.babyProfiles.filter((item) => item.id !== profile.id)],
+          familyPreferences: {
+            allergies: state.onboardingDraft.allergies,
+            dietPreferences: state.onboardingDraft.dietPreferences,
+            favoriteCuisines: state.onboardingDraft.favoriteCuisines,
+            appliances: state.onboardingDraft.appliances,
+            cookingGoals: state.onboardingDraft.cookingGoals
+          },
           pantry: Array.from(new Set([...state.pantry, "Oats", "Banana", "Sweet potato", "Greek yogurt"]))
         })),
       upsertRecipe: (recipe, save = true) =>
@@ -202,3 +264,13 @@ export const useAppStore = create<AppStore>()(
     { name: "foody-fam-local" }
   )
 );
+
+function buildFamilyMembersFromDraft(draft: OnboardingDraft, displayName?: string): FamilyMember[] {
+  const count = Math.max(1, Number.parseInt(draft.familyCount, 10) || 1);
+  return Array.from({ length: count }).map((_, index) => ({
+    id: index === 0 ? "primary-parent" : `family-member-${index + 1}`,
+    name: index === 0 ? displayName || "Parent" : `Family member ${index + 1}`,
+    role: index === 0 ? "Parent" : index === 1 ? "Adult" : "Child",
+    preferences: index === 0 ? draft.dietPreferences.slice(0, 3) : draft.favoriteCuisines.slice(0, 2)
+  }));
+}

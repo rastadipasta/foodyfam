@@ -113,7 +113,7 @@ function DashboardOverview() {
   const familyMembers = useAppStore((state) => state.familyMembers);
   const authUser = useAppStore((state) => state.authUser);
   const onboardingCompleted = useAppStore((state) => state.onboardingCompleted);
-  const draft = useAppStore((state) => state.onboardingDraft);
+  const preferences = useAppStore((state) => state.familyPreferences);
   const unchecked = shopping.filter((item) => !item.checked).length;
   const checked = shopping.length - unchecked;
   const shoppingProgress = shopping.length ? Math.round((checked / shopping.length) * 100) : 0;
@@ -122,7 +122,7 @@ function DashboardOverview() {
   const savedRecipes = recipes.filter((recipe) => savedIds.includes(recipe.id)).slice(0, 3);
   const profileCompleteness = onboardingCompleted ? 100 : 62;
   const recommendedBaseRecipes = databaseRecipes
-    .filter((recipe) => recipe.cuisine === (draft.favoriteCuisines[0] || "Italian") || draft.appliances.some((item) => recipe.appliances.includes(item)))
+    .filter((recipe) => recipe.cuisine === (preferences.favoriteCuisines[0] || "Italian") || preferences.appliances.some((item) => recipe.appliances.includes(item)))
     .slice(0, 3);
 
   return (
@@ -132,7 +132,7 @@ function DashboardOverview() {
           <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">Dashboard</p>
           <h1 className="font-display text-5xl font-black">Welcome back, {authUser?.displayName?.split(" ")[0] || "Parent"}.</h1>
           <p className="mt-2 max-w-2xl font-bold leading-7 text-[#5c4a42]">
-            {familyMembers.length} family members, {babyProfiles.length} baby profiles, and a {draft.favoriteCuisines[0] || "family"} dinner rhythm ready for today.
+            {familyMembers.length} family members, {babyProfiles.length} baby profiles, and a {preferences.favoriteCuisines[0] || "family"} dinner rhythm ready for today.
           </p>
         </div>
         <Link href="/dashboard/generator"><Button><Sparkles size={17} /> Generate meal</Button></Link>
@@ -319,29 +319,61 @@ function AssistantInner() {
 }
 
 function SettingsInner() {
+  const router = useRouter();
   const authUser = useAppStore((state) => state.authUser);
   const authMode = useAppStore((state) => state.authMode);
   const authProvider = useAppStore((state) => state.authProvider);
   const lastLoginAt = useAppStore((state) => state.lastLoginAt);
+  const onboardingCompleted = useAppStore((state) => state.onboardingCompleted);
+  const babyProfiles = useAppStore((state) => state.babyProfiles);
+  const familyMembers = useAppStore((state) => state.familyMembers);
+  const preferences = useAppStore((state) => state.familyPreferences);
+  const logout = useAppStore((state) => state.logout);
   return (
     <div className="grid gap-5">
       <h1 className="font-display text-4xl font-black">Account & billing</h1>
-      <Card>
-        <h2 className="font-display text-2xl font-black">Account status</h2>
-        <div className="mt-4 grid gap-3 text-sm font-bold text-[#5c4a42]">
-          <p>User: {authUser?.displayName || "Demo Parent"} ({authUser?.email || "parent@foodyfam.demo"})</p>
-          <p>Mode: {authMode}</p>
-          <p>Provider: {authProvider || "demo"}</p>
-          <p>Last login: {lastLoginAt ? new Date(lastLoginAt).toLocaleString() : "Not recorded yet"}</p>
-        </div>
-      </Card>
+      <div className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
+        <Card>
+          <h2 className="font-display text-2xl font-black">Account overview</h2>
+          <div className="mt-4 grid gap-3 text-sm font-bold text-[#5c4a42]">
+            <p>User: {authUser?.displayName || "Demo Parent"} ({authUser?.email || "parent@foodyfam.demo"})</p>
+            <p>Login method: {authProvider || authUser?.provider || "password"}</p>
+            <p>Email: {authUser?.emailVerified ? "verified" : "demo/unverified"}</p>
+            <p>Last login: {lastLoginAt ? new Date(lastLoginAt).toLocaleString() : "Not recorded yet"}</p>
+            <p>Onboarding: {onboardingCompleted ? "complete" : "open"}</p>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link href="/dashboard/profiles"><Button>Edit profiles</Button></Link>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                logout();
+                router.push("/login");
+              }}
+            >
+              <LogOut size={17} /> Log out
+            </Button>
+          </div>
+        </Card>
+        <Card>
+          <h2 className="font-display text-2xl font-black">Profile coverage</h2>
+          <div className="mt-4 grid gap-3">
+            <Pill className="w-fit">{familyMembers.length} family members</Pill>
+            <Pill className="w-fit">{babyProfiles.length} baby profiles</Pill>
+            <Pill className="w-fit">{preferences.allergies.length ? preferences.allergies.join(", ") : "No allergy rules"}</Pill>
+            <Pill className="w-fit">{preferences.favoriteCuisines.join(", ") || "Any cuisine"}</Pill>
+          </div>
+        </Card>
+      </div>
       <Card>
         <h2 className="font-display text-2xl font-black">Integration status</h2>
-        <div className="mt-4 grid gap-3 text-sm font-bold text-[#5c4a42]">
-          <p>OpenAI: ready for a fresh server-side key in .env.local</p>
-          <p>Supabase: prepared for auth and database credentials</p>
-          <p>Stripe: prepared for billing credentials</p>
-          <p>Resend and PostHog: prepared for email and analytics credentials</p>
+        <div className="mt-4 grid gap-3 text-sm font-bold text-[#5c4a42] sm:grid-cols-2">
+          <p>Auth mode: {authMode}</p>
+          <p>OAuth callback: ready at /auth/callback</p>
+          <p>Supabase Auth: adapter interface prepared</p>
+          <p>Profile database: ProfileAdapter prepared</p>
+          <p>OpenAI: server-side only through .env.local</p>
+          <p>Passwords: never stored in localStorage</p>
         </div>
       </Card>
     </div>
