@@ -342,9 +342,21 @@ export function PlannerPage() {
 }
 
 export function ShoppingPage() {
+  const [label, setLabel] = useState("");
+  const [category, setCategory] = useState("Produce");
   const shopping = useAppStore((state) => state.shopping);
   const toggleShoppingItem = useAppStore((state) => state.toggleShoppingItem);
+  const addShoppingItem = useAppStore((state) => state.addShoppingItem);
+  const removeShoppingItem = useAppStore((state) => state.removeShoppingItem);
   const categories = Array.from(new Set(shopping.map((item) => item.category)));
+  const checkedCount = shopping.filter((item) => item.checked).length;
+
+  function submitItem(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    addShoppingItem({ label, category });
+    setLabel("");
+  }
+
   return (
     <SiteShell>
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -352,24 +364,72 @@ export function ShoppingPage() {
           <PageTitle eyebrow="Smart shopping list" title="One list for everyone" />
           <Button variant="secondary"><Download size={17} /> Export PDF</Button>
         </div>
-        <div className="mt-8"><FloatingPhoto src={pagePhotos.shopping} title="Market-ready family list" caption="Categories stay clear so the weekly shop is fast, calm, and easy to share." /></div>
-        <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {categories.map((category) => (
-            <Card key={category}>
-              <h2 className="font-display text-2xl font-black">{category}</h2>
-              <div className="mt-4 grid gap-3">
-                {shopping.filter((item) => item.category === category).map((item) => (
-                  <button key={item.id} className="flex items-center gap-3 text-left font-bold" onClick={() => toggleShoppingItem(item.id)}>
-                    <span className={`flex h-6 w-6 items-center justify-center rounded-full border ${item.checked ? "border-[#78bea8] bg-[#78bea8] text-white" : "border-[#e9c7b7]"}`}>
-                      {item.checked && <Check size={14} />}
-                    </span>
-                    <span className={item.checked ? "text-[#5c4a42]/55 line-through" : ""}>{item.label}</span>
-                  </button>
-                ))}
+        <Card className="mt-8 overflow-hidden !border-[#e9c7b7]/70 !bg-[linear-gradient(145deg,rgba(255,250,246,0.92)_0%,rgba(247,239,233,0.9)_45%,rgba(255,204,178,0.46)_128%)] !p-0 !shadow-[0_28px_80px_rgba(92,74,66,0.14)] backdrop-blur">
+          <div className="grid gap-5 border-b border-[#5c4a42]/10 p-5 sm:p-6 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div>
+              <Pill className="mb-4 bg-[#e8f4ef]">
+                <ShoppingBasket size={14} className="mr-1 text-[#78bea8]" />
+                Market-ready
+              </Pill>
+              <h2 className="font-display text-3xl font-black">Family grocery list</h2>
+              <p className="mt-2 max-w-2xl font-bold leading-7 text-[#5c4a42]">
+                Add ingredients as you plan meals, remove what you do not need, and mark items as bought while shopping.
+              </p>
+            </div>
+            <div className="grid gap-2 rounded-[22px] bg-white/72 p-4 text-sm font-extrabold text-[#5c4a42] shadow-sm sm:min-w-56">
+              <span>{checkedCount} bought</span>
+              <span>{shopping.length - checkedCount} still needed</span>
+            </div>
+          </div>
+
+          <form className="grid gap-3 border-b border-[#5c4a42]/10 p-5 sm:grid-cols-[1fr_220px_auto] sm:p-6" onSubmit={submitItem}>
+            <Field aria-label="Shopping item" placeholder="Add ingredient, e.g. Greek yogurt" value={label} onChange={(event) => setLabel(event.target.value)} />
+            <Field aria-label="Shopping category" placeholder="Category" value={category} onChange={(event) => setCategory(event.target.value)} />
+            <Button type="submit">
+              <Plus size={17} />
+              Add item
+            </Button>
+          </form>
+
+          <div className="grid gap-5 p-5 sm:p-6 lg:grid-cols-2 xl:grid-cols-3">
+            {categories.map((group) => (
+              <div key={group} className="rounded-[24px] border border-white/72 bg-white/68 p-4 shadow-[0_16px_40px_rgba(92,74,66,0.08)]">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="font-display text-2xl font-black">{group}</h3>
+                  <Pill>{shopping.filter((item) => item.category === group).length} items</Pill>
+                </div>
+                <div className="mt-4 grid gap-3">
+                  {shopping.filter((item) => item.category === group).map((item) => (
+                    <div key={item.id} className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-[18px] bg-[#fffaf6]/86 p-3">
+                      <label className="flex min-w-0 cursor-pointer items-center gap-3 text-left font-bold">
+                        <input
+                          type="checkbox"
+                          checked={item.checked}
+                          onChange={() => toggleShoppingItem(item.id)}
+                          className="h-5 w-5 shrink-0 accent-[#78bea8]"
+                        />
+                        <span className={`min-w-0 ${item.checked ? "text-[#5c4a42]/55 line-through" : "text-[#3d3632]"}`}>{item.label}</span>
+                      </label>
+                      <button
+                        type="button"
+                        aria-label={`Remove ${item.label}`}
+                        className="grid h-9 w-9 place-items-center rounded-full bg-white text-[#5c4a42] shadow-sm transition hover:-translate-y-0.5 hover:text-[#f59b78]"
+                        onClick={() => removeShoppingItem(item.id)}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </Card>
-          ))}
-        </div>
+            ))}
+            {!shopping.length && (
+              <div className="rounded-[24px] border border-dashed border-[#e9c7b7] bg-white/64 p-6 text-center font-bold text-[#5c4a42] lg:col-span-2 xl:col-span-3">
+                Your shopping list is empty. Add your first ingredient above.
+              </div>
+            )}
+          </div>
+        </Card>
       </main>
     </SiteShell>
   );

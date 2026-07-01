@@ -50,6 +50,8 @@ type AppStore = {
   familyPreferences: FamilyPreferences;
   saveRecipe: (id: string) => void;
   toggleShoppingItem: (id: string) => void;
+  addShoppingItem: (item: Omit<ShoppingListItem, "id" | "checked"> & { id?: string; checked?: boolean }) => void;
+  removeShoppingItem: (id: string) => void;
   addPantryItem: (label: string) => void;
   removePantryItem: (label: string) => void;
   setPlannerMeal: (day: string, recipeId: string) => void;
@@ -113,6 +115,26 @@ export const useAppStore = create<AppStore>()(
       toggleShoppingItem: (id) =>
         set((state) => ({
           shopping: state.shopping.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item))
+        })),
+      addShoppingItem: (item) =>
+        set((state) => {
+          const normalized = item.label.trim();
+          if (!normalized) return state;
+          return {
+            shopping: [
+              ...state.shopping,
+              {
+                id: item.id || createLocalId("shopping"),
+                label: normalized,
+                category: item.category.trim() || "Other",
+                checked: item.checked || false
+              }
+            ]
+          };
+        }),
+      removeShoppingItem: (id) =>
+        set((state) => ({
+          shopping: state.shopping.filter((item) => item.id !== id)
         })),
       addPantryItem: (label) =>
         set((state) => {
@@ -273,4 +295,8 @@ function buildFamilyMembersFromDraft(draft: OnboardingDraft, displayName?: strin
     role: index === 0 ? "Parent" : index === 1 ? "Adult" : "Child",
     preferences: index === 0 ? draft.dietPreferences.slice(0, 3) : draft.favoriteCuisines.slice(0, 2)
   }));
+}
+
+function createLocalId(prefix: string) {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
