@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { CalendarPlus, Check, Clock, Download, Heart, Mail, Plus, Search, Send, ShoppingBasket, Trash2, X } from "lucide-react";
+import { CalendarPlus, Check, Clock, Download, Heart, Mail, Plus, Search, Send, ShoppingBasket, Sparkles, Trash2, X } from "lucide-react";
 import { SiteShell } from "./layout";
 import { Button, Card, Field, Pill, Select, TextArea } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
@@ -856,35 +856,107 @@ function NutritionCharts() {
 }
 
 function Pricing() {
+  const plans = [
+    {
+      name: "Free",
+      price: "$0",
+      body: "Try the Foody Fam workflow with a small, useful starter plan.",
+      badge: "Starter",
+      cta: "Start free",
+      variant: "primary" as const,
+      featured: false,
+      points: ["3 meal generations", "Basic AI meal result", "Baby/adult split instructions", "Local demo profile setup"],
+      limits: ["Limited generation history"]
+    },
+    {
+      name: "Premium",
+      price: "$9 / month",
+      body: "For families who want planning and AI help, without the full recipe library or shopping list.",
+      badge: "Planning",
+      cta: "Upgrade to Premium",
+      variant: "coral" as const,
+      featured: false,
+      points: ["Unlimited meal generations", "Meal planner access", "Nutrition insights", "AI assistant"],
+      limits: ["No recipe library access", "No shopping list"]
+    },
+    {
+      name: "Unlimited",
+      price: "$20 / month",
+      body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
+      badge: "Everything included",
+      cta: "Go Unlimited",
+      variant: "coral" as const,
+      featured: true,
+      points: [
+        "Unlimited meal generations",
+        "Full verified recipe library",
+        "Shopping list and pantry matching",
+        "Meal planner and saved recipes",
+        "PDF, print, and share tools",
+        "Priority AI assistant"
+      ],
+      limits: []
+    }
+  ];
+
   return (
     <div>
       <PageTitle eyebrow="Pricing" title="Simple, fair pricing" />
-      <div className="mt-8"><FloatingPhoto src={pagePhotos.pricing} title="Start small, grow into premium" caption="The free plan proves the one-meal workflow before families unlock weekly automation." /></div>
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
-        {[
-          ["Free", "$0", ["5 recipes per week", "Basic recipes", "Shopping lists", "Nutrition info"]],
-          ["Premium", "$6.99 / month", ["Unlimited recipes", "Meal planner", "PDF export", "Priority support"]]
-        ].map(([name, price, points]) => (
+      <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[#5c4a42]">
+        Choose how much of Foody Fam you want unlocked. Start simple, plan smarter, or open the full family food system.
+      </p>
+      <div className="mt-8 grid gap-5 lg:grid-cols-3">
+        {plans.map((plan) => (
           <Card
-            key={name as string}
+            key={plan.name}
             className={
-              name === "Premium"
-                ? "relative overflow-hidden !border-[#f59b78]/65 !bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_44%,#ffccb2_118%)] !shadow-[0_26px_70px_rgba(245,155,120,0.24)] ring-2 ring-[#f59b78]/18"
-                : "!bg-white/88"
+              plan.featured
+                ? "relative overflow-hidden !border-[#f59b78]/75 !bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_36%,#ffccb2_102%)] !shadow-[0_30px_80px_rgba(245,155,120,0.28)] ring-2 ring-[#f59b78]/22"
+                : "relative overflow-hidden !bg-white/88 !shadow-[0_18px_45px_rgba(92,74,66,0.08)]"
             }
           >
-            {name === "Premium" && (
-              <span className="absolute right-4 top-4 rounded-full bg-[#5c4a42] px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-white shadow-sm">
-                Best value
-              </span>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <Pill className={plan.featured ? "mb-4 bg-[#5c4a42] text-white" : "mb-4 bg-[#e8f4ef]"}>
+                  {plan.badge}
+                </Pill>
+                <h2 className="font-display text-3xl font-black">{plan.name}</h2>
+              </div>
+              {plan.featured && <Sparkles className="text-[#f59b78]" size={28} />}
+            </div>
+            <p className={`mt-3 text-3xl font-black ${plan.featured ? "text-[#5c4a42]" : "text-[#f59b78]"}`}>{plan.price}</p>
+            <p className="mt-3 min-h-20 text-sm font-extrabold leading-6 text-[#5c4a42]">{plan.body}</p>
+            <ul className="mt-5 grid gap-3">
+              {plan.points.map((point) => (
+                <li key={point} className="flex gap-2 font-bold text-[#3d3632]">
+                  <Check className="mt-0.5 shrink-0 text-[#78bea8]" size={18} />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+            {plan.limits.length > 0 && (
+              <div className="mt-5 rounded-[20px] bg-[#f7efe9]/86 p-4">
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]/70">Not included</p>
+                <div className="mt-2 grid gap-2">
+                  {plan.limits.map((limit) => (
+                    <p key={limit} className="flex gap-2 text-sm font-extrabold text-[#5c4a42]">
+                      <X className="mt-0.5 shrink-0 text-[#f59b78]" size={16} />
+                      {limit}
+                    </p>
+                  ))}
+                </div>
+              </div>
             )}
-            <h2 className="font-display text-3xl font-black">{name as string}</h2>
-            <p className={`mt-2 text-2xl font-black ${name === "Premium" ? "text-[#5c4a42]" : "text-[#f59b78]"}`}>{price as string}</p>
-            {name === "Premium" && <p className="mt-3 max-w-sm text-sm font-extrabold leading-6 text-[#5c4a42]">For families who want planning, saving, and recipe generation to feel automatic every week.</p>}
-            <ul className="mt-5 grid gap-3">{(points as string[]).map((point) => <li key={point} className="flex gap-2 font-bold text-[#3d3632]"><Check className="shrink-0 text-[#78bea8]" size={18} />{point}</li>)}</ul>
-            <Button className={`mt-6 w-full ${name === "Premium" ? "min-h-12 shadow-[0_16px_34px_rgba(245,155,120,0.34)]" : ""}`} variant={name === "Premium" ? "coral" : "primary"}>{name === "Premium" ? "Start free trial" : "Get started"}</Button>
+            <Button className={`mt-6 w-full ${plan.featured ? "min-h-12 shadow-[0_16px_34px_rgba(245,155,120,0.34)]" : ""}`} variant={plan.variant}>
+              {plan.cta}
+            </Button>
           </Card>
         ))}
+      </div>
+      <div className="mt-6 grid gap-3 rounded-[24px] border border-[#e9c7b7]/70 bg-white/70 p-4 text-sm font-extrabold text-[#5c4a42] shadow-sm sm:grid-cols-3">
+        <p>Server-side AI key ready</p>
+        <p>Family profile personalization</p>
+        <p>Upgrade-ready SaaS presentation</p>
       </div>
     </div>
   );
