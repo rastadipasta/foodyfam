@@ -905,14 +905,14 @@ function Pricing() {
       <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[#5c4a42]">
         Choose how much of Foody Fam you want unlocked. Start simple, plan smarter, or open the full family food system.
       </p>
-      <div className="mt-8 grid gap-5 lg:grid-cols-3">
+      <div className="mt-8 grid items-stretch gap-6 lg:grid-cols-3">
         {plans.map((plan) => (
           <Card
             key={plan.name}
             className={
               plan.featured
-                ? "relative flex h-full flex-col overflow-hidden !border-[#f59b78]/75 !bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_36%,#ffccb2_102%)] !shadow-[0_30px_80px_rgba(245,155,120,0.28)] ring-2 ring-[#f59b78]/22"
-                : "relative flex h-full flex-col overflow-hidden !bg-white/88 !shadow-[0_18px_45px_rgba(92,74,66,0.08)]"
+                ? "relative flex h-full flex-col overflow-hidden !border-[#f59b78]/75 !bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_36%,#ffccb2_102%)] !p-6 !shadow-[0_30px_80px_rgba(245,155,120,0.28)] ring-2 ring-[#f59b78]/22 lg:min-h-[650px] xl:min-h-[680px]"
+                : "relative flex h-full flex-col overflow-hidden !bg-white/88 !p-6 !shadow-[0_18px_45px_rgba(92,74,66,0.08)] lg:min-h-[650px] xl:min-h-[680px]"
             }
           >
             <div className="flex items-start justify-between gap-3">
@@ -925,8 +925,8 @@ function Pricing() {
               {plan.featured && <Sparkles className="text-[#f59b78]" size={28} />}
             </div>
             <p className={`mt-3 text-3xl font-black ${plan.featured ? "text-[#5c4a42]" : "text-[#f59b78]"}`}>{plan.price}</p>
-            <p className="mt-3 min-h-20 text-sm font-extrabold leading-6 text-[#5c4a42]">{plan.body}</p>
-            <ul className="mt-5 grid gap-3">
+            <p className="mt-3 min-h-24 text-sm font-extrabold leading-7 text-[#5c4a42]">{plan.body}</p>
+            <ul className="mt-6 grid gap-4">
               {plan.points.map((point) => (
                 <li key={point} className="flex gap-2 font-bold text-[#3d3632]">
                   <Check className="mt-0.5 shrink-0 text-[#78bea8]" size={18} />
@@ -935,9 +935,9 @@ function Pricing() {
               ))}
             </ul>
             {plan.limits.length > 0 && (
-              <div className="mt-5 rounded-[20px] bg-[#f7efe9]/86 p-4">
+              <div className="mt-7 rounded-[20px] bg-[#f7efe9]/86 p-5">
                 <p className="text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]/70">Not included</p>
-                <div className="mt-2 grid gap-2">
+                <div className="mt-3 grid gap-2.5">
                   {plan.limits.map((limit) => (
                     <p key={limit} className="flex gap-2 text-sm font-extrabold text-[#5c4a42]">
                       <X className="mt-0.5 shrink-0 text-[#f59b78]" size={16} />
@@ -947,7 +947,7 @@ function Pricing() {
                 </div>
               </div>
             )}
-            <Button className={`mt-auto w-full translate-y-0 ${plan.featured ? "min-h-12 shadow-[0_16px_34px_rgba(245,155,120,0.34)]" : ""}`} variant={plan.variant}>
+            <Button className={`mt-auto w-full translate-y-0 ${plan.featured ? "min-h-12 shadow-[0_16px_34px_rgba(245,155,120,0.34)]" : "min-h-12"}`} variant={plan.variant}>
               {plan.cta}
             </Button>
           </Card>
