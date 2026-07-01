@@ -870,13 +870,13 @@ function Pricing() {
     },
     {
       name: "Premium",
-      price: "$9 / month",
+      price: "$12 / month",
       body: "For families who want planning and AI help, without the full recipe library or shopping list.",
       badge: "Planning",
       cta: "Upgrade to Premium",
       variant: "coral" as const,
       featured: false,
-      points: ["Unlimited meal generations", "Meal planner access", "Nutrition insights", "AI assistant"],
+      points: ["14 meal generations per week", "Meal planner access", "Nutrition insights", "AI assistant"],
       limits: ["No recipe library access", "No shopping list"]
     },
     {
@@ -911,8 +911,8 @@ function Pricing() {
             key={plan.name}
             className={
               plan.featured
-                ? "relative overflow-hidden !border-[#f59b78]/75 !bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_36%,#ffccb2_102%)] !shadow-[0_30px_80px_rgba(245,155,120,0.28)] ring-2 ring-[#f59b78]/22"
-                : "relative overflow-hidden !bg-white/88 !shadow-[0_18px_45px_rgba(92,74,66,0.08)]"
+                ? "relative flex h-full flex-col overflow-hidden !border-[#f59b78]/75 !bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_36%,#ffccb2_102%)] !shadow-[0_30px_80px_rgba(245,155,120,0.28)] ring-2 ring-[#f59b78]/22"
+                : "relative flex h-full flex-col overflow-hidden !bg-white/88 !shadow-[0_18px_45px_rgba(92,74,66,0.08)]"
             }
           >
             <div className="flex items-start justify-between gap-3">
@@ -947,16 +947,11 @@ function Pricing() {
                 </div>
               </div>
             )}
-            <Button className={`mt-6 w-full ${plan.featured ? "min-h-12 shadow-[0_16px_34px_rgba(245,155,120,0.34)]" : ""}`} variant={plan.variant}>
+            <Button className={`mt-auto w-full translate-y-0 ${plan.featured ? "min-h-12 shadow-[0_16px_34px_rgba(245,155,120,0.34)]" : ""}`} variant={plan.variant}>
               {plan.cta}
             </Button>
           </Card>
         ))}
-      </div>
-      <div className="mt-6 grid gap-3 rounded-[24px] border border-[#e9c7b7]/70 bg-white/70 p-4 text-sm font-extrabold text-[#5c4a42] shadow-sm sm:grid-cols-3">
-        <p>Server-side AI key ready</p>
-        <p>Family profile personalization</p>
-        <p>Upgrade-ready SaaS presentation</p>
       </div>
     </div>
   );
