@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { BarChart3, BookOpen, Bot, CalendarDays, ChefHat, Home, LayoutDashboard, LogOut, Settings, ShoppingBag, Sparkles, Target, Users, Utensils } from "lucide-react";
+import { BarChart3, BookOpen, Bot, CalendarDays, ChefHat, Home, LayoutDashboard, LogOut, Menu, Settings, ShoppingBag, Sparkles, Target, Users, Utensils, X } from "lucide-react";
 import { Button, Card, Pill } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
@@ -43,60 +43,144 @@ export function DashboardPage({ section = "overview" }: { section?: string }) {
 function DashboardChrome({ children, embedded }: { children: React.ReactNode; embedded?: string }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
   const authUser = useAppStore((state) => state.authUser);
   const authProvider = useAppStore((state) => state.authProvider);
   const onboardingCompleted = useAppStore((state) => state.onboardingCompleted);
   const logout = useAppStore((state) => state.logout);
+  const activeNav = dashboardNav.find((item) => pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href)));
+
+  function handleLogout() {
+    logout();
+    setMenuOpen(false);
+    router.push("/login");
+  }
+
   return (
     <div className="min-h-screen bg-[#fffaf6]">
-      <div className="grid lg:grid-cols-[290px_1fr]">
-        <aside className="border-b border-[#5c4a42]/10 bg-[#f7efe9] p-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
-          <Link href="/" className="font-display text-3xl font-black">Foody Fam</Link>
-          <nav className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
-            {dashboardNav.map(({ href, label, icon: Icon }) => (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold transition",
-                  pathname === href || (href !== "/dashboard" && pathname.startsWith(href))
-                    ? "bg-white text-[#f59b78] shadow-sm"
-                    : "text-[#5c4a42] hover:bg-white/70"
-                )}
-              >
-                <Icon size={18} />
-                {label}
-              </Link>
-            ))}
-          </nav>
-          <div className="mt-5 grid gap-2 rounded-[18px] border border-[#e9c7b7] bg-white p-3 lg:mt-auto">
-            <div className="flex items-center gap-2.5">
-              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#ffccb2] text-sm font-black text-[#5c4a42]">
-                {(authUser?.displayName || "P").slice(0, 1)}
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-black">{authUser?.displayName || "Demo Parent"}</p>
-                <p className="truncate text-[11px] font-bold capitalize text-[#5c4a42]/65">
-                  {onboardingCompleted ? "Profile complete" : "Onboarding open"} / {authProvider || "demo"}
-                </p>
+      <header className="sticky top-0 z-40 border-b border-[#5c4a42]/10 bg-[#fffaf6]/94 px-4 py-3 backdrop-blur lg:hidden">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <Link href="/" className="font-display text-2xl font-black">Foody Fam</Link>
+            <p className="truncate text-xs font-extrabold text-[#5c4a42]/68">{activeNav?.label || "Dashboard"}</p>
+          </div>
+          <button
+            type="button"
+            aria-label={menuOpen ? "Close dashboard menu" : "Open dashboard menu"}
+            aria-expanded={menuOpen}
+            className="grid h-11 w-11 place-items-center rounded-full border border-[#e9c7b7] bg-white text-[#5c4a42] shadow-sm transition active:scale-95"
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </header>
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
+          <button
+            type="button"
+            aria-label="Close dashboard menu"
+            className="absolute inset-0 bg-[#5c4a42]/28 backdrop-blur-sm"
+            onClick={() => setMenuOpen(false)}
+          />
+          <aside className="absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto rounded-t-[28px] border border-[#e9c7b7] bg-[#f7efe9] p-4 shadow-[0_24px_70px_rgba(92,74,66,0.28)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="font-display text-3xl font-black">Foody Fam</p>
+                <p className="text-sm font-bold text-[#5c4a42]/70">Dashboard menu</p>
               </div>
               <button
                 type="button"
-                className="ml-auto rounded-full bg-[#f7efe9] p-2 text-[#5c4a42] transition hover:bg-[#ffccb2]"
-                aria-label="Log out"
-                onClick={() => {
-                  logout();
-                  router.push("/login");
-                }}
+                aria-label="Close dashboard menu"
+                className="rounded-full bg-white p-3 text-[#5c4a42] shadow-sm transition active:scale-95"
+                onClick={() => setMenuOpen(false)}
               >
-                <LogOut size={15} />
+                <X size={18} />
               </button>
             </div>
-          </div>
+            <DashboardNavLinks pathname={pathname} onNavigate={() => setMenuOpen(false)} />
+            <DashboardAccountBlock
+              authUser={authUser}
+              authProvider={authProvider}
+              onboardingCompleted={onboardingCompleted}
+              onLogout={handleLogout}
+            />
+          </aside>
+        </div>
+      )}
+      <div className="grid lg:grid-cols-[290px_1fr]">
+        <aside className="hidden border-b border-[#5c4a42]/10 bg-[#f7efe9] p-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
+          <Link href="/" className="font-display text-3xl font-black">Foody Fam</Link>
+          <DashboardNavLinks pathname={pathname} />
+          <DashboardAccountBlock
+            authUser={authUser}
+            authProvider={authProvider}
+            onboardingCompleted={onboardingCompleted}
+            onLogout={handleLogout}
+          />
         </aside>
         <main className="min-w-0 p-4 sm:p-6 lg:p-8">
           {embedded ? children : children}
         </main>
+      </div>
+    </div>
+  );
+}
+
+function DashboardNavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
+  return (
+    <nav className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+      {dashboardNav.map(({ href, label, icon: Icon }) => (
+        <Link
+          key={href}
+          href={href}
+          onClick={onNavigate}
+          className={cn(
+            "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold transition",
+            pathname === href || (href !== "/dashboard" && pathname.startsWith(href))
+              ? "bg-white text-[#f59b78] shadow-sm"
+              : "text-[#5c4a42] hover:bg-white/70"
+          )}
+        >
+          <Icon size={18} />
+          {label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+function DashboardAccountBlock({
+  authUser,
+  authProvider,
+  onboardingCompleted,
+  onLogout
+}: {
+  authUser: { displayName: string } | null;
+  authProvider: string | null;
+  onboardingCompleted: boolean;
+  onLogout: () => void;
+}) {
+  return (
+    <div className="mt-5 grid gap-2 rounded-[18px] border border-[#e9c7b7] bg-white p-3 lg:mt-auto">
+      <div className="flex items-center gap-2.5">
+        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#ffccb2] text-sm font-black text-[#5c4a42]">
+          {(authUser?.displayName || "P").slice(0, 1)}
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-black">{authUser?.displayName || "Demo Parent"}</p>
+          <p className="truncate text-[11px] font-bold capitalize text-[#5c4a42]/65">
+            {onboardingCompleted ? "Profile complete" : "Onboarding open"} / {authProvider || "demo"}
+          </p>
+        </div>
+        <button
+          type="button"
+          className="ml-auto rounded-full bg-[#f7efe9] p-2 text-[#5c4a42] transition hover:bg-[#ffccb2]"
+          aria-label="Log out"
+          onClick={onLogout}
+        >
+          <LogOut size={15} />
+        </button>
       </div>
     </div>
   );
