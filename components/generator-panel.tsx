@@ -71,12 +71,13 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
     handleSubmit,
     setValue,
     getValues,
-    reset,
     formState: { errors }
   } = useForm<GeneratorForm>({
     resolver: zodResolver(generatorSchema),
     defaultValues
   });
+  const [ingredientsValue, setIngredientsValue] = useState(defaultValues.ingredients);
+  const ingredientsRegister = register("ingredients");
 
   useEffect(() => {
     if (!loading) return;
@@ -122,10 +123,17 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
     }
   }
 
+  function clearIngredients() {
+    setValue("ingredients", "", { shouldDirty: true, shouldValidate: true });
+    setIngredientsValue("");
+  }
+
   function addChip(chip: string) {
     const current = getValues("ingredients");
     if (!current.toLowerCase().includes(chip.toLowerCase())) {
-      setValue("ingredients", current ? `${current}, ${chip}` : chip);
+      const next = current ? `${current}, ${chip}` : chip;
+      setValue("ingredients", next, { shouldDirty: true, shouldValidate: true });
+      setIngredientsValue(next);
     }
   }
 
@@ -168,10 +176,30 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
       </div>
 
       <form className="grid gap-5" onSubmit={handleSubmit(submit)}>
-        <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="grid gap-4">
           <div>
             <label className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]">Ingredients</label>
-            <Field aria-label="Ingredients" {...register("ingredients")} />
+            <div className="relative">
+              <Field
+                aria-label="Ingredients"
+                className="pr-12"
+                {...ingredientsRegister}
+                onChange={(event) => {
+                  void ingredientsRegister.onChange(event);
+                  setIngredientsValue(event.target.value);
+                }}
+              />
+              {ingredientsValue && (
+                <button
+                  type="button"
+                  aria-label="Clear ingredients"
+                  className="absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-[#f7efe9] text-[#5c4a42] shadow-sm transition hover:bg-[#ffccb2] active:scale-95"
+                  onClick={clearIngredients}
+                >
+                  <X size={15} />
+                </button>
+              )}
+            </div>
             <div className="mt-3 flex flex-wrap gap-2">
               {chips.map((chip) => (
                 <button key={chip} type="button" onClick={() => addChip(chip)}>
@@ -181,10 +209,18 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
             </div>
             {errors.ingredients && <p className="mt-2 text-xs font-bold text-[#d85f4c]">{errors.ingredients.message}</p>}
           </div>
-          <div>
-            <label className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]">Pantry items</label>
-            <Field aria-label="Pantry items" {...register("pantryItems")} />
-          </div>
+        </div>
+
+        <div className="hidden">
+          <input type="hidden" {...register("pantryItems")} />
+          <input type="hidden" {...register("babyTexture")} />
+          <input type="hidden" {...register("feedingStyle")} />
+          <input type="hidden" {...register("cookingTime")} />
+          <input type="hidden" {...register("diet")} />
+          <input type="hidden" {...register("appliances")} />
+          <input type="hidden" {...register("skillLevel")} />
+          <input type="hidden" {...register("avoidIngredients")} />
+          <input type="hidden" {...register("goal")} />
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -202,23 +238,6 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
               <option>9-12 months</option>
               <option>12-18 months</option>
               <option>2+ years</option>
-            </Select>
-          </FormBoxLabel>
-          <FormBoxLabel label="Baby texture">
-            <Select aria-label="Baby texture" {...register("babyTexture")}>
-              <option>Any</option>
-              <option>Soft mashed</option>
-              <option>Smooth puree</option>
-              <option>Finger-food strips</option>
-              <option>Toddler bites</option>
-            </Select>
-          </FormBoxLabel>
-          <FormBoxLabel label="Feeding style">
-            <Select aria-label="Feeding style" {...register("feedingStyle")}>
-              <option>Any</option>
-              <option>Mixed</option>
-              <option>Puree</option>
-              <option>BLW</option>
             </Select>
           </FormBoxLabel>
           <FormBoxLabel label="Servings">
@@ -258,60 +277,8 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
               <option>Vegetarian</option>
             </Select>
           </FormBoxLabel>
-          <FormBoxLabel label="Cooking time">
-            <Select aria-label="Cooking time" {...register("cookingTime")}>
-              <option>Any</option>
-              <option>25 min or less</option>
-              <option>35 min or less</option>
-              <option>15 min or less</option>
-              <option>30 min or less</option>
-              <option>Batch cooking</option>
-            </Select>
-          </FormBoxLabel>
-          <FormBoxLabel label="Diet">
-            <Select aria-label="Diet" {...register("diet")}>
-              <option>None</option>
-              <option>Any</option>
-              <option>No egg</option>
-              <option>Vegetarian</option>
-              <option>Dairy free</option>
-              <option>Gluten free</option>
-              <option>No restrictions</option>
-            </Select>
-          </FormBoxLabel>
-          <FormBoxLabel label="Appliance">
-            <Select aria-label="Appliances" {...register("appliances")}>
-              <option>Any</option>
-              <option>None</option>
-              <option>Stovetop</option>
-              <option>Oven</option>
-              <option>Pan</option>
-              <option>Air fryer</option>
-              <option>Slow cooker</option>
-              <option>Instant Pot</option>
-              <option>Thermomix</option>
-              <option>No cook</option>
-            </Select>
-          </FormBoxLabel>
-          <FormBoxLabel label="Skill level">
-            <Select aria-label="Skill level" {...register("skillLevel")}>
-              <option>Any</option>
-              <option>Easy</option>
-              <option>Confident home cook</option>
-              <option>Minimal prep</option>
-            </Select>
-          </FormBoxLabel>
           <FormBoxLabel label="Allergies">
             <Field aria-label="Allergies" placeholder="Allergies" {...register("allergies")} />
-          </FormBoxLabel>
-        </div>
-
-        <div className="grid gap-4 lg:grid-cols-2">
-          <FormBoxLabel label="Avoid ingredients">
-            <Field aria-label="Avoid ingredients" placeholder="Avoid ingredients" {...register("avoidIngredients")} />
-          </FormBoxLabel>
-          <FormBoxLabel label="Recipe goal">
-            <Field aria-label="Recipe goal" placeholder="Recipe goal" {...register("goal")} />
           </FormBoxLabel>
         </div>
 
@@ -319,19 +286,6 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
           <Button type="submit" disabled={loading} className="w-full lg:w-fit">
             {loading ? <Loader2 className="animate-spin" size={17} /> : <Sparkles size={17} />}
             {loading ? loadingStages[stage] : "Generate family recipe"}
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            className="w-full lg:w-fit"
-            onClick={() => {
-              reset(buildDefaultGeneratorValues(babyProfiles[0], preferences));
-              setResult(null);
-              setShoppingMessage("");
-            }}
-          >
-            <X size={17} />
-            Clear fields
           </Button>
         </div>
       </form>
