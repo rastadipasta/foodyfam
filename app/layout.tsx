@@ -25,7 +25,11 @@ const dacherry = localFont({
 export const metadata: Metadata = {
   title: "Foody Fam - One meal, whole family",
   description:
-    "AI recipes that turn one cooking process into baby-friendly, kid-friendly, and adult-ready meals."
+    "AI recipes that turn one cooking process into baby-friendly, kid-friendly, and adult-ready meals.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png"
+  }
 };
 
 export default function RootLayout({
