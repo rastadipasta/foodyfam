@@ -49,7 +49,13 @@ const chips = ["Chicken", "Rice", "Eggs", "Spinach", "Pasta", "Broccoli", "Carro
 const loadingStages = ["Checking allergies", "Splitting baby portion", "Building shopping list", "Writing family instructions"];
 const resultTabs = ["Overview", "Baby", "Adults", "Shopping", "Safety"] as const;
 
-export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => void }) {
+export function GeneratorPanel({
+  onResult,
+  showLatestResult = false
+}: {
+  onResult?: (recipe: Recipe) => void;
+  showLatestResult?: boolean;
+}) {
   const [loading, setLoading] = useState(false);
   const [stage, setStage] = useState(0);
   const [result, setResult] = useState<Recipe | null>(null);
@@ -102,6 +108,8 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
     setValue("goal", preferences.cookingGoals[0] || "Cook once for baby and adults with leftovers for lunch.");
   }, [babyProfiles, preferences, setValue]);
 
+  const currentResult = result ?? (showLatestResult ? generatedRecipes[0] ?? null : null);
+
   async function submit(values: GeneratorForm) {
     setLoading(true);
     setStage(0);
@@ -138,22 +146,22 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
   }
 
   function saveResult() {
-    if (!result) return;
-    upsertRecipe(result, true);
+    if (!currentResult) return;
+    upsertRecipe(currentResult, true);
     setSaved(true);
   }
 
   function addResultToShoppingList() {
-    if (!result) return;
-    addRecipeToShoppingList(result);
+    if (!currentResult) return;
+    addRecipeToShoppingList(currentResult);
     setShoppingMessage("Shopping list updated");
   }
 
   async function shareResult() {
-    if (!result) return;
-    const shareText = `${result.title}\n\n${result.description || result.familyPitch || "Foody Fam recipe"}`;
+    if (!currentResult) return;
+    const shareText = `${currentResult.title}\n\n${currentResult.description || currentResult.familyPitch || "Foody Fam recipe"}`;
     if (navigator.share) {
-      await navigator.share({ title: result.title, text: shareText }).catch(() => undefined);
+      await navigator.share({ title: currentResult.title, text: shareText }).catch(() => undefined);
       return;
     }
     await navigator.clipboard?.writeText(shareText).catch(() => undefined);
@@ -291,9 +299,9 @@ export function GeneratorPanel({ onResult }: { onResult?: (recipe: Recipe) => vo
       </form>
 
       {loading && <PremiumLoader stage={stage} />}
-      {result && !loading && (
+      {currentResult && !loading && (
         <RecipeResult
-          recipe={result}
+          recipe={currentResult}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           saved={saved}
@@ -413,52 +421,30 @@ function RecipeResult({
 
   return (
     <div className="grid gap-5 rounded-[26px] bg-white p-5 shadow-[0_18px_45px_rgba(92,74,66,0.08)]">
-      <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-        <div>
-          <div className="flex flex-wrap gap-2">
-            {recipe.tags.map((tag) => (
-              <Pill key={tag}>{tag}</Pill>
-            ))}
-          </div>
-          <h3 className="mt-4 font-display text-4xl font-black leading-tight">{recipe.title}</h3>
-          <p className="mt-3 text-base font-bold leading-7 text-[#5c4a42]">
-            {recipe.description || recipe.familyPitch || "A family recipe adapted for baby and adults."}
-          </p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-4">
-            <ResultMetric icon={<Clock size={17} />} label="Time" value={recipe.time} />
-            <ResultMetric icon={<Utensils size={17} />} label="Difficulty" value={recipe.difficulty} />
-            <ResultMetric icon={<Baby size={17} />} label="Texture" value={recipe.babyTexture || "Baby-safe"} />
-            <ResultMetric icon={<ShoppingBasket size={17} />} label="Servings" value={`${recipe.servings}`} />
-          </div>
-          {recipe.databaseMatch && <DatabaseMatchPanel recipe={recipe} />}
+      <div>
+        <div className="flex flex-wrap gap-2">
+          {recipe.tags.map((tag) => (
+            <Pill key={tag}>{tag}</Pill>
+          ))}
         </div>
-        <div className="rounded-[24px] bg-[#f7efe9] p-5">
-          <p className="font-display text-xl font-black">Why this works for your family</p>
-          <ul className="mt-4 grid gap-3 text-sm font-bold leading-6 text-[#5c4a42]">
-            {(recipe.whyItWorks?.length ? recipe.whyItWorks : [recipe.familyPitch || "One cooking base splits into baby and adult plates."]).map((item) => (
-              <li key={item} className="flex gap-2">
-                <Check className="mt-0.5 shrink-0 text-[#78bea8]" size={17} />
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <h3 className="mt-4 font-display text-4xl font-black leading-tight">{recipe.title}</h3>
+        <p className="mt-3 max-w-4xl text-base font-bold leading-7 text-[#5c4a42]">
+          {recipe.description || recipe.familyPitch || "A family recipe adapted for baby and adults."}
+        </p>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {resultTabs.map((tab) => (
+      <div className="grid gap-5 lg:grid-cols-2">
+        <IngredientCard recipe={recipe} />
+        <StepCard title="Cooking steps" items={cookingSteps} />
+      </div>
+
+      <div className="flex flex-wrap gap-2 border-t border-[#5c4a42]/10 pt-5">
+        {resultTabs.filter((tab) => tab !== "Overview").map((tab) => (
           <Button key={tab} type="button" variant={activeTab === tab ? "primary" : "secondary"} onClick={() => setActiveTab(tab)}>
             {tab}
           </Button>
         ))}
       </div>
-
-      {activeTab === "Overview" && (
-        <div className="grid gap-5 lg:grid-cols-2">
-          <IngredientCard recipe={recipe} />
-          <StepCard title="Cooking steps" items={cookingSteps} />
-        </div>
-      )}
 
       {activeTab === "Baby" && <StepCard title="Baby version" items={babyItems} accent="mint" />}
       {activeTab === "Adults" && <StepCard title="Adult version" items={adultItems} accent="coral" />}
@@ -483,6 +469,30 @@ function RecipeResult({
           <StepCard title="Nutrition summary" items={recipe.nutritionSummary || [`Protein ${recipe.nutrition.protein}%`, `Iron ${recipe.nutrition.iron}`]} />
         </div>
       )}
+
+      <div className="grid gap-5 border-t border-[#5c4a42]/10 pt-5 lg:grid-cols-[1.1fr_0.9fr]">
+        <div>
+          <p className="font-display text-xl font-black">Recipe details</p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-4">
+            <ResultMetric icon={<Clock size={17} />} label="Time" value={recipe.time} />
+            <ResultMetric icon={<Utensils size={17} />} label="Difficulty" value={recipe.difficulty} />
+            <ResultMetric icon={<Baby size={17} />} label="Texture" value={recipe.babyTexture || "Baby-safe"} />
+            <ResultMetric icon={<ShoppingBasket size={17} />} label="Servings" value={`${recipe.servings}`} />
+          </div>
+          {recipe.databaseMatch && <DatabaseMatchPanel recipe={recipe} />}
+        </div>
+        <div className="rounded-[24px] bg-[#f7efe9] p-5">
+          <p className="font-display text-xl font-black">Why this works for your family</p>
+          <ul className="mt-4 grid gap-3 text-sm font-bold leading-6 text-[#5c4a42]">
+            {(recipe.whyItWorks?.length ? recipe.whyItWorks : [recipe.familyPitch || "One cooking base splits into baby and adult plates."]).map((item) => (
+              <li key={item} className="flex gap-2">
+                <Check className="mt-0.5 shrink-0 text-[#78bea8]" size={17} />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
       <div className="flex flex-wrap gap-3 border-t border-[#5c4a42]/10 pt-5">
         <Button type="button" onClick={onSave}>

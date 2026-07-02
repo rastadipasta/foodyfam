@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { CalendarPlus, Check, Clock, Download, Heart, Mail, Plus, Search, Send, ShoppingBasket, Sparkles, Trash2, X } from "lucide-react";
@@ -44,6 +45,8 @@ export function SimpleMarketingPage({ type }: { type: "pricing" | "blog" | "abou
 }
 
 export function GeneratorPage() {
+  const router = useRouter();
+
   return (
     <SiteShell>
       <main className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:px-8">
@@ -55,7 +58,7 @@ export function GeneratorPage() {
               Start with ingredients, then let Foody Fam split the same cooking flow into a baby portion and an adult finish.
             </p>
           </div>
-          <GeneratorPanel />
+          <GeneratorPanel onResult={() => router.push("/dashboard/generator")} />
         </div>
       </main>
     </SiteShell>

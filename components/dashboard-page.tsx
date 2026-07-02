@@ -321,7 +321,7 @@ function GeneratorInner() {
           <MetricCard label="Dinner speed" value="25m" body="The flow favors weeknight meals with one cooking path." />
         </div>
       </div>
-      <GeneratorPanel />
+      <GeneratorPanel showLatestResult />
     </div>
   );
 }

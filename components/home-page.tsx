@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowRight, Bot, CalendarDays, Carrot, CheckCircle2, MessageCircle, ShoppingBag, Sparkles, Star } from "lucide-react";
 import { SiteShell } from "./layout";
@@ -21,6 +22,8 @@ const features = [
 ];
 
 export function HomePage() {
+  const router = useRouter();
+
   return (
     <SiteShell>
       <main>
@@ -101,7 +104,7 @@ export function HomePage() {
 
         <section className="px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <GeneratorPanel />
+            <GeneratorPanel onResult={() => router.push("/dashboard/generator")} />
           </div>
         </section>
 
