@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { CalendarPlus, Check, Clock, Download, Heart, Mail, Plus, Search, Send, ShoppingBasket, Sparkles, Trash2, X } from "lucide-react";
 import { SiteShell } from "./layout";
@@ -10,7 +10,7 @@ import { Button, Card, Field, Pill, Select, TextArea } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
 import { RecipeShowcase } from "./recipe-showcase";
-import { babyProfiles as demoBabyProfiles, blogPosts, demoRecipes, pagePhotos } from "@/lib/data";
+import { blogPosts, demoRecipes, pagePhotos } from "@/lib/data";
 import { databaseRecipes, databaseRecipeToRecipe } from "@/lib/recipe-database";
 import type { BabyProfile, FamilyMember, FamilyPreferences, MealPlanDay, MealSlotType, Recipe, RecipeDatabaseMatch } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
@@ -46,18 +46,15 @@ export function SimpleMarketingPage({ type }: { type: "pricing" | "blog" | "abou
 export function GeneratorPage() {
   return (
     <SiteShell>
-      <main className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[320px_1fr] lg:px-8">
-        <Card className="h-fit">
-          <h1 className="font-display text-3xl font-black">Family setup</h1>
-          <div className="mt-5 grid gap-4">
-            <Select aria-label="Baby profile">{demoBabyProfiles.map((profile) => <option key={profile.id}>{profile.name} / {profile.age}</option>)}</Select>
-            <Select aria-label="Difficulty"><option>Easy</option><option>Medium</option><option>Any</option></Select>
-            <Select aria-label="Appliance"><option>Stovetop</option><option>Oven</option><option>Air fryer</option><option>Thermomix</option></Select>
-            <Pill className="w-fit bg-[#e8f4ef]">Allergy-aware mode on</Pill>
-          </div>
-        </Card>
+      <main className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid gap-5">
-          <FloatingPhoto src={pagePhotos.generator} title="Ingredient-first dinner ideas" caption="Start with what is already in the kitchen, then let Foody Fam split the meal safely." />
+          <div>
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">AI Recipe Generator</p>
+            <h1 className="mt-2 font-display text-balance text-4xl font-black leading-tight sm:text-5xl">Build one family meal</h1>
+            <p className="mt-3 max-w-2xl font-bold leading-7 text-[#5c4a42]">
+              Start with ingredients, then let Foody Fam split the same cooking flow into a baby portion and an adult finish.
+            </p>
+          </div>
           <GeneratorPanel />
         </div>
       </main>
@@ -67,6 +64,7 @@ export function GeneratorPage() {
 
 export function RecipesPage() {
   const [query, setQuery] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
   const [mealType, setMealType] = useState("All");
   const [age, setAge] = useState("All");
   const [allergen, setAllergen] = useState("All");
@@ -110,7 +108,20 @@ export function RecipesPage() {
           </div>
           <div className="relative w-full md:max-w-sm">
             <Search className="absolute left-4 top-3.5 text-[#5c4a42]" size={18} />
-            <Field className="pl-11" placeholder="Search recipes or tags" value={query} onChange={(event) => setQuery(event.target.value)} />
+            <Field ref={searchRef} className="pl-11 pr-11" placeholder="Search recipes or tags" value={query} onChange={(event) => setQuery(event.target.value)} />
+            {query && (
+              <button
+                type="button"
+                aria-label="Clear recipe search"
+                className="absolute right-3 top-2.5 rounded-full bg-[#f7efe9] p-2 text-[#5c4a42] transition hover:bg-[#ffccb2]"
+                onClick={() => {
+                  setQuery("");
+                  window.requestAnimationFrame(() => searchRef.current?.focus());
+                }}
+              >
+                <X size={16} />
+              </button>
+            )}
           </div>
         </div>
         <div className="mt-8 grid gap-5 lg:grid-cols-[1fr_0.7fr]">
@@ -367,40 +378,40 @@ export function PlannerPage() {
             <Button variant="secondary">Today</Button>
           </div>
         </div>
-        <section className="mt-8 overflow-hidden rounded-[28px] bg-[#242321] p-4 text-white shadow-[0_30px_90px_rgba(31,29,28,0.24)] sm:p-5">
+        <section className="mt-8 overflow-hidden rounded-[28px] border border-[#e9c7b7]/80 bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_62%,#ffccb2_145%)] p-4 text-[#5c4a42] shadow-[0_30px_90px_rgba(92,74,66,0.16)] sm:p-5">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#ffccb2]">{weekRange}</p>
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#78bea8]">{weekRange}</p>
               <h2 className="font-display text-3xl font-black">Family meal calendar</h2>
             </div>
-            <Pill className="w-fit bg-white/12 text-white">Breakfast / Lunch / Dinner</Pill>
+            <Pill className="w-fit bg-white/80">Breakfast / Lunch / Dinner</Pill>
           </div>
-          <div className="grid grid-cols-[64px_1fr] overflow-x-auto rounded-[20px] border border-white/10">
-            <div className="grid grid-rows-[44px_repeat(3,150px)] border-r border-white/10 bg-black/16 text-xs font-bold text-white/52">
+          <div className="grid grid-cols-[64px_1fr] overflow-x-auto rounded-[20px] border border-[#5c4a42]/12 bg-white/42">
+            <div className="grid grid-rows-[44px_repeat(3,150px)] border-r border-[#5c4a42]/12 bg-[#f7efe9]/80 text-xs font-bold text-[#5c4a42]/62">
               <div />
-              {["8 AM", "Noon", "6 PM"].map((time) => <div key={time} className="border-t border-white/10 p-3">{time}</div>)}
+              {["8 AM", "Noon", "6 PM"].map((time) => <div key={time} className="border-t border-[#5c4a42]/12 p-3">{time}</div>)}
             </div>
             <div className="grid min-w-[860px] grid-cols-7">
               {planner.map((day) => (
                 <button
                   key={day.day}
                   type="button"
-                  className="border-r border-white/10 text-left last:border-r-0"
+                  className="border-r border-[#5c4a42]/12 text-left last:border-r-0"
                   onClick={() => setOpenDay(day)}
                 >
-                  <div className="h-11 border-b border-white/10 px-3 py-2">
-                    <p className="text-xs font-black text-white/70">{day.day}</p>
+                  <div className="h-11 border-b border-[#5c4a42]/12 px-3 py-2">
+                    <p className="text-xs font-black text-[#5c4a42]/76">{day.day}</p>
                   </div>
                   {plannerSlots(day).map((slot) => {
                     const recipe = plannerRecipes.find((item) => item.id === slot.recipeId);
                     return (
-                      <div key={`${day.day}-${slot.mealType}`} className="relative h-[150px] border-b border-white/10 p-3 last:border-b-0">
-                        <div className={`h-full rounded-sm p-3 text-left text-[#1f1d1c] shadow-sm ${slotColor(slot.mealType)}`}>
+                      <div key={`${day.day}-${slot.mealType}`} className="relative h-[150px] border-b border-[#5c4a42]/10 p-3 last:border-b-0">
+                        <div className={`h-full rounded-[16px] border border-white/72 p-3 text-left text-[#1f1d1c] shadow-sm ${slotColor(slot.mealType)}`}>
                           <p className="text-xs font-black uppercase tracking-[0.08em]">{slot.mealType}</p>
                           <p className="mt-2 text-sm font-black leading-5">{slot.meal}</p>
                           {recipe && (
                             <ul className="mt-2 grid gap-1 text-[11px] font-bold">
-                              {(recipe.ingredientDetails?.map((item) => item.name) || recipe.ingredients).slice(0, 3).map((item) => <li key={item}>• {item}</li>)}
+                              {(recipe.ingredientDetails?.map((item) => item.name) || recipe.ingredients).slice(0, 3).map((item) => <li key={item}>- {item}</li>)}
                             </ul>
                           )}
                         </div>
@@ -489,9 +500,9 @@ function PlannerDrawer({
 }
 
 function slotColor(mealType: MealSlotType) {
-  if (mealType === "Breakfast") return "bg-[#f6b7e8]";
-  if (mealType === "Lunch") return "bg-[#ffc76f]";
-  return "bg-[#75c0ef]";
+  if (mealType === "Breakfast") return "bg-[#ffccb2]";
+  if (mealType === "Lunch") return "bg-[#f59b78]/88";
+  return "bg-[#e8f4ef]";
 }
 
 export function ShoppingPage() {

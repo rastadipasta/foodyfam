@@ -8,7 +8,7 @@ import { Apple, ArrowRight, CheckCircle2, Chrome, Eye, EyeOff, LockKeyhole, Mail
 import { useForm } from "react-hook-form";
 import type { UseFormRegisterReturn } from "react-hook-form";
 import { z } from "zod";
-import { demoAuthAdapter, getAuthRedirectUrl, type OAuthProvider } from "@/lib/auth-adapter";
+import { demoAuthAdapter, type OAuthProvider } from "@/lib/auth-adapter";
 import { pagePhotos } from "@/lib/data";
 import { useAppStore } from "@/store/useAppStore";
 import { SiteShell } from "./layout";
@@ -83,12 +83,12 @@ function AuthVisual() {
         caption="Profiles, pantry, saved meals, and planner choices stay ready for the next dinner."
       />
       <Card className="grid gap-4">
-        <h2 className="font-display text-2xl font-black">Prepared for real SaaS auth</h2>
+        <h2 className="font-display text-2xl font-black">Dinner remembers your family</h2>
         <div className="grid gap-3 text-sm font-bold text-[#5c4a42]">
           {[
-            "Email and password demo flow without storing passwords",
-            "Google and Apple sign-in buttons ready for Supabase OAuth",
-            `Future OAuth redirect: ${getAuthRedirectUrl()}`
+            "Keep baby profiles, allergies, saved meals, and planner choices together.",
+            "Sign in with email, Google, or Apple when you come back.",
+            "New families start with onboarding so meals feel personal from day one."
           ].map((item) => (
             <p key={item} className="flex gap-2">
               <CheckCircle2 className="mt-0.5 shrink-0 text-[#78bea8]" size={17} />

@@ -18,12 +18,15 @@ const nav = [
 ];
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const dashboardEmbedded = pathname.startsWith("/dashboard");
+
   return (
     <div className="min-h-screen overflow-hidden">
       <ScrollProgressGlow />
-      <Header />
+      {!dashboardEmbedded && <Header />}
       {children}
-      <Footer />
+      {!dashboardEmbedded && <Footer />}
     </div>
   );
 }

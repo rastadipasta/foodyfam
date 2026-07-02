@@ -63,14 +63,16 @@ export function HomePage() {
             <motion.div className="relative z-0" initial={false} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
               <div className="relative min-h-[300px] sm:min-h-[430px] lg:min-h-[470px]">
                 <div className="brand-gradient pointer-events-none absolute bottom-0 right-[-1rem] h-[58%] w-[78%] rounded-tl-[50%] rounded-tr-[20%] rounded-br-[10%] rounded-bl-[34%] opacity-80 sm:bottom-2 sm:right-0 sm:h-[72%] sm:w-[86%] sm:opacity-100" />
-                <Image
-                  src="/brand/generated/hero-family-meal.png"
-                  alt="Foody Fam meal preview"
-                  width={720}
-                  height={820}
-                  className="relative z-10 ml-auto h-[320px] w-full max-w-[680px] rounded-[26px] object-cover object-top shadow-[0_22px_58px_rgba(92,74,66,0.16)] sm:h-[460px] sm:rounded-[32px] lg:h-[520px]"
-                  priority
-                />
+                <div className="relative z-10 ml-auto h-[320px] w-full max-w-full overflow-hidden rounded-[26px] shadow-[0_22px_58px_rgba(92,74,66,0.16)] sm:h-[460px] sm:max-w-[680px] sm:rounded-[32px] lg:h-[520px]">
+                  <Image
+                    src="/brand/generated/hero-family-meal.png"
+                    alt="Foody Fam meal preview"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 680px"
+                    className="object-cover object-top"
+                    priority
+                  />
+                </div>
               </div>
             </motion.div>
           </div>

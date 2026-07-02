@@ -1,5 +1,6 @@
 "use client";
 
+import { forwardRef } from "react";
 import type { ButtonHTMLAttributes, HTMLAttributes, InputHTMLAttributes, SelectHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
@@ -36,9 +37,10 @@ export function Pill({ className, ...props }: HTMLAttributes<HTMLSpanElement>) {
   );
 }
 
-export function Field({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
+export const Field = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(function Field({ className, ...props }, ref) {
   return (
     <input
+      ref={ref}
       className={cn(
         "min-h-11 w-full rounded-2xl border border-[#e9c7b7] bg-white px-4 text-sm font-semibold text-[#1f1d1c] outline-none transition focus:border-[#78bea8] focus:ring-4 focus:ring-[#78bea8]/15",
         className
@@ -46,7 +48,7 @@ export function Field({ className, ...props }: InputHTMLAttributes<HTMLInputElem
       {...props}
     />
   );
-}
+});
 
 export function Select({ className, ...props }: SelectHTMLAttributes<HTMLSelectElement>) {
   return (

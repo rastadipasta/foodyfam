@@ -8,13 +8,12 @@ import { Button, Card, Pill } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
 import { demoRecipes } from "@/lib/data";
-import { pagePhotos } from "@/lib/data";
 import { databaseRecipes } from "@/lib/recipe-database";
 import type { MealPlanDay, MealSlotType, Recipe } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 import { cn } from "@/lib/utils";
 import { AssistantPage, NutritionPage, PlannerPage, ProfilesPage, RecipeCloud, ShoppingPage } from "./product-pages";
-import { FloatingPhoto, MetricCard } from "./motion";
+import { MetricCard } from "./motion";
 
 const dashboardNav = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -309,11 +308,17 @@ export function Overview() {
 function GeneratorInner() {
   return (
     <div className="grid gap-5">
-      <div className="grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
-        <FloatingPhoto src={pagePhotos.generator} title="Cook once from what you have" caption="The dashboard generator turns pantry ingredients into one shared family recipe." />
-        <div className="grid gap-5 sm:grid-cols-2">
-          <MetricCard label="Profile-aware" value="2 kids" body="Baby ages, texture styles, and allergies are kept close to the recipe request." />
-          <MetricCard label="Dinner speed" value="25m" body="The default flow favors weeknight meals with one cooking path." />
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+        <div>
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">AI Generator</p>
+          <h1 className="mt-2 font-display text-4xl font-black">Generate a family recipe</h1>
+          <p className="mt-2 max-w-2xl font-bold leading-7 text-[#5c4a42]">
+            Build one cooking flow with ingredients, baby portion timing, and adult finishing steps.
+          </p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:w-[460px]">
+          <MetricCard label="Profile-aware" value="2 kids" body="Baby ages, texture styles, and allergies stay close to the recipe request." />
+          <MetricCard label="Dinner speed" value="25m" body="The flow favors weeknight meals with one cooking path." />
         </div>
       </div>
       <GeneratorPanel />
