@@ -341,7 +341,7 @@ function RecipesInner() {
           <Pill>{savedRecipes.length || demoRecipes.length} recipes</Pill>
         </div>
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {(savedRecipes.length ? savedRecipes : demoRecipes).map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} onOpen={setOpenRecipe} />)}
+          {(savedRecipes.length ? savedRecipes : demoRecipes).map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} textOnly onOpen={setOpenRecipe} />)}
         </div>
       </div>
       <div>
@@ -351,7 +351,7 @@ function RecipesInner() {
         </div>
         {generatedRecipes.length ? (
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {generatedRecipes.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} onOpen={setOpenRecipe} />)}
+            {generatedRecipes.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} textOnly onOpen={setOpenRecipe} />)}
           </div>
         ) : (
           <Card>

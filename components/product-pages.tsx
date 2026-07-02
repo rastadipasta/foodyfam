@@ -223,8 +223,9 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-end bg-[#5c4a42]/30 px-0 py-0 backdrop-blur-sm sm:place-items-center sm:px-4 sm:py-6" role="dialog" aria-modal="true">
-      <div className="max-h-[94vh] w-full max-w-4xl overflow-hidden rounded-t-[28px] border border-[#e9c7b7] bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_55%,#ffccb2_150%)] shadow-[0_30px_90px_rgba(92,74,66,0.28)] sm:rounded-[32px]">
-        <div className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-[#e9c7b7]/70 bg-[#fffaf6]/92 p-4 backdrop-blur sm:p-5">
+      <div className="flex max-h-[96dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-[28px] border border-[#e9c7b7] bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_55%,#ffccb2_150%)] shadow-[0_30px_90px_rgba(92,74,66,0.28)] sm:max-h-[94vh] sm:rounded-[32px]">
+        <div className="shrink-0 border-b border-[#e9c7b7]/70 bg-[#fffaf6]/92 p-4 backdrop-blur sm:p-5">
+          <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#78bea8]">Recipe cloud</p>
             <h2 className="mt-2 font-display text-3xl font-black leading-tight sm:text-4xl">{recipe.title}</h2>
@@ -233,8 +234,9 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
           <button className="rounded-full bg-white p-3 text-[#5c4a42] shadow-sm transition hover:scale-105" aria-label="Close recipe" onClick={onClose}>
             <X size={20} />
           </button>
+          </div>
         </div>
-        <div className="max-h-[calc(94vh-132px)] overflow-y-auto p-4 [scrollbar-color:#f59b78_#f7efe9] [scrollbar-width:thin] sm:p-5">
+        <div className="min-h-0 flex-1 overflow-y-auto p-4 pb-24 [scrollbar-color:#f59b78_#f7efe9] [scrollbar-width:thin] sm:p-5 sm:pb-28">
 
         <div className="mt-5 flex flex-wrap gap-2">
           {recipe.tags.slice(0, 8).map((tag) => <Pill key={tag}>{tag}</Pill>)}
@@ -288,6 +290,7 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
           <CloudSection title="Shopping list" items={shoppingLines(recipe)} icon={<ShoppingBasket size={15} />} />
           <CloudSection title="Safety notes" items={recipe.safetyNotes || recipe.allergyWarnings || ["Review allergens and texture before serving."]} />
         </div>
+          <div className="h-2" aria-hidden="true" />
         </div>
       </div>
     </div>
