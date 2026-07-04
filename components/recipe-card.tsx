@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Clock, Heart, Star } from "lucide-react";
 import type { Recipe } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
-import { Button, Card, Pill } from "./ui";
+import { Button, Card, Pill, RecipeTicket } from "./ui";
 
 export function RecipeCard({
   recipe,
@@ -26,18 +26,45 @@ export function RecipeCard({
 
   return (
     <Card
-      className={`grid gap-4 overflow-hidden ${cardPadding} ${
-        textOnly
-          ? "recipe-note gentle-lift border border-[#e9c7b7]/80 bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_46%,#ffccb2_140%)] shadow-[0_18px_45px_rgba(92,74,66,0.08)]"
-          : ""
-      }`}
+      className={`grid gap-4 overflow-hidden ${cardPadding} ${textOnly ? "!bg-transparent !p-0 !shadow-none before:hidden" : ""}`}
     >
+      {textOnly ? (
+        <RecipeTicket className="grid h-full gap-3 p-5">
+          <RecipeCardBody recipe={recipe} compact={compact} textOnly={textOnly} onOpen={onOpen} saved={saved} onSave={() => saveRecipe(recipe.id)} />
+        </RecipeTicket>
+      ) : (
+        <>
       {!textOnly && (
         <Link href={`/recipes/${recipe.slug}`} className="relative block aspect-[4/3] overflow-hidden rounded-t-[24px]">
           <Image src={recipe.image} alt={recipe.title} fill className="object-cover" />
         </Link>
       )}
-      <div className={`grid gap-3 ${bodyPadding}`}>
+      <RecipeCardBody recipe={recipe} compact={compact} textOnly={textOnly} onOpen={onOpen} saved={saved} onSave={() => saveRecipe(recipe.id)} className={bodyPadding} />
+        </>
+      )}
+    </Card>
+  );
+}
+
+function RecipeCardBody({
+  recipe,
+  compact,
+  textOnly,
+  onOpen,
+  saved,
+  onSave,
+  className
+}: {
+  recipe: Recipe;
+  compact: boolean;
+  textOnly: boolean;
+  onOpen?: (recipe: Recipe) => void;
+  saved: boolean;
+  onSave: () => void;
+  className?: string;
+}) {
+  return (
+      <div className={`grid gap-3 ${className || ""}`}>
         <div className="flex items-start justify-between gap-3">
           <div>
             {onOpen ? (
@@ -62,7 +89,7 @@ export function RecipeCard({
           <button
             aria-label={saved ? "Remove from saved" : "Save recipe"}
             className="tap-target rounded-full bg-[#f7efe9] p-3 text-[#f59b78] shadow-sm transition hover:scale-105 hover:bg-[#ffccb2]/70 active:scale-95"
-            onClick={() => saveRecipe(recipe.id)}
+            onClick={onSave}
           >
             <Heart size={18} fill={saved ? "currentColor" : "none"} />
           </button>
@@ -83,6 +110,5 @@ export function RecipeCard({
           </Link>
         )}
       </div>
-    </Card>
   );
 }

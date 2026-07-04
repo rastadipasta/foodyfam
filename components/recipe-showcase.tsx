@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Clock, Flame, Star } from "lucide-react";
 import type { Recipe } from "@/lib/types";
-import { Button, Card, Pill } from "./ui";
+import { Button, KitchenLedger, Pill, RecipeTicket } from "./ui";
 import { useAppStore } from "@/store/useAppStore";
 
 export function RecipeShowcase({ recipe }: { recipe: Recipe }) {
@@ -11,7 +11,7 @@ export function RecipeShowcase({ recipe }: { recipe: Recipe }) {
   const saved = useAppStore((state) => state.savedRecipeIds.includes(recipe.id));
 
   return (
-    <Card className="grid gap-6 p-0 lg:grid-cols-[0.85fr_1.35fr]">
+    <KitchenLedger className="grid gap-6 overflow-hidden rounded-[34px] p-0 lg:grid-cols-[0.85fr_1.35fr]">
       <div className="relative min-h-[320px] overflow-hidden rounded-[24px] lg:rounded-r-none">
         <Image src={recipe.image} alt={recipe.title} fill className="object-cover object-top" />
       </div>
@@ -42,16 +42,16 @@ export function RecipeShowcase({ recipe }: { recipe: Recipe }) {
             </ol>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-[22px] bg-[#f7efe9] p-5">
+            <RecipeTicket className="rounded-[22px] bg-[#f7efe9] p-5">
               <h3 className="font-display text-xl font-black text-[#78bea8]">For Baby</h3>
               <p className="mt-1 text-xs font-black text-[#5c4a42]">6-8 months</p>
               <ul className="mt-4 grid gap-2 text-sm font-bold">{recipe.baby.map((item) => <li key={item}>{item}</li>)}</ul>
-            </div>
-            <div className="rounded-[22px] bg-[#ffccb2]/75 p-5">
+            </RecipeTicket>
+            <RecipeTicket className="rounded-[22px] bg-[#ffccb2]/75 p-5">
               <h3 className="font-display text-xl font-black text-[#5c4a42]">For Adults</h3>
               <p className="mt-1 text-xs font-black text-[#5c4a42]">Family plate</p>
               <ul className="mt-4 grid gap-2 text-sm font-bold">{recipe.adults.map((item) => <li key={item}>{item}</li>)}</ul>
-            </div>
+            </RecipeTicket>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -61,6 +61,6 @@ export function RecipeShowcase({ recipe }: { recipe: Recipe }) {
           <Pill>{recipe.nutrition.fiber}</Pill>
         </div>
       </div>
-    </Card>
+    </KitchenLedger>
   );
 }

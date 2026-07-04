@@ -195,3 +195,101 @@ export function PageHero({
     </div>
   );
 }
+
+export function EditorialHero({
+  eyebrow,
+  title,
+  body,
+  children,
+  actions,
+  meta,
+  className
+}: {
+  eyebrow: string;
+  title: string;
+  body: string;
+  children?: React.ReactNode;
+  actions?: React.ReactNode;
+  meta?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={cn("editorial-hero rounded-[var(--radius-editorial)] p-5 sm:p-8 lg:p-10", className)}>
+      <div className="relative z-10 grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+        <div>
+          <span className="editorial-kicker">{eyebrow}</span>
+          <h1 className="mt-5 font-display text-balance text-[4.6rem] font-black leading-[0.82] text-[#1f1d1c] sm:text-7xl lg:text-8xl">
+            {title}
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg font-bold leading-8 text-[#4f4039] sm:text-xl">{body}</p>
+          {actions && <div className="mt-8 flex flex-wrap gap-3">{actions}</div>}
+          {meta && <div className="mt-7">{meta}</div>}
+        </div>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+export function KitchenLedger({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn("kitchen-ledger rounded-[32px] p-5 sm:p-6", className)} {...props} />;
+}
+
+export function RecipeTicket({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn("recipe-ticket gentle-lift rounded-[24px] p-5", className)} {...props} />;
+}
+
+export function MotionBand({ className, children, ...props }: HTMLAttributes<HTMLElement>) {
+  return (
+    <section className={cn("motion-band px-4 py-[var(--section-space)] sm:px-6 lg:px-8", className)} {...props}>
+      <div className="mx-auto max-w-7xl">{children}</div>
+    </section>
+  );
+}
+
+export function SplitProofSection({
+  eyebrow,
+  title,
+  points,
+  className
+}: {
+  eyebrow: string;
+  title: string;
+  points: string[];
+  className?: string;
+}) {
+  return (
+    <KitchenLedger className={cn("grid gap-5 lg:grid-cols-[0.8fr_1.2fr]", className)}>
+      <div>
+        <span className="editorial-kicker">{eyebrow}</span>
+        <h2 className="mt-4 font-display text-4xl font-black leading-tight">{title}</h2>
+      </div>
+      <div className="grid gap-3">
+        {points.map((point, index) => (
+          <RecipeTicket key={point} className="flex items-start gap-4 bg-white/80">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#5c4a42] text-xs font-black text-white">0{index + 1}</span>
+            <p className="text-sm font-bold leading-6 text-[#5c4a42]">{point}</p>
+          </RecipeTicket>
+        ))}
+      </div>
+    </KitchenLedger>
+  );
+}
+
+export function PlannerEventCard({
+  mealType,
+  title,
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement> & { mealType: string; title: string }) {
+  return (
+    <div className={cn("recipe-ticket rounded-[18px] p-3 text-left", className)} {...props}>
+      <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#5c4a42]/70">{mealType}</p>
+      <p className="mt-1 text-sm font-black leading-5 text-[#1f1d1c]">{title}</p>
+    </div>
+  );
+}
+
+export function DashboardCommandPanel({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn("command-panel rounded-[34px] p-5 sm:p-7", className)} {...props} />;
+}

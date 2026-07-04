@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { CalendarPlus, Check, Clock, Download, Heart, Mail, Plus, Search, Send, ShoppingBasket, Sparkles, Trash2, X } from "lucide-react";
 import { SiteShell } from "./layout";
-import { ActionBar, Button, Card, FeatureTile, IngredientRail, PageHero, PaperPanel, Pill, Field, Select, TextArea } from "./ui";
+import { ActionBar, Button, Card, FeatureTile, IngredientRail, PageHero, PaperPanel, Pill, PlannerEventCard, RecipeTicket, Field, Select, TextArea } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
 import { RecipeShowcase } from "./recipe-showcase";
@@ -403,7 +403,7 @@ export function PlannerPage() {
             <Button variant="secondary">Today</Button>
           </div>
         </div>
-        <section className="paper-panel mt-8 overflow-hidden rounded-[32px] p-4 text-[#5c4a42] sm:p-5">
+        <section className="kitchen-ledger mt-8 overflow-hidden rounded-[34px] p-4 text-[#5c4a42] shadow-[var(--shadow-editorial)] sm:p-5">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#78bea8]">{weekRange}</p>
@@ -431,15 +431,13 @@ export function PlannerPage() {
                     const recipe = plannerRecipes.find((item) => item.id === slot.recipeId);
                     return (
                       <div key={`${day.day}-${slot.mealType}`} className="relative h-[150px] border-b border-[#5c4a42]/10 p-3 last:border-b-0">
-                        <div className={`gentle-lift h-full rounded-[16px] border border-white/72 p-3 text-left text-[#1f1d1c] shadow-sm ${slotColor(slot.mealType)}`}>
-                          <p className="text-xs font-black uppercase tracking-[0.08em]">{slot.mealType}</p>
-                          <p className="mt-2 text-sm font-black leading-5">{slot.meal}</p>
+                        <PlannerEventCard mealType={slot.mealType} title={slot.meal} className={`h-full border-white/72 ${slotColor(slot.mealType)}`}>
                           {recipe && (
                             <ul className="mt-2 grid gap-1 text-[11px] font-bold">
                               {(recipe.ingredientDetails?.map((item) => item.name) || recipe.ingredients).slice(0, 3).map((item) => <li key={item}>- {item}</li>)}
                             </ul>
                           )}
-                        </div>
+                        </PlannerEventCard>
                       </div>
                     );
                   })}
@@ -1174,18 +1172,18 @@ function Pricing() {
 
   return (
     <div>
-      <PageTitle eyebrow="Pricing" title="Simple, fair pricing" />
+      <PageTitle eyebrow="Pricing" title="Choose your kitchen operating system" />
       <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[#5c4a42]">
         Choose how much of Foody Fam you want unlocked. Start simple, plan smarter, or open the full family food system.
       </p>
       <div className="mt-8 grid items-stretch gap-6 lg:grid-cols-3">
         {plans.map((plan) => (
-          <Card
+          <RecipeTicket
             key={plan.name}
             className={
               plan.featured
-                ? "relative flex h-full flex-col overflow-hidden !border-[#f59b78]/75 !bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_36%,#ffccb2_102%)] !p-6 !shadow-[0_30px_80px_rgba(245,155,120,0.28)] ring-2 ring-[#f59b78]/22 lg:min-h-[650px] xl:min-h-[680px]"
-                : "relative flex h-full flex-col overflow-hidden !bg-white/88 !p-6 !shadow-[0_18px_45px_rgba(92,74,66,0.08)] lg:min-h-[650px] xl:min-h-[680px]"
+                ? "relative flex h-full flex-col overflow-hidden border-[#f59b78]/75 bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_36%,#ffccb2_102%)] p-6 shadow-[0_30px_80px_rgba(245,155,120,0.28)] ring-2 ring-[#f59b78]/22 lg:min-h-[650px] xl:min-h-[680px]"
+                : "relative flex h-full flex-col overflow-hidden bg-white/88 p-6 shadow-[0_18px_45px_rgba(92,74,66,0.08)] lg:min-h-[650px] xl:min-h-[680px]"
             }
           >
             <div className="flex items-start justify-between gap-3">
@@ -1223,7 +1221,7 @@ function Pricing() {
             <Button className={`mt-auto w-full translate-y-0 ${plan.featured ? "min-h-12 shadow-[0_16px_34px_rgba(245,155,120,0.34)]" : "min-h-12"}`} variant={plan.variant}>
               {plan.cta}
             </Button>
-          </Card>
+          </RecipeTicket>
         ))}
       </div>
       <SeoCopySection

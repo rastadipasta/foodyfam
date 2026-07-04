@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { BarChart3, BookOpen, Bot, CalendarDays, ChefHat, Home, LayoutDashboard, LogOut, Menu, Settings, ShoppingBag, Sparkles, Target, Users, Utensils, X } from "lucide-react";
-import { ActionBar, Button, Card, PaperPanel, Pill } from "./ui";
+import { ActionBar, Button, Card, DashboardCommandPanel, KitchenLedger, Pill, RecipeTicket } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
 import { demoRecipes } from "@/lib/data";
@@ -236,7 +236,7 @@ function DashboardOverview() {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
-        <PaperPanel className="grid content-between gap-6 rounded-[34px] p-7">
+        <DashboardCommandPanel className="grid content-between gap-6">
           <div>
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <Pill className="bg-[#e8f4ef]">Today&apos;s meal</Pill>
@@ -249,14 +249,14 @@ function DashboardOverview() {
               {todayRecipe.description || todayRecipe.familyPitch || "One shared base, one baby-safe portion, and one adult finish for a calmer dinner."}
             </p>
             <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <div className="rounded-[22px] bg-white/78 p-4">
+              <RecipeTicket className="rounded-[22px] bg-white/78 p-4">
                 <p className="text-xs font-black uppercase tracking-[0.14em] text-[#78bea8]">Baby version</p>
                 <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">{(todayRecipe.babyVersion || todayRecipe.baby).slice(0, 2).join(" / ")}</p>
-              </div>
-              <div className="rounded-[22px] bg-white/78 p-4">
+              </RecipeTicket>
+              <RecipeTicket className="rounded-[22px] bg-white/78 p-4">
                 <p className="text-xs font-black uppercase tracking-[0.14em] text-[#f59b78]">Adult finish</p>
                 <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">{(todayRecipe.adultVersion || todayRecipe.adults).slice(0, 2).join(" / ")}</p>
-              </div>
+              </RecipeTicket>
             </div>
           </div>
           <ActionBar className="bg-white/50">
@@ -281,9 +281,9 @@ function DashboardOverview() {
             </Button>
             {todayMessage && <p className="w-full text-sm font-extrabold text-[#78bea8]">{todayMessage}</p>}
           </ActionBar>
-        </PaperPanel>
+        </DashboardCommandPanel>
         <div className="grid gap-5">
-          <Card>
+          <KitchenLedger className="rounded-[24px]">
             <div className="flex items-center justify-between gap-3">
               <h2 className="font-display text-2xl font-black">Weekly planner</h2>
               <Link href="/dashboard/planner" className="text-sm font-extrabold text-[#78bea8]">Open</Link>
@@ -291,8 +291,8 @@ function DashboardOverview() {
             <div className="mt-4 grid gap-2">
               {planner.slice(0, 5).map((item) => <Pill key={item.day} className="w-fit">{item.day}: {primaryPlannerMeal(item)}</Pill>)}
             </div>
-          </Card>
-          <Card>
+          </KitchenLedger>
+          <KitchenLedger className="rounded-[24px]">
             <h2 className="font-display text-2xl font-black">Quick actions</h2>
             <div className="mt-4 grid gap-2">
               <QuickAction href="/dashboard/generator" label="Generate meal" icon={Utensils} />
@@ -300,7 +300,7 @@ function DashboardOverview() {
               <QuickAction href="/dashboard/profiles" label="Add baby profile" icon={Users} />
               <QuickAction href="/dashboard/shopping" label="Open shopping list" icon={ShoppingBag} />
             </div>
-          </Card>
+          </KitchenLedger>
         </div>
       </div>
 
