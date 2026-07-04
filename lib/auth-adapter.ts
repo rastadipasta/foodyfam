@@ -1,4 +1,6 @@
 import type { AuthProvider, AuthUser } from "@/lib/types";
+import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import { authUserFromSupabase, ensureSupabaseProfile } from "@/lib/supabase/profile-sync";
 
 export type OAuthProvider = Extract<AuthProvider, "google" | "apple">;
 
@@ -12,6 +14,7 @@ export type AuthAdapter = {
   signInWithPassword: (credentials: PasswordCredentials) => Promise<AuthUser>;
   signUpWithPassword: (credentials: PasswordCredentials) => Promise<AuthUser>;
   signInWithOAuth: (provider: OAuthProvider) => Promise<AuthUser>;
+  getSession?: () => Promise<AuthUser | null>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ ok: true }>;
 };
@@ -71,7 +74,86 @@ export const demoAuthAdapter: AuthAdapter = {
   }
 };
 
+export const supabaseAuthAdapter: AuthAdapter = {
+  async signInWithPassword(credentials) {
+    const supabase = requireSupabase();
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: credentials.email.trim().toLowerCase(),
+      password: credentials.password
+    });
+    if (error || !data.user) throw error || new Error("No Supabase user returned.");
+    const profile = await ensureSupabaseProfile(data.user, credentials.name);
+    return authUserFromSupabase(data.user, profile);
+  },
+  async signUpWithPassword(credentials) {
+    const supabase = requireSupabase();
+    const { data, error } = await supabase.auth.signUp({
+      email: credentials.email.trim().toLowerCase(),
+      password: credentials.password,
+      options: {
+        emailRedirectTo: getAuthRedirectUrl(),
+        data: {
+          display_name: credentials.name || credentials.email.split("@")[0]
+        }
+      }
+    });
+    if (error || !data.user) throw error || new Error("No Supabase user returned.");
+    const profile = data.session ? await ensureSupabaseProfile(data.user, credentials.name) : null;
+    return authUserFromSupabase(data.user, profile);
+  },
+  async signInWithOAuth(provider) {
+    const supabase = requireSupabase();
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: getAuthRedirectUrl()
+      }
+    });
+    if (error) throw error;
+    return new Promise<AuthUser>(() => undefined);
+  },
+  async getSession() {
+    const supabase = requireSupabase();
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) return null;
+    const profile = await ensureSupabaseProfile(data.user);
+    return authUserFromSupabase(data.user, profile);
+  },
+  async signOut() {
+    const supabase = requireSupabase();
+    await supabase.auth.signOut();
+  },
+  async resetPassword(email) {
+    const supabase = requireSupabase();
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+      redirectTo: getAuthRedirectUrl()
+    });
+    if (error) throw error;
+    return { ok: true };
+  }
+};
+
+export function getPreferredAuthAdapter() {
+  return isSupabaseConfigured() ? supabaseAuthAdapter : demoAuthAdapter;
+}
+
+export async function signOutActiveAuth() {
+  if (isSupabaseConfigured()) {
+    await supabaseAuthAdapter.signOut().catch(() => undefined);
+  } else {
+    await demoAuthAdapter.signOut();
+  }
+}
+
 export function getAuthRedirectUrl() {
+  const explicit = process.env.NEXT_PUBLIC_SUPABASE_AUTH_REDIRECT_URL;
+  if (explicit) return explicit;
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   return `${appUrl.replace(/\/$/, "")}/auth/callback`;
+}
+
+function requireSupabase() {
+  const supabase = getSupabaseBrowserClient();
+  if (!supabase) throw new Error("Supabase is not configured.");
+  return supabase;
 }

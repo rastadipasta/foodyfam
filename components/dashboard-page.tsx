@@ -14,6 +14,8 @@ import { useAppStore } from "@/store/useAppStore";
 import { cn } from "@/lib/utils";
 import { AssistantPage, NutritionPage, PlannerPage, ProfilesPage, RecipeCloud, ShoppingPage } from "./product-pages";
 import { MetricCard } from "./motion";
+import { signOutActiveAuth } from "@/lib/auth-adapter";
+import { SupabaseSessionBridge } from "./layout";
 
 const dashboardNav = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -50,7 +52,8 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
   const logout = useAppStore((state) => state.logout);
   const activeNav = dashboardNav.find((item) => pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href)));
 
-  function handleLogout() {
+  async function handleLogout() {
+    await signOutActiveAuth();
     logout();
     setMenuOpen(false);
     router.push("/login");
@@ -58,6 +61,7 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
 
   return (
     <div className="min-h-screen bg-[#fffaf6]">
+      <SupabaseSessionBridge />
       <header className="sticky top-0 z-40 border-b border-[#5c4a42]/10 bg-[#fffaf6]/94 px-4 py-3 backdrop-blur lg:hidden">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
@@ -500,6 +504,7 @@ function SettingsInner() {
             <Button
               variant="secondary"
               onClick={() => {
+                void signOutActiveAuth();
                 logout();
                 router.push("/login");
               }}

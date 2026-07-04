@@ -1,10 +1,15 @@
-import type { AuthUser, BabyProfile, FamilyMember, FamilyPreferences } from "@/lib/types";
+import type { AuthUser, BabyProfile, FamilyMember, FamilyPreferences, MealPlanDay, Recipe, SettingsPreferences, ShoppingListItem } from "@/lib/types";
 
 export type ProfileSnapshot = {
   authUser: AuthUser | null;
   familyMembers: FamilyMember[];
   babyProfiles: BabyProfile[];
   preferences: FamilyPreferences;
+  settingsPreferences?: SettingsPreferences;
+  savedRecipeIds?: string[];
+  generatedRecipes?: Recipe[];
+  planner?: MealPlanDay[];
+  shopping?: ShoppingListItem[];
 };
 
 export type ProfileAdapter = {
@@ -18,4 +23,3 @@ export type ProfileAdapter = {
   deleteBabyProfile: (id: string) => Promise<{ ok: true }>;
   updatePreferences: (preferences: Partial<FamilyPreferences>) => Promise<FamilyPreferences>;
 };
-

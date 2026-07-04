@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Apple, ArrowRight, CheckCircle2, Chrome, Eye, EyeOff, LockKeyhole, Mail, UserRound } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type { UseFormRegisterReturn } from "react-hook-form";
 import { z } from "zod";
-import { demoAuthAdapter, type OAuthProvider } from "@/lib/auth-adapter";
+import { getPreferredAuthAdapter, type OAuthProvider } from "@/lib/auth-adapter";
+import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import { loadSupabaseSnapshot } from "@/lib/supabase/profile-sync";
 import { pagePhotos } from "@/lib/data";
 import { useAppStore } from "@/store/useAppStore";
 import { SiteShell } from "./layout";
@@ -55,16 +57,49 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
 
 export function AuthCallbackPage() {
   const router = useRouter();
+  const hydrateFromSupabaseSnapshot = useAppStore((state) => state.hydrateFromSupabaseSnapshot);
+  const [status, setStatus] = useState("Finishing your sign-in...");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+    async function finishCallback() {
+      const supabase = getSupabaseBrowserClient();
+      if (!supabase) {
+        setStatus("Demo mode is active. Open your dashboard to continue.");
+        return;
+      }
+      try {
+        const code = new URL(window.location.href).searchParams.get("code");
+        if (code) await supabase.auth.exchangeCodeForSession(code);
+        const { data } = await supabase.auth.getUser();
+        if (!data.user) throw new Error("No active Supabase session.");
+        const snapshot = await loadSupabaseSnapshot(data.user);
+        if (!mounted) return;
+        hydrateFromSupabaseSnapshot(snapshot);
+        router.replace(snapshot.onboardingCompleted ? "/dashboard" : "/onboarding");
+      } catch {
+        if (!mounted) return;
+        setError("We could not finish this sign-in. Please try again.");
+        setStatus("Account connection needs another try.");
+      }
+    }
+    void finishCallback();
+    return () => {
+      mounted = false;
+    };
+  }, [hydrateFromSupabaseSnapshot, router]);
+
   return (
     <SiteShell>
       <main className="mx-auto grid min-h-[70vh] max-w-3xl place-items-center px-4 py-10">
         <Card className="grid gap-4 text-center">
-          <Pill className="mx-auto bg-[#e8f4ef]">OAuth callback ready</Pill>
-          <h1 className="font-display text-4xl font-black">Account connection prepared</h1>
+          <Pill className="mx-auto bg-[#e8f4ef]">{error ? "Sign-in paused" : "Connecting account"}</Pill>
+          <h1 className="font-display text-4xl font-black">{status}</h1>
           <p className="mx-auto max-w-xl font-bold leading-7 text-[#5c4a42]">
-            This route is ready for Supabase to finish Google or Apple sign-in. Demo mode keeps your local account active
-            until provider credentials are connected.
+            Foody Fam is checking your session and loading your family profile.
           </p>
+          {error && <p className="rounded-2xl bg-[#fff0eb] px-4 py-3 text-sm font-extrabold text-[#b45435]">{error}</p>}
           <Button className="mx-auto" onClick={() => router.push("/dashboard")}>
             Open dashboard <ArrowRight size={17} />
           </Button>
@@ -106,6 +141,8 @@ function AuthCard({ mode }: { mode: AuthMode }) {
   const loginDemoUser = useAppStore((state) => state.loginDemoUser);
   const registerDemoUser = useAppStore((state) => state.registerDemoUser);
   const loginWithProvider = useAppStore((state) => state.loginWithProvider);
+  const loginSupabaseUser = useAppStore((state) => state.loginSupabaseUser);
+  const hydrateFromSupabaseSnapshot = useAppStore((state) => state.hydrateFromSupabaseSnapshot);
   const requestPasswordReset = useAppStore((state) => state.requestPasswordReset);
   const onboardingCompleted = useAppStore((state) => state.onboardingCompleted);
   const [loading, setLoading] = useState<LoadingTarget>(null);
@@ -125,7 +162,8 @@ function AuthCard({ mode }: { mode: AuthMode }) {
     setLoading(provider);
     setError("");
     try {
-      const user = await demoAuthAdapter.signInWithOAuth(provider);
+      const adapter = getPreferredAuthAdapter();
+      const user = await adapter.signInWithOAuth(provider);
       const completed = mode === "register" ? false : onboardingCompleted;
       loginWithProvider(user, completed);
       router.push(completed ? "/dashboard" : "/onboarding");
@@ -153,8 +191,21 @@ function AuthCard({ mode }: { mode: AuthMode }) {
             setLoading("password");
             setError("");
             try {
-              const user = await demoAuthAdapter.signInWithPassword(values);
-              loginDemoUser(user, onboardingCompleted);
+              const adapter = getPreferredAuthAdapter();
+              const user = await adapter.signInWithPassword(values);
+              if (isSupabaseConfigured()) {
+                const supabase = getSupabaseBrowserClient();
+                const { data } = await supabase!.auth.getUser();
+                if (data.user) {
+                  const snapshot = await loadSupabaseSnapshot(data.user);
+                  hydrateFromSupabaseSnapshot(snapshot);
+                  router.push(snapshot.onboardingCompleted ? "/dashboard" : "/onboarding");
+                  return;
+                }
+                loginSupabaseUser(user, onboardingCompleted);
+              } else {
+                loginDemoUser(user, onboardingCompleted);
+              }
               router.push(onboardingCompleted ? "/dashboard" : "/onboarding");
             } catch {
               setError("Login failed. Check your details and try again.");
@@ -174,8 +225,13 @@ function AuthCard({ mode }: { mode: AuthMode }) {
             setLoading("password");
             setError("");
             try {
-              const user = await demoAuthAdapter.signUpWithPassword(values);
-              registerDemoUser(user);
+              const adapter = getPreferredAuthAdapter();
+              const user = await adapter.signUpWithPassword(values);
+              if (isSupabaseConfigured()) {
+                loginSupabaseUser(user, false);
+              } else {
+                registerDemoUser(user);
+              }
               router.push("/onboarding");
             } catch {
               setError("Registration failed. Try again in a moment.");
@@ -194,9 +250,9 @@ function AuthCard({ mode }: { mode: AuthMode }) {
             setError("");
             setSuccess("");
             try {
-              await demoAuthAdapter.resetPassword(values.email);
+              await getPreferredAuthAdapter().resetPassword(values.email);
               requestPasswordReset(values.email);
-              setSuccess("Reset link prepared. In production this will be sent by your email provider.");
+              setSuccess(isSupabaseConfigured() ? "Reset email sent. Check your inbox." : "Reset link prepared for demo mode.");
             } catch {
               setError("Could not prepare reset link. Try again.");
             } finally {

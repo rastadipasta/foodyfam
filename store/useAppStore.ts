@@ -3,6 +3,23 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { babyProfiles, demoRecipes, familyMembers, initialChat, initialPlanner, initialShopping } from "@/lib/data";
+import {
+  deleteBabyProfile,
+  deleteFamilyMember,
+  deletePlannerSlot,
+  deleteShoppingItem,
+  syncAccountProfile,
+  syncBabyProfile,
+  syncFamilyMember,
+  syncFamilyPreferences,
+  syncGeneratedRecipe,
+  syncOnboardingState,
+  syncPlannerSlot,
+  syncSavedRecipe,
+  syncSettings,
+  syncShoppingItem,
+  type SupabaseAppSnapshot
+} from "@/lib/supabase/profile-sync";
 import type {
   AuthMode,
   AuthProvider,
@@ -69,6 +86,8 @@ type AppStore = {
   setActiveUser: (name: string | null) => void;
   loginDemoUser: (user: AuthUser, onboardingCompleted?: boolean) => void;
   registerDemoUser: (user: AuthUser) => void;
+  loginSupabaseUser: (user: AuthUser, onboardingCompleted?: boolean) => void;
+  hydrateFromSupabaseSnapshot: (snapshot: SupabaseAppSnapshot) => void;
   loginWithProvider: (user: AuthUser, onboardingCompleted?: boolean) => void;
   logout: () => void;
   requestPasswordReset: (email: string) => void;
@@ -122,35 +141,41 @@ export const useAppStore = create<AppStore>()(
         subscriptionStatus: "Free"
       },
       saveRecipe: (id) =>
-        set((state) => ({
-          savedRecipeIds: state.savedRecipeIds.includes(id)
-            ? state.savedRecipeIds.filter((recipeId) => recipeId !== id)
-            : [...state.savedRecipeIds, id]
-        })),
+        set((state) => {
+          const saved = !state.savedRecipeIds.includes(id);
+          const recipe = state.recipes.find((item) => item.id === id);
+          void syncSavedRecipe(id, saved, recipe);
+          return {
+            savedRecipeIds: saved ? [...state.savedRecipeIds, id] : state.savedRecipeIds.filter((recipeId) => recipeId !== id)
+          };
+        }),
       toggleShoppingItem: (id) =>
-        set((state) => ({
-          shopping: state.shopping.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item))
-        })),
+        set((state) => {
+          const shopping = state.shopping.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item));
+          const item = shopping.find((entry) => entry.id === id);
+          if (item) void syncShoppingItem(item);
+          return { shopping };
+        }),
       addShoppingItem: (item) =>
         set((state) => {
           const normalized = item.label.trim();
           if (!normalized) return state;
+          const nextItem = {
+            id: item.id || createLocalId("shopping"),
+            label: normalized,
+            category: item.category.trim() || "Other",
+            checked: item.checked || false
+          };
+          void syncShoppingItem(nextItem);
           return {
-            shopping: [
-              ...state.shopping,
-              {
-                id: item.id || createLocalId("shopping"),
-                label: normalized,
-                category: item.category.trim() || "Other",
-                checked: item.checked || false
-              }
-            ]
+            shopping: [...state.shopping, nextItem]
           };
         }),
       removeShoppingItem: (id) =>
-        set((state) => ({
-          shopping: state.shopping.filter((item) => item.id !== id)
-        })),
+        set((state) => {
+          void deleteShoppingItem(id);
+          return { shopping: state.shopping.filter((item) => item.id !== id) };
+        }),
       addPantryItem: (label) =>
         set((state) => {
           const normalized = label.trim();
@@ -163,6 +188,7 @@ export const useAppStore = create<AppStore>()(
       setPlannerSlot: (day, mealType, recipeId) =>
         set((state) => {
           const recipe = state.recipes.find((item) => item.id === recipeId);
+          void syncPlannerSlot(day, mealType, recipeId, recipe || null);
           return {
             planner: state.planner.map((item) => {
               if (item.day !== day) return normalizePlannerDay(item);
@@ -182,7 +208,9 @@ export const useAppStore = create<AppStore>()(
           };
         }),
       clearPlannerSlot: (day, mealType) =>
-        set((state) => ({
+        set((state) => {
+          void deletePlannerSlot(day, mealType);
+          return {
           planner: state.planner.map((item) => {
             if (item.day !== day) return normalizePlannerDay(item);
             const nextSlots = ensurePlannerSlots(item).map((slot) =>
@@ -196,10 +224,12 @@ export const useAppStore = create<AppStore>()(
               meal: dinner?.meal || "Choose a meal"
             };
           })
-        })),
+        };
+        }),
       setPlannerMeal: (day, recipeId) =>
         set((state) => {
           const recipe = state.recipes.find((item) => item.id === recipeId);
+          void syncPlannerSlot(day, "Dinner", recipeId, recipe || null);
           return {
             planner: state.planner.map((item) => {
               if (item.day !== day) return normalizePlannerDay(item);
@@ -213,7 +243,10 @@ export const useAppStore = create<AppStore>()(
           };
         }),
       addRecipeToPlanner: (day, recipe) =>
-        set((state) => ({
+        set((state) => {
+          void syncSavedRecipe(recipe.id, true, recipe);
+          void syncPlannerSlot(day, "Dinner", recipe.id, recipe);
+          return {
           recipes: [recipe, ...state.recipes.filter((item) => item.id !== recipe.id)],
           savedRecipeIds: Array.from(new Set([recipe.id, ...state.savedRecipeIds])),
           planner: state.planner.map((item) => {
@@ -223,9 +256,16 @@ export const useAppStore = create<AppStore>()(
             );
             return { ...item, recipeId: recipe.id, meal: recipe.title, slots: nextSlots };
           })
-        })),
+        };
+        }),
       removeRecipeFromPlanner: (recipeId) =>
-        set((state) => ({
+        set((state) => {
+          state.planner.forEach((item) => {
+            ensurePlannerSlots(item).forEach((slot) => {
+              if (slot.recipeId === recipeId) void deletePlannerSlot(item.day, slot.mealType);
+            });
+          });
+          return {
           planner: state.planner.map((item) => {
             const nextSlots = ensurePlannerSlots(item).map((slot) =>
               slot.recipeId === recipeId ? { ...slot, recipeId: "", meal: "Choose a meal" } : slot
@@ -238,12 +278,16 @@ export const useAppStore = create<AppStore>()(
               meal: item.recipeId === recipeId ? dinner?.meal || "Choose a meal" : item.meal
             };
           })
-        })),
+        };
+        }),
       addGeneratedRecipe: (recipe) =>
-        set((state) => ({
-          recipes: [recipe, ...state.recipes.filter((item) => item.id !== recipe.id)],
-          generatedRecipes: [recipe, ...state.generatedRecipes.filter((item) => item.id !== recipe.id)].slice(0, 20)
-        })),
+        set((state) => {
+          void syncGeneratedRecipe(recipe);
+          return {
+            recipes: [recipe, ...state.recipes.filter((item) => item.id !== recipe.id)],
+            generatedRecipes: [recipe, ...state.generatedRecipes.filter((item) => item.id !== recipe.id)].slice(0, 20)
+          };
+        }),
       addRecipeToShoppingList: (recipe) =>
         set((state) => {
           const existing = new Set(state.shopping.map((item) => item.label.trim().toLowerCase()));
@@ -251,6 +295,7 @@ export const useAppStore = create<AppStore>()(
             .filter((item) => !existing.has(item.label.trim().toLowerCase()))
             .map((item) => ({ ...item, id: createLocalId("shopping"), checked: false }));
           if (!additions.length) return state;
+          additions.forEach((item) => void syncShoppingItem(item));
           return { shopping: [...state.shopping, ...additions] };
         }),
       addChatMessage: (message) => set((state) => ({ chat: [...state.chat, message] })),
@@ -276,6 +321,35 @@ export const useAppStore = create<AppStore>()(
           authProvider: user.provider,
           onboardingStep: 0
         }),
+      loginSupabaseUser: (user, completed = true) =>
+        set({
+          authUser: user,
+          activeUser: user.displayName,
+          isAuthenticated: true,
+          onboardingCompleted: completed,
+          lastLoginAt: user.lastLoginAt,
+          authMode: "supabase",
+          authProvider: user.provider
+        }),
+      hydrateFromSupabaseSnapshot: (snapshot) =>
+        set({
+          authUser: snapshot.authUser,
+          activeUser: snapshot.authUser.displayName,
+          isAuthenticated: true,
+          onboardingCompleted: snapshot.onboardingCompleted,
+          lastLoginAt: snapshot.authUser.lastLoginAt,
+          authMode: "supabase",
+          authProvider: snapshot.authProvider,
+          familyMembers: snapshot.familyMembers,
+          babyProfiles: snapshot.babyProfiles,
+          familyPreferences: snapshot.familyPreferences,
+          settingsPreferences: snapshot.settingsPreferences,
+          savedRecipeIds: snapshot.savedRecipeIds,
+          generatedRecipes: snapshot.generatedRecipes,
+          recipes: snapshot.recipes,
+          planner: snapshot.planner,
+          shopping: snapshot.shopping
+        }),
       loginWithProvider: (user, completed = true) =>
         set({
           authUser: user,
@@ -283,7 +357,7 @@ export const useAppStore = create<AppStore>()(
           isAuthenticated: true,
           onboardingCompleted: completed,
           lastLoginAt: user.lastLoginAt,
-          authMode: "demo",
+          authMode: user.id.startsWith("demo-") ? "demo" : "supabase",
           authProvider: user.provider
         }),
       logout: () =>
@@ -298,72 +372,98 @@ export const useAppStore = create<AppStore>()(
       updateAuthUser: (user) =>
         set((state) => {
           const nextUser = state.authUser ? { ...state.authUser, ...user } : null;
+          if (nextUser) void syncAccountProfile(nextUser, state.onboardingCompleted);
           return {
             authUser: nextUser,
             activeUser: nextUser?.displayName || state.activeUser
           };
         }),
       addFamilyMember: (member) =>
-        set((state) => ({
-          familyMembers: [member, ...state.familyMembers.filter((item) => item.id !== member.id)]
-        })),
+        set((state) => {
+          void syncFamilyMember(member);
+          return { familyMembers: [member, ...state.familyMembers.filter((item) => item.id !== member.id)] };
+        }),
       updateFamilyMember: (id, member) =>
-        set((state) => ({
-          familyMembers: state.familyMembers.map((item) => (item.id === id ? { ...item, ...member } : item))
-        })),
+        set((state) => {
+          const familyMembers = state.familyMembers.map((item) => (item.id === id ? { ...item, ...member } : item));
+          const nextMember = familyMembers.find((item) => item.id === id);
+          if (nextMember) void syncFamilyMember(nextMember);
+          return { familyMembers };
+        }),
       removeFamilyMember: (id) =>
-        set((state) => ({
-          familyMembers: state.familyMembers.filter((item) => item.id !== id)
-        })),
+        set((state) => {
+          void deleteFamilyMember(id);
+          return { familyMembers: state.familyMembers.filter((item) => item.id !== id) };
+        }),
       addBabyProfile: (profile) =>
-        set((state) => ({
-          babyProfiles: [profile, ...state.babyProfiles.filter((item) => item.id !== profile.id)]
-        })),
+        set((state) => {
+          void syncBabyProfile(profile);
+          return { babyProfiles: [profile, ...state.babyProfiles.filter((item) => item.id !== profile.id)] };
+        }),
       updateBabyProfile: (id, profile) =>
-        set((state) => ({
-          babyProfiles: state.babyProfiles.map((item) => (item.id === id ? { ...item, ...profile } : item))
-        })),
+        set((state) => {
+          const babyProfiles = state.babyProfiles.map((item) => (item.id === id ? { ...item, ...profile } : item));
+          const nextProfile = babyProfiles.find((item) => item.id === id);
+          if (nextProfile) void syncBabyProfile(nextProfile);
+          return { babyProfiles };
+        }),
       removeBabyProfile: (id) =>
-        set((state) => ({
-          babyProfiles: state.babyProfiles.filter((item) => item.id !== id)
-        })),
+        set((state) => {
+          void deleteBabyProfile(id);
+          return { babyProfiles: state.babyProfiles.filter((item) => item.id !== id) };
+        }),
       updateFamilyPreferences: (preferences) =>
-        set((state) => ({
-          familyPreferences: { ...state.familyPreferences, ...preferences },
-          onboardingDraft: { ...state.onboardingDraft, ...preferences }
-        })),
+        set((state) => {
+          const familyPreferences = { ...state.familyPreferences, ...preferences };
+          void syncFamilyPreferences(familyPreferences);
+          return {
+            familyPreferences,
+            onboardingDraft: { ...state.onboardingDraft, ...preferences }
+          };
+        }),
       updateSettingsPreferences: (preferences) =>
-        set((state) => ({
-          settingsPreferences: { ...state.settingsPreferences, ...preferences }
-        })),
+        set((state) => {
+          const settingsPreferences = { ...state.settingsPreferences, ...preferences };
+          void syncSettings(settingsPreferences);
+          return { settingsPreferences };
+        }),
       setOnboardingStep: (step) => set({ onboardingStep: Math.max(0, Math.min(6, step)) }),
       updateOnboardingDraft: (draft) =>
         set((state) => ({ onboardingDraft: { ...state.onboardingDraft, ...draft } })),
       updateDashboardPreferences: (draft) =>
         set((state) => ({ onboardingDraft: { ...state.onboardingDraft, ...draft } })),
       completeOnboarding: (profile) =>
-        set((state) => ({
-          activeUser: state.authUser?.displayName || "Parent",
-          onboardingCompleted: true,
-          onboardingStep: 6,
-          familyMembers: buildFamilyMembersFromDraft(state.onboardingDraft, state.authUser?.displayName),
-          babyProfiles: [profile, ...state.babyProfiles.filter((item) => item.id !== profile.id)],
-          familyPreferences: {
+        set((state) => {
+          const familyMembers = buildFamilyMembersFromDraft(state.onboardingDraft, state.authUser?.displayName);
+          const babyProfiles = [profile, ...state.babyProfiles.filter((item) => item.id !== profile.id)];
+          const familyPreferences = {
             allergies: state.onboardingDraft.allergies,
             dietPreferences: state.onboardingDraft.dietPreferences,
             favoriteCuisines: state.onboardingDraft.favoriteCuisines,
             appliances: state.onboardingDraft.appliances,
             cookingGoals: state.onboardingDraft.cookingGoals
-          },
+          };
+          void syncOnboardingState({ authUser: state.authUser, familyMembers, babyProfiles, familyPreferences });
+          return {
+          activeUser: state.authUser?.displayName || "Parent",
+          onboardingCompleted: true,
+          onboardingStep: 6,
+          familyMembers,
+          babyProfiles,
+          familyPreferences,
           pantry: Array.from(new Set([...state.pantry, "Oats", "Banana", "Sweet potato", "Greek yogurt"]))
-        })),
+        };
+        }),
       upsertRecipe: (recipe, save = true) =>
-        set((state) => ({
+        set((state) => {
+          if (save) void syncSavedRecipe(recipe.id, true, recipe);
+          return {
           recipes: [recipe, ...state.recipes.filter((item) => item.id !== recipe.id)],
           savedRecipeIds: save
             ? Array.from(new Set([recipe.id, ...state.savedRecipeIds]))
             : state.savedRecipeIds
-        }))
+        };
+        })
     }),
     { name: "foody-fam-local" }
   )

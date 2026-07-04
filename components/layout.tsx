@@ -2,12 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Facebook, Instagram, Menu, Sparkles, X } from "lucide-react";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Facebook, Instagram, LogOut, Menu, Settings, Sparkles, UserRound, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui";
 import { cn } from "@/lib/utils";
 import { ScrollProgressGlow } from "./motion";
+import { signOutActiveAuth } from "@/lib/auth-adapter";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { loadSupabaseSnapshot } from "@/lib/supabase/profile-sync";
+import { useAppStore } from "@/store/useAppStore";
 
 const nav = [
   { href: "/#how", label: "How it works" },
@@ -23,6 +27,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen overflow-hidden">
+      <SupabaseSessionBridge />
       <ScrollProgressGlow />
       {!dashboardEmbedded && <Header />}
       {children}
@@ -34,6 +39,18 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 export function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const authUser = useAppStore((state) => state.authUser);
+  const isAuthenticated = useAppStore((state) => state.isAuthenticated);
+  const logout = useAppStore((state) => state.logout);
+  const loggedIn = isAuthenticated && authUser;
+
+  async function handleLogout() {
+    await signOutActiveAuth();
+    logout();
+    setOpen(false);
+    router.push("/");
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#5c4a42]/10 bg-[#fffaf6]/86 backdrop-blur-xl">
@@ -48,14 +65,36 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <div className="hidden items-center gap-3 lg:flex">
-          <Link href="/login">
-            <Button variant="secondary">Log in</Button>
-          </Link>
-          <Link href="/onboarding">
-            <Button>Sign up</Button>
-          </Link>
-        </div>
+        {loggedIn ? (
+          <div className="hidden items-center gap-3 lg:flex">
+            <Link href="/dashboard">
+              <Button variant="secondary">Dashboard</Button>
+            </Link>
+            <Link href="/dashboard/profiles" className="flex items-center gap-2 rounded-full border border-[#e9c7b7] bg-white px-3 py-2 text-sm font-extrabold text-[#5c4a42] shadow-sm transition hover:-translate-y-0.5">
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-[#ffccb2] text-xs font-black">
+                {authUser.displayName.slice(0, 1)}
+              </span>
+              {authUser.displayName.split(" ")[0]}
+            </Link>
+            <button
+              type="button"
+              aria-label="Log out"
+              className="grid h-11 w-11 place-items-center rounded-full border border-[#e9c7b7] bg-white text-[#5c4a42] shadow-sm transition hover:bg-[#f7efe9]"
+              onClick={() => void handleLogout()}
+            >
+              <LogOut size={17} />
+            </button>
+          </div>
+        ) : (
+          <div className="hidden items-center gap-3 lg:flex">
+            <Link href="/login">
+              <Button variant="secondary">Log in</Button>
+            </Link>
+            <Link href="/register">
+              <Button>Sign up</Button>
+            </Link>
+          </div>
+        )}
         <button
           aria-label="Open menu"
           className="rounded-full border border-[#e9c7b7] bg-white p-3 lg:hidden"
@@ -80,30 +119,95 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <div className="grid gap-2 pt-2">
-              <Link href="/login" onClick={() => setOpen(false)}>
-                <Button variant="secondary" className="w-full">
-                  Log in
+            {loggedIn ? (
+              <div className="grid gap-2 rounded-[22px] border border-[#e9c7b7] bg-white p-3">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-11 w-11 place-items-center rounded-full bg-[#ffccb2] font-black text-[#5c4a42]">
+                    {authUser.displayName.slice(0, 1)}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate font-black text-[#3c332f]">{authUser.displayName}</p>
+                    <p className="truncate text-xs font-bold text-[#5c4a42]/70">{authUser.email}</p>
+                  </div>
+                </div>
+                <Link href="/dashboard" onClick={() => setOpen(false)}>
+                  <Button className="w-full"><UserRound size={16} /> Dashboard</Button>
+                </Link>
+                <Link href="/dashboard/settings" onClick={() => setOpen(false)}>
+                  <Button variant="secondary" className="w-full"><Settings size={16} /> Settings</Button>
+                </Link>
+                <Button variant="ghost" className="w-full" onClick={() => void handleLogout()}>
+                  <LogOut size={16} />
+                  Log out
                 </Button>
-              </Link>
-              <Link href="/register" onClick={() => setOpen(false)}>
-                <Button className="w-full">
-                  <Sparkles size={16} />
-                  Sign up
-                </Button>
-              </Link>
-            </div>
-            <Link href="/onboarding" onClick={() => setOpen(false)}>
-              <Button className="w-full">
-                <Sparkles size={16} />
-                Get started
-              </Button>
-            </Link>
+              </div>
+            ) : (
+              <>
+                <div className="grid gap-2 pt-2">
+                  <Link href="/login" onClick={() => setOpen(false)}>
+                    <Button variant="secondary" className="w-full">
+                      Log in
+                    </Button>
+                  </Link>
+                  <Link href="/register" onClick={() => setOpen(false)}>
+                    <Button className="w-full">
+                      <Sparkles size={16} />
+                      Sign up
+                    </Button>
+                  </Link>
+                </div>
+                <Link href="/onboarding" onClick={() => setOpen(false)}>
+                  <Button className="w-full">
+                    <Sparkles size={16} />
+                    Get started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
     </header>
   );
+}
+
+export function SupabaseSessionBridge() {
+  const hydrateFromSupabaseSnapshot = useAppStore((state) => state.hydrateFromSupabaseSnapshot);
+  const logout = useAppStore((state) => state.logout);
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    if (!supabase) return;
+    const client = supabase;
+    let mounted = true;
+
+    async function hydrateCurrentUser() {
+      const { data } = await client.auth.getUser();
+      if (!mounted || !data.user) return;
+      const snapshot = await loadSupabaseSnapshot(data.user);
+      if (mounted) hydrateFromSupabaseSnapshot(snapshot);
+    }
+
+    void hydrateCurrentUser();
+    const { data } = client.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        logout();
+        return;
+      }
+      if (session?.user) {
+        void loadSupabaseSnapshot(session.user).then((snapshot) => {
+          if (mounted) hydrateFromSupabaseSnapshot(snapshot);
+        });
+      }
+    });
+
+    return () => {
+      mounted = false;
+      data.subscription.unsubscribe();
+    };
+  }, [hydrateFromSupabaseSnapshot, logout]);
+
+  return null;
 }
 
 export function Footer() {
