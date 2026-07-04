@@ -81,6 +81,28 @@ export function HomePage() {
           </div>
         </section>
 
+        <section className="px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.85fr_1.15fr]">
+            <Card className="!bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_58%,#e8f4ef_140%)]">
+              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">What Foody Fam does</p>
+              <h2 className="mt-2 font-display text-4xl font-black">One shared recipe base, separate baby and adult finishes.</h2>
+            </Card>
+            <Card className="grid gap-3">
+              {[
+                "Foody Fam creates one gentle cooking base for the whole family.",
+                "The baby portion is removed before salt, strong spices, honey, crunchy toppings, or adult finishes.",
+                "Adults get flavor at the end with herbs, acidity, cheese, salt, pepper, or spice.",
+                "The same recipe can become a weekly planner meal and one family shopping list."
+              ].map((item) => (
+                <p key={item} className="flex gap-2 text-sm font-bold leading-6 text-[#5c4a42]">
+                  <CheckCircle2 className="mt-0.5 shrink-0 text-[#78bea8]" size={17} />
+                  {item}
+                </p>
+              ))}
+            </Card>
+          </div>
+        </section>
+
         <section id="how" className="bg-white/72 px-4 py-14 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <h2 className="text-center font-display text-4xl font-black">How <span className="text-[#f59b78]">Foody Fam</span> works</h2>

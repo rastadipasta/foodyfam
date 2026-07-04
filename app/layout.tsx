@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Nunito, Nunito_Sans } from "next/font/google";
 import { BackToTop } from "@/components/back-to-top";
+import { absoluteUrl, defaultOgImage, getSiteUrl, siteName } from "@/lib/seo";
 import "./globals.css";
 
 const display = Nunito({
@@ -23,9 +24,42 @@ const dacherry = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Foody Fam - One meal, whole family",
+  metadataBase: new URL(getSiteUrl()),
+  applicationName: siteName,
+  title: {
+    default: "Foody Fam - AI Meal Planner for One Family Meal",
+    template: `%s | ${siteName}`
+  },
   description:
-    "AI recipes that turn one cooking process into baby-friendly, kid-friendly, and adult-ready meals.",
+    "Foody Fam turns one cooking process into baby-safe portions, adult finishes, shopping lists, and weekly meal plans.",
+  keywords: [
+    "AI meal planner",
+    "baby-safe recipes",
+    "family meal planner",
+    "BLW recipes",
+    "puree recipes",
+    "one meal whole family",
+    "weekly meal planner"
+  ],
+  alternates: {
+    canonical: absoluteUrl("/")
+  },
+  openGraph: {
+    title: "Foody Fam - One meal, whole family",
+    description:
+      "AI recipes that turn one cooking process into baby-friendly, kid-friendly, and adult-ready meals.",
+    url: getSiteUrl(),
+    siteName,
+    type: "website",
+    images: [{ url: absoluteUrl(defaultOgImage), width: 1200, height: 630, alt: "Foody Fam family meal preview" }]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Foody Fam - One meal, whole family",
+    description:
+      "AI recipes that turn one cooking process into baby-friendly, kid-friendly, and adult-ready meals.",
+    images: [absoluteUrl(defaultOgImage)]
+  },
   icons: {
     icon: "/favicon.png",
     apple: "/favicon.png"

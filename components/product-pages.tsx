@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -11,8 +10,9 @@ import { Button, Card, Field, Pill, Select, TextArea } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
 import { RecipeShowcase } from "./recipe-showcase";
-import { blogPosts, demoRecipes, pagePhotos } from "@/lib/data";
+import { demoRecipes, pagePhotos } from "@/lib/data";
 import { databaseRecipes, databaseRecipeToRecipe } from "@/lib/recipe-database";
+import { seoGuides } from "@/lib/seo-content";
 import type { BabyProfile, FamilyMember, FamilyPreferences, MealPlanDay, MealSlotType, Recipe, RecipeDatabaseMatch } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 import { FloatingPhoto, MetricCard, MomentStrip, Reveal } from "./motion";
@@ -59,6 +59,14 @@ export function GeneratorPage() {
             </p>
           </div>
           <GeneratorPanel onResult={() => router.push("/dashboard/generator")} />
+          <SeoCopySection
+            title="AI recipe generation for one family meal"
+            body="Foody Fam is built for parents who want one meal for babies and adults. The generator starts with ingredients, family profiles, baby age, allergy notes, and a verified recipe base, then returns ingredient quantities and steps that show exactly when to remove the baby portion and when to finish the adult plate."
+            links={[
+              ["Baby-safe recipe library", "/recipes"],
+              ["How to cook one meal for baby and adults", "/blog/how-to-cook-one-meal-for-baby-and-adults"]
+            ]}
+          />
         </div>
       </main>
     </SiteShell>
@@ -172,6 +180,12 @@ export function RecipesPage() {
           </div>
           <p className="mt-3 text-sm font-extrabold text-[#5c4a42]">{recipes.length} matching verified recipes</p>
         </Card>
+        <SeoCopySection
+          className="mt-8"
+          title="Verified base recipes for baby-safe AI adaptation"
+          body="The recipe library gives Foody Fam a trusted starting point before AI adapts a meal. Each base recipe includes meal type, cuisine, difficulty, ingredients, baby age adaptations, adult finishing, allergens, BLW status, freezer-friendly tags, and shopping list data."
+          links={databaseRecipes.slice(0, 6).map((recipe) => [recipe.title, `/recipes/${recipe.slug}`])}
+        />
         <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {(recipes.length ? recipes : demoRecipes).map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} textOnly onOpen={setOpenRecipe} />)}
         </div>
@@ -440,6 +454,15 @@ export function PlannerPage() {
           />
         )}
         {openRecipe && <RecipeCloud recipe={openRecipe} onClose={() => setOpenRecipe(null)} />}
+        <SeoCopySection
+          className="mt-8"
+          title="Weekly meal planning for parents"
+          body="Foody Fam organizes breakfast, lunch, and dinner into a one-week family meal calendar. Parents can plan around baby texture needs, adult dinners, leftovers, and the shopping list instead of rebuilding dinner decisions every day."
+          links={[
+            ["Weekly meal planning guide", "/blog/weekly-meal-planning-for-parents"],
+            ["Browse recipe library", "/recipes"]
+          ]}
+        />
       </main>
     </SiteShell>
   );
@@ -587,6 +610,15 @@ export function ShoppingPage() {
             )}
           </div>
         </Card>
+        <SeoCopySection
+          className="mt-8"
+          title="One shopping list for baby and adult meals"
+          body="Foody Fam turns planned recipes into one grocery list for the whole family. The list supports baby-safe portions, adult finishes, pantry reuse, and checkbox shopping without splitting dinner into separate workflows."
+          links={[
+            ["Plan meals first", "/planner"],
+            ["Generate a recipe", "/generator"]
+          ]}
+        />
       </main>
     </SiteShell>
   );
@@ -631,6 +663,15 @@ export function NutritionPage() {
         <PageTitle eyebrow="Nutrition" title="Tiny details, clear choices" />
         <div className="mt-8"><FloatingPhoto src={pagePhotos.nutrition} title="Nutrition without spreadsheet energy" caption="Protein, iron, fiber, and vitamin signals are shown in plain family language." /></div>
         <div className="mt-8"><NutritionCharts /></div>
+        <SeoCopySection
+          className="mt-8"
+          title="Family nutrition signals without medical claims"
+          body="Foody Fam summarizes practical nutrition signals like protein, iron, vitamin C, fiber, texture, and baby/adult portions. It helps parents plan balanced meals while keeping allergy and feeding concerns cautious and professional."
+          links={[
+            ["Baby-safe dinners by age", "/blog/baby-safe-dinners-by-age"],
+            ["Allergy-aware planning", "/blog/baby-food-allergens-and-meal-planning"]
+          ]}
+        />
       </main>
     </SiteShell>
   );
@@ -1180,6 +1221,15 @@ function Pricing() {
           </Card>
         ))}
       </div>
+      <SeoCopySection
+        className="mt-8"
+        title="Choose the meal planning workflow your family needs"
+        body="Free is for trying the generator, Premium is for weekly AI planning support, and Unlimited unlocks the complete Foody Fam system with verified recipes, shopping lists, saved meals, planner, nutrition, and priority assistant access."
+        links={[
+          ["Try the AI generator", "/generator"],
+          ["See verified recipes", "/recipes"]
+        ]}
+      />
     </div>
   );
 }
@@ -1187,8 +1237,23 @@ function Pricing() {
 function Blog() {
   return (
     <div>
-      <PageTitle eyebrow="Blog" title="Tiny kitchens, big wins" />
-      <div className="mt-8 grid gap-5 md:grid-cols-3">{blogPosts.map((post, index) => <Reveal key={post} delay={index * 0.07}><Card className="overflow-hidden p-0"><Image src={[pagePhotos.blog, pagePhotos.pantry, pagePhotos.planner][index]} alt={post} width={700} height={420} className="h-48 w-full object-cover" /><div className="p-5"><h2 className="font-display text-2xl font-black">{post}</h2><p className="mt-3 text-sm font-bold leading-6 text-[#5c4a42]">Practical guidance for families who want dinner to feel easier, safer, and more repeatable.</p></div></Card></Reveal>)}</div>
+      <PageTitle eyebrow="Guides" title="Baby-safe meal planning answers" />
+      <p className="mt-4 max-w-3xl text-lg font-bold leading-8 text-[#5c4a42]">
+        Practical Foody Fam guides for AI meal planning, baby-safe dinners, BLW, puree-friendly recipes, allergens, no-sugar desserts, and weekly planning.
+      </p>
+      <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {seoGuides.map((guide, index) => (
+          <Reveal key={guide.slug} delay={(index % 3) * 0.06}>
+            <Link href={`/blog/${guide.slug}`}>
+              <Card className="h-full transition hover:-translate-y-1">
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#78bea8]">Foody Fam guide</p>
+                <h2 className="mt-3 font-display text-2xl font-black">{guide.title}</h2>
+                <p className="mt-3 text-sm font-bold leading-6 text-[#5c4a42]">{guide.description}</p>
+              </Card>
+            </Link>
+          </Reveal>
+        ))}
+      </div>
     </div>
   );
 }
@@ -1224,6 +1289,32 @@ function PageTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
       <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">{eyebrow}</p>
       <h1 className="mt-2 font-display text-balance text-4xl font-black leading-tight sm:text-5xl">{title}</h1>
     </div>
+  );
+}
+
+function SeoCopySection({
+  title,
+  body,
+  links,
+  className = ""
+}: {
+  title: string;
+  body: string;
+  links: [string, string][];
+  className?: string;
+}) {
+  return (
+    <section className={`rounded-[28px] border border-[#e9c7b7]/70 bg-white/78 p-5 shadow-[0_18px_45px_rgba(92,74,66,0.08)] ${className}`}>
+      <h2 className="font-display text-3xl font-black">{title}</h2>
+      <p className="mt-3 max-w-4xl text-sm font-bold leading-7 text-[#5c4a42]">{body}</p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {links.map(([label, href]) => (
+          <Link key={href} href={href}>
+            <Pill className="bg-[#e8f4ef] transition hover:bg-[#ffccb2]">{label}</Pill>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
 

@@ -49,6 +49,16 @@ In Supabase Auth settings, add the deployed Vercel URLs:
 
 Google and Apple buttons are wired through Supabase, but they need provider credentials configured in the Supabase dashboard before production OAuth works.
 
+## SEO After Domain Setup
+
+After the final domain is connected, update `NEXT_PUBLIC_APP_URL` to that exact domain. This controls canonical URLs, Open Graph URLs, `robots.txt`, and `sitemap.xml`.
+
+Then follow:
+
+```bash
+docs/seo-launch-checklist.md
+```
+
 ## Database
 
 The production Supabase project already has the V1 user-data schema applied. The migration is also committed at:
