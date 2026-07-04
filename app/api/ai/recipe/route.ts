@@ -3,6 +3,9 @@ import { createDemoRecipe } from "@/lib/ai-demo";
 import { databaseRecipeToRecipe, findBestRecipeMatch } from "@/lib/recipe-database";
 import type { Recipe, RecipeMatchInput } from "@/lib/types";
 
+export const runtime = "nodejs";
+export const maxDuration = 30;
+
 const stringArray = { type: "array", items: { type: "string" } };
 const ingredientDetailsSchema = {
   type: "array",

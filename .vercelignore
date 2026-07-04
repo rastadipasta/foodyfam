@@ -1,0 +1,11 @@
+.env
+.env.local
+.env.*.local
+api.txt
+graphify-out
+qa-screenshots
+resources
+*.log
+.dev-server-*.log
+.dev-server-port
+tsconfig.tsbuildinfo
