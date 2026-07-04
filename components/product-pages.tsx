@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { CalendarPlus, Check, Clock, Download, Heart, Mail, Plus, Search, Send, ShoppingBasket, Sparkles, Trash2, X } from "lucide-react";
 import { SiteShell } from "./layout";
-import { Button, Card, Field, Pill, Select, TextArea } from "./ui";
+import { ActionBar, Button, Card, FeatureTile, IngredientRail, PageHero, PaperPanel, Pill, Field, Select, TextArea } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
 import { RecipeShowcase } from "./recipe-showcase";
@@ -51,13 +51,20 @@ export function GeneratorPage() {
     <SiteShell>
       <main className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid gap-5">
-          <div>
-            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">AI Recipe Generator</p>
-            <h1 className="mt-2 font-display text-balance text-4xl font-black leading-tight sm:text-5xl">Build one family meal</h1>
-            <p className="mt-3 max-w-2xl font-bold leading-7 text-[#5c4a42]">
-              Start with ingredients, then let Foody Fam split the same cooking flow into a baby portion and an adult finish.
-            </p>
-          </div>
+          <PageHero
+            eyebrow="AI Recipe Generator"
+            title="Build one family meal"
+            body="Start with ingredients, then let Foody Fam split the same cooking flow into a baby portion and an adult finish."
+          >
+            <PaperPanel className="rounded-[28px]">
+              <p className="font-display text-2xl font-black">Generator rhythm</p>
+              <div className="mt-4 grid gap-3 text-sm font-bold leading-6 text-[#5c4a42]">
+                <p>1. Add the main ingredients you have.</p>
+                <p>2. Foody Fam finds a verified base recipe.</p>
+                <p>3. The result starts with quantities and clear cooking steps.</p>
+              </div>
+            </PaperPanel>
+          </PageHero>
           <GeneratorPanel onResult={() => router.push("/dashboard/generator")} />
           <SeoCopySection
             title="AI recipe generation for one family meal"
@@ -113,10 +120,7 @@ export function RecipesPage() {
     <SiteShell>
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">Recipe library</p>
-            <h1 className="font-display text-5xl font-black">Saved for every age</h1>
-          </div>
+          <PageTitle eyebrow="Recipe library" title="Saved for every age" />
           <div className="relative w-full md:max-w-sm">
             <Search className="absolute left-4 top-3.5 text-[#5c4a42]" size={18} />
             <Field ref={searchRef} className="pl-11 pr-11" placeholder="Search recipes or tags" value={query} onChange={(event) => setQuery(event.target.value)} />
@@ -135,17 +139,18 @@ export function RecipesPage() {
             )}
           </div>
         </div>
-        <div className="mt-8 grid gap-5 lg:grid-cols-[1fr_0.7fr]">
-          <FloatingPhoto src={pagePhotos.recipes} title="Recipe cards with a purpose" caption="Every meal includes the shared base, the baby version, and the adult finish." />
-          <Card className="grid content-center gap-4">
+        <div className="mt-8 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+          <PaperPanel>
             <h2 className="font-display text-3xl font-black">100 verified base recipes</h2>
             <p className="font-bold leading-7 text-[#5c4a42]">AI now starts from structured Foody Fam recipes instead of a blank prompt.</p>
-            <div className="flex flex-wrap gap-2">
-              {["Breakfast", "Dinner", "BLW", "Freezer friendly", "Chicken", "Vegetarian", "Air fryer"].map((item) => <Pill key={item}>{item}</Pill>)}
-            </div>
-          </Card>
+            <IngredientRail className="mt-5" items={["Breakfast", "Dinner", "BLW", "Freezer friendly", "Chicken", "Vegetarian", "Air fryer"]} />
+          </PaperPanel>
+          <FeatureTile
+            title="AI-ready recipe notes"
+            body="Each recipe carries baby age paths, allergen flags, adult finishing, shopping data, and matching tags so generation starts from a safer base."
+          />
         </div>
-        <Card className="mt-8">
+        <Card className="mt-8 glass-tool">
           <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
             <FilterField label="Meal type">
               <Select aria-label="Meal type filter" value={mealType} onChange={(event) => setMealType(event.target.value)}>
@@ -236,9 +241,9 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
   }
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-end bg-[#5c4a42]/30 px-0 py-0 backdrop-blur-sm sm:place-items-center sm:px-4 sm:py-6" role="dialog" aria-modal="true">
-      <div className="flex max-h-[96dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-[28px] border border-[#e9c7b7] bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_55%,#ffccb2_150%)] shadow-[0_30px_90px_rgba(92,74,66,0.28)] sm:max-h-[94vh] sm:rounded-[32px]">
-        <div className="shrink-0 border-b border-[#e9c7b7]/70 bg-[#fffaf6]/92 p-4 backdrop-blur sm:p-5">
+        <div className="fixed inset-0 z-50 grid place-items-end bg-[#5c4a42]/30 px-0 py-0 backdrop-blur-sm sm:place-items-center sm:px-4 sm:py-6" role="dialog" aria-modal="true">
+      <div className="paper-panel flex max-h-[96dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-[30px] border border-[#e9c7b7] shadow-[0_30px_90px_rgba(92,74,66,0.28)] sm:max-h-[94vh] sm:rounded-[36px]">
+        <div className="relative z-10 shrink-0 border-b border-[#e9c7b7]/70 bg-[#fffaf6]/92 p-4 backdrop-blur sm:p-5">
           <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#78bea8]">Recipe cloud</p>
@@ -250,13 +255,13 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
           </button>
           </div>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto p-4 pb-24 [scrollbar-color:#f59b78_#f7efe9] [scrollbar-width:thin] sm:p-5 sm:pb-28">
+        <div className="scrollbar-soft relative z-10 min-h-0 flex-1 overflow-y-auto p-4 pb-28 [scrollbar-color:#f59b78_#f7efe9] [scrollbar-width:thin] sm:p-5 sm:pb-32">
 
         <div className="mt-5 flex flex-wrap gap-2">
           {recipe.tags.slice(0, 8).map((tag) => <Pill key={tag}>{tag}</Pill>)}
         </div>
 
-        <div className="mt-5 grid gap-3 rounded-[22px] bg-white/78 p-4 shadow-sm md:grid-cols-[1fr_auto_auto_auto] md:items-end">
+        <ActionBar className="mt-5 grid gap-3 md:grid-cols-[1fr_auto_auto_auto] md:items-end">
           <FilterField label="Add to meal planner">
             <Select aria-label="Planner day" value={selectedDay} onChange={(event) => setSelectedDay(event.target.value)}>
               {planner.map((day) => <option key={day.day}>{day.day}</option>)}
@@ -287,7 +292,7 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
             </p>
           )}
           {isPlanned && !plannerMessage && !shoppingMessage && <p className="text-sm font-extrabold text-[#5c4a42] md:col-span-4">Planned for {plannedDays.join(", ")}</p>}
-        </div>
+        </ActionBar>
 
         <div className="mt-6 grid gap-4 md:grid-cols-4">
           <MiniFact icon={<Clock size={16} />} label="Time" value={recipe.time} />
@@ -398,7 +403,7 @@ export function PlannerPage() {
             <Button variant="secondary">Today</Button>
           </div>
         </div>
-        <section className="mt-8 overflow-hidden rounded-[28px] border border-[#e9c7b7]/80 bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_62%,#ffccb2_145%)] p-4 text-[#5c4a42] shadow-[0_30px_90px_rgba(92,74,66,0.16)] sm:p-5">
+        <section className="paper-panel mt-8 overflow-hidden rounded-[32px] p-4 text-[#5c4a42] sm:p-5">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#78bea8]">{weekRange}</p>
@@ -406,7 +411,7 @@ export function PlannerPage() {
             </div>
             <Pill className="w-fit bg-white/80">Breakfast / Lunch / Dinner</Pill>
           </div>
-          <div className="grid grid-cols-[64px_1fr] overflow-x-auto rounded-[20px] border border-[#5c4a42]/12 bg-white/42">
+          <div className="relative z-10 grid grid-cols-[64px_1fr] overflow-x-auto rounded-[22px] border border-[#5c4a42]/12 bg-white/52">
             <div className="grid grid-rows-[44px_repeat(3,150px)] border-r border-[#5c4a42]/12 bg-[#f7efe9]/80 text-xs font-bold text-[#5c4a42]/62">
               <div />
               {["8 AM", "Noon", "6 PM"].map((time) => <div key={time} className="border-t border-[#5c4a42]/12 p-3">{time}</div>)}
@@ -426,7 +431,7 @@ export function PlannerPage() {
                     const recipe = plannerRecipes.find((item) => item.id === slot.recipeId);
                     return (
                       <div key={`${day.day}-${slot.mealType}`} className="relative h-[150px] border-b border-[#5c4a42]/10 p-3 last:border-b-0">
-                        <div className={`h-full rounded-[16px] border border-white/72 p-3 text-left text-[#1f1d1c] shadow-sm ${slotColor(slot.mealType)}`}>
+                        <div className={`gentle-lift h-full rounded-[16px] border border-white/72 p-3 text-left text-[#1f1d1c] shadow-sm ${slotColor(slot.mealType)}`}>
                           <p className="text-xs font-black uppercase tracking-[0.08em]">{slot.mealType}</p>
                           <p className="mt-2 text-sm font-black leading-5">{slot.meal}</p>
                           {recipe && (
@@ -1285,9 +1290,10 @@ function Contact() {
 
 function PageTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
-    <div>
+    <div className="max-w-3xl">
       <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">{eyebrow}</p>
       <h1 className="mt-2 font-display text-balance text-4xl font-black leading-tight sm:text-5xl">{title}</h1>
+      <div className="mt-4 h-1 w-28 rounded-full bg-[linear-gradient(90deg,#78bea8,#ffccb2,#f59b78)]" />
     </div>
   );
 }
@@ -1304,7 +1310,8 @@ function SeoCopySection({
   className?: string;
 }) {
   return (
-    <section className={`rounded-[28px] border border-[#e9c7b7]/70 bg-white/78 p-5 shadow-[0_18px_45px_rgba(92,74,66,0.08)] ${className}`}>
+    <section className={`paper-panel rounded-[30px] p-5 sm:p-6 ${className}`}>
+      <div className="relative z-10">
       <h2 className="font-display text-3xl font-black">{title}</h2>
       <p className="mt-3 max-w-4xl text-sm font-bold leading-7 text-[#5c4a42]">{body}</p>
       <div className="mt-4 flex flex-wrap gap-2">
@@ -1313,6 +1320,7 @@ function SeoCopySection({
             <Pill className="bg-[#e8f4ef] transition hover:bg-[#ffccb2]">{label}</Pill>
           </Link>
         ))}
+      </div>
       </div>
     </section>
   );

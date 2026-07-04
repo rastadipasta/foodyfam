@@ -28,7 +28,7 @@ export function RecipeCard({
     <Card
       className={`grid gap-4 overflow-hidden ${cardPadding} ${
         textOnly
-          ? "border border-[#e9c7b7]/80 bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_46%,#ffccb2_140%)] shadow-[0_18px_45px_rgba(92,74,66,0.08)]"
+          ? "recipe-note gentle-lift border border-[#e9c7b7]/80 bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_46%,#ffccb2_140%)] shadow-[0_18px_45px_rgba(92,74,66,0.08)]"
           : ""
       }`}
     >
@@ -41,11 +41,11 @@ export function RecipeCard({
         <div className="flex items-start justify-between gap-3">
           <div>
             {onOpen ? (
-              <button className="text-left font-display text-xl font-black text-[#1f1d1c] hover:text-[#f59b78]" onClick={() => onOpen(recipe)}>
+              <button className="text-left font-display text-xl font-black leading-tight text-[#1f1d1c] transition hover:text-[#f59b78]" onClick={() => onOpen(recipe)}>
                 {recipe.title}
               </button>
             ) : (
-              <Link href={`/recipes/${recipe.slug}`} className="font-display text-xl font-black text-[#1f1d1c] hover:text-[#f59b78]">
+              <Link href={`/recipes/${recipe.slug}`} className="font-display text-xl font-black leading-tight text-[#1f1d1c] transition hover:text-[#f59b78]">
                 {recipe.title}
               </Link>
             )}
@@ -61,7 +61,7 @@ export function RecipeCard({
           </div>
           <button
             aria-label={saved ? "Remove from saved" : "Save recipe"}
-            className="rounded-full bg-[#f7efe9] p-3 text-[#f59b78] transition hover:scale-105"
+            className="tap-target rounded-full bg-[#f7efe9] p-3 text-[#f59b78] shadow-sm transition hover:scale-105 hover:bg-[#ffccb2]/70 active:scale-95"
             onClick={() => saveRecipe(recipe.id)}
           >
             <Heart size={18} fill={saved ? "currentColor" : "none"} />
@@ -76,10 +76,10 @@ export function RecipeCard({
         )}
         {recipe.description && textOnly && <p className="line-clamp-3 text-sm font-bold leading-6 text-[#5c4a42]">{recipe.description}</p>}
         {onOpen ? (
-          <Button variant="secondary" className="w-full" onClick={() => onOpen(recipe)}>Open recipe</Button>
+          <Button variant="secondary" className="mt-1 w-full" onClick={() => onOpen(recipe)}>Open recipe</Button>
         ) : (
           <Link href={`/recipes/${recipe.slug}`}>
-            <Button variant="secondary" className="w-full">Open recipe</Button>
+            <Button variant="secondary" className="mt-1 w-full">Open recipe</Button>
           </Link>
         )}
       </div>

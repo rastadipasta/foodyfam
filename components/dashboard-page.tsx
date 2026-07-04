@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { BarChart3, BookOpen, Bot, CalendarDays, ChefHat, Home, LayoutDashboard, LogOut, Menu, Settings, ShoppingBag, Sparkles, Target, Users, Utensils, X } from "lucide-react";
-import { Button, Card, Pill } from "./ui";
+import { ActionBar, Button, Card, PaperPanel, Pill } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
 import { demoRecipes } from "@/lib/data";
@@ -60,9 +60,9 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
   }
 
   return (
-    <div className="min-h-screen bg-[#fffaf6]">
+    <div className="min-h-screen bg-[linear-gradient(180deg,#fffaf6_0%,#f7efe9_100%)]">
       <SupabaseSessionBridge />
-      <header className="sticky top-0 z-40 border-b border-[#5c4a42]/10 bg-[#fffaf6]/94 px-4 py-3 backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-40 border-b border-[#5c4a42]/10 bg-[#fffaf6]/88 px-4 py-3 shadow-[0_10px_34px_rgba(92,74,66,0.06)] backdrop-blur lg:hidden">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <Link href="/" className="font-display text-2xl font-black">Foody Fam</Link>
@@ -87,7 +87,7 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
             className="absolute inset-0 bg-[#5c4a42]/28 backdrop-blur-sm"
             onClick={() => setMenuOpen(false)}
           />
-          <aside className="absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto rounded-t-[28px] border border-[#e9c7b7] bg-[#f7efe9] p-4 shadow-[0_24px_70px_rgba(92,74,66,0.28)]">
+          <aside className="paper-panel absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto rounded-t-[30px] border border-[#e9c7b7] p-4 shadow-[0_24px_70px_rgba(92,74,66,0.28)]">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="font-display text-3xl font-black">Foody Fam</p>
@@ -113,7 +113,7 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
         </div>
       )}
       <div className="grid lg:grid-cols-[290px_1fr]">
-        <aside className="hidden border-b border-[#5c4a42]/10 bg-[#f7efe9] p-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
+        <aside className="hidden border-b border-[#5c4a42]/10 bg-[#f7efe9]/82 p-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r lg:backdrop-blur">
           <Link href="/" className="font-display text-3xl font-black">Foody Fam</Link>
           <DashboardNavLinks pathname={pathname} />
           <DashboardAccountBlock
@@ -140,10 +140,10 @@ function DashboardNavLinks({ pathname, onNavigate }: { pathname: string; onNavig
           href={href}
           onClick={onNavigate}
           className={cn(
-            "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold transition",
+            "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold transition active:scale-[0.99]",
             pathname === href || (href !== "/dashboard" && pathname.startsWith(href))
               ? "bg-white text-[#f59b78] shadow-sm"
-              : "text-[#5c4a42] hover:bg-white/70"
+              : "text-[#5c4a42] hover:bg-white/70 hover:shadow-sm"
           )}
         >
           <Icon size={18} />
@@ -166,7 +166,7 @@ function DashboardAccountBlock({
   onLogout: () => void;
 }) {
   return (
-    <div className="mt-5 grid gap-2 rounded-[18px] border border-[#e9c7b7] bg-white p-3 lg:mt-auto">
+    <div className="mt-5 grid gap-2 rounded-[18px] border border-[#e9c7b7] bg-white/82 p-3 shadow-sm lg:mt-auto">
       <div className="flex items-center gap-2.5">
         <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#ffccb2] text-sm font-black text-[#5c4a42]">
           {(authUser?.displayName || "P").slice(0, 1)}
@@ -236,7 +236,7 @@ function DashboardOverview() {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
-        <Card className="grid content-between gap-6 !bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_52%,#ffccb2_132%)] !p-7">
+        <PaperPanel className="grid content-between gap-6 rounded-[34px] p-7">
           <div>
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <Pill className="bg-[#e8f4ef]">Today&apos;s meal</Pill>
@@ -259,7 +259,7 @@ function DashboardOverview() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <ActionBar className="bg-white/50">
             <Button onClick={() => setOpenToday(true)}>Open recipe</Button>
             <Button
               variant="secondary"
@@ -280,8 +280,8 @@ function DashboardOverview() {
               <ShoppingBag size={17} /> Add to shopping list
             </Button>
             {todayMessage && <p className="w-full text-sm font-extrabold text-[#78bea8]">{todayMessage}</p>}
-          </div>
-        </Card>
+          </ActionBar>
+        </PaperPanel>
         <div className="grid gap-5">
           <Card>
             <div className="flex items-center justify-between gap-3">
@@ -309,7 +309,7 @@ function DashboardOverview() {
           <h2 className="font-display text-2xl font-black">Recent recipes</h2>
           <div className="mt-4 grid gap-3">
             {(savedRecipes.length ? savedRecipes : recipes.slice(0, 3)).map((recipe) => (
-              <div key={recipe.id} className="rounded-2xl bg-white p-3">
+              <div key={recipe.id} className="recipe-note rounded-2xl bg-white/88 p-3">
                 <p className="font-black">{recipe.title}</p>
                 <p className="text-xs font-bold text-[#5c4a42]/65">{recipe.tags.slice(0, 3).join(" / ")}</p>
               </div>
@@ -328,7 +328,7 @@ function DashboardOverview() {
           <h2 className="font-display text-2xl font-black">Recommended bases</h2>
           <div className="mt-4 grid gap-3">
             {recommendedBaseRecipes.map((recipe) => (
-              <div key={recipe.slug} className="rounded-2xl bg-white p-3">
+              <div key={recipe.slug} className="recipe-note rounded-2xl bg-white/88 p-3">
                 <p className="font-black">{recipe.title}</p>
                 <p className="text-xs font-bold text-[#5c4a42]/65">{recipe.mealType} / {recipe.proteinType} / {recipe.appliances[0]}</p>
               </div>
@@ -351,7 +351,7 @@ function DashboardOverview() {
 
 function QuickAction({ href, label, icon: Icon }: { href: string; label: string; icon: typeof Utensils }) {
   return (
-    <Link href={href} className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 text-sm font-extrabold text-[#5c4a42] shadow-sm transition hover:-translate-y-0.5">
+    <Link href={href} className="flex items-center justify-between rounded-2xl bg-white/86 px-4 py-3 text-sm font-extrabold text-[#5c4a42] shadow-sm transition hover:-translate-y-0.5 active:scale-[0.99]">
       <span className="flex items-center gap-2"><Icon size={17} />{label}</span>
       <span>{">"}</span>
     </Link>

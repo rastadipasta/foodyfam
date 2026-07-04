@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button, Card, Field, Pill, Select } from "./ui";
+import { ActionBar, Button, Card, Field, IngredientRail, PaperPanel, Pill, Select } from "./ui";
 import type { Recipe } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -168,7 +168,7 @@ export function GeneratorPanel({
   }
 
   return (
-    <Card className="grid gap-6">
+    <Card className="glass-tool grid gap-6 overflow-hidden !p-5 sm:!p-7">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-[#78bea8]">AI Recipe Generator</p>
@@ -190,7 +190,7 @@ export function GeneratorPanel({
             <div className="relative">
               <Field
                 aria-label="Ingredients"
-                className="pr-12"
+                className="min-h-14 rounded-[22px] border-[#f59b78]/35 bg-white/92 pr-12 text-base shadow-[0_12px_34px_rgba(92,74,66,0.06)]"
                 {...ingredientsRegister}
                 onChange={(event) => {
                   void ingredientsRegister.onChange(event);
@@ -290,12 +290,13 @@ export function GeneratorPanel({
           </FormBoxLabel>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row">
+        <ActionBar className="bg-white/46">
           <Button type="submit" disabled={loading} className="w-full lg:w-fit">
             {loading ? <Loader2 className="animate-spin" size={17} /> : <Sparkles size={17} />}
             {loading ? loadingStages[stage] : "Generate family recipe"}
           </Button>
-        </div>
+          <IngredientRail items={["verified base", "baby first", "adult finish"]} />
+        </ActionBar>
       </form>
 
       {loading && <PremiumLoader stage={stage} />}
@@ -366,7 +367,7 @@ function buildDefaultGeneratorValues(
 
 function PremiumLoader({ stage }: { stage: number }) {
   return (
-    <div className="overflow-hidden rounded-[24px] border border-[#e9c7b7] bg-white p-5">
+    <PaperPanel className="overflow-hidden rounded-[28px]">
       <div className="flex items-center gap-3">
         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#78bea8]/15 text-[#78bea8]">
           <Loader2 className="animate-spin" size={22} />
@@ -383,7 +384,7 @@ function PremiumLoader({ stage }: { stage: number }) {
           </div>
         ))}
       </div>
-    </div>
+    </PaperPanel>
   );
 }
 
@@ -420,7 +421,7 @@ function RecipeResult({
   const canNativeShare = typeof navigator !== "undefined" && "share" in navigator;
 
   return (
-    <div className="grid gap-5 rounded-[26px] bg-white p-5 shadow-[0_18px_45px_rgba(92,74,66,0.08)]">
+    <div className="recipe-note grid gap-5 rounded-[30px] bg-white/88 p-5 shadow-[0_18px_45px_rgba(92,74,66,0.08)] sm:p-6">
       <div>
         <div className="flex flex-wrap gap-2">
           {recipe.tags.map((tag) => (
