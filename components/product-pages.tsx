@@ -6,7 +6,21 @@ import { useRef, useState } from "react";
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { CalendarPlus, Check, Clock, Download, Heart, Mail, Plus, Search, Send, ShoppingBasket, Sparkles, Trash2, X } from "lucide-react";
 import { SiteShell } from "./layout";
-import { ActionBar, Button, Card, FeatureTile, IngredientRail, PageHero, PaperPanel, Pill, PlannerEventCard, RecipeTicket, Field, Select, TextArea } from "./ui";
+import {
+  Button,
+  Card,
+  FeatureTile,
+  GlassActionDock,
+  IngredientRail,
+  PageHero,
+  PaperPanel,
+  Pill,
+  PlannerEventCard,
+  RecipeTicket,
+  Field,
+  Select,
+  TextArea
+} from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
 import { RecipeShowcase } from "./recipe-showcase";
@@ -150,7 +164,7 @@ export function RecipesPage() {
             body="Each recipe carries baby age paths, allergen flags, adult finishing, shopping data, and matching tags so generation starts from a safer base."
           />
         </div>
-        <Card className="mt-8 glass-tool">
+        <Card className="liquid-glass mt-8">
           <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
             <FilterField label="Meal type">
               <Select aria-label="Meal type filter" value={mealType} onChange={(event) => setMealType(event.target.value)}>
@@ -242,8 +256,8 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
 
   return (
         <div className="fixed inset-0 z-50 grid place-items-end bg-[#5c4a42]/30 px-0 py-0 backdrop-blur-sm sm:place-items-center sm:px-4 sm:py-6" role="dialog" aria-modal="true">
-      <div className="paper-panel flex max-h-[96dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-[30px] border border-[#e9c7b7] shadow-[0_30px_90px_rgba(92,74,66,0.28)] sm:max-h-[94vh] sm:rounded-[36px]">
-        <div className="relative z-10 shrink-0 border-b border-[#e9c7b7]/70 bg-[#fffaf6]/92 p-4 backdrop-blur sm:p-5">
+      <div className="liquid-glass flex max-h-[96dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-[30px] border border-white/58 shadow-[0_30px_90px_rgba(92,74,66,0.28)] sm:max-h-[94vh] sm:rounded-[36px]">
+        <div className="relative z-10 shrink-0 border-b border-white/48 bg-white/54 p-4 backdrop-blur-xl sm:p-5">
           <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#78bea8]">Recipe cloud</p>
@@ -261,7 +275,7 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
           {recipe.tags.slice(0, 8).map((tag) => <Pill key={tag}>{tag}</Pill>)}
         </div>
 
-        <ActionBar className="mt-5 grid gap-3 md:grid-cols-[1fr_auto_auto_auto] md:items-end">
+        <GlassActionDock className="mt-5 grid gap-3 md:grid-cols-[1fr_auto_auto_auto] md:items-end">
           <FilterField label="Add to meal planner">
             <Select aria-label="Planner day" value={selectedDay} onChange={(event) => setSelectedDay(event.target.value)}>
               {planner.map((day) => <option key={day.day}>{day.day}</option>)}
@@ -292,7 +306,7 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
             </p>
           )}
           {isPlanned && !plannerMessage && !shoppingMessage && <p className="text-sm font-extrabold text-[#5c4a42] md:col-span-4">Planned for {plannedDays.join(", ")}</p>}
-        </ActionBar>
+        </GlassActionDock>
 
         <div className="mt-6 grid gap-4 md:grid-cols-4">
           <MiniFact icon={<Clock size={16} />} label="Time" value={recipe.time} />
@@ -318,7 +332,7 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
 
 function MiniFact({ icon, label, value }: { icon?: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-[20px] border border-[#e9c7b7]/60 bg-white/82 p-4 shadow-sm">
+    <div className="liquid-glass rounded-[20px] border border-white/58 bg-white/54 p-4 shadow-sm">
       <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.14em] text-[#78bea8]">{icon}{label}</p>
       <p className="mt-2 font-display text-xl font-black">{value}</p>
     </div>
@@ -328,7 +342,7 @@ function MiniFact({ icon, label, value }: { icon?: React.ReactNode; label: strin
 function CloudSection({ title, items, ordered = false, icon }: { title: string; items: string[]; ordered?: boolean; icon?: React.ReactNode }) {
   const List = ordered ? "ol" : "ul";
   return (
-    <div className="rounded-[24px] border border-[#e9c7b7]/50 bg-white/82 p-5 shadow-sm">
+    <div className="liquid-glass rounded-[24px] border border-white/58 bg-white/54 p-5 shadow-sm">
       <h3 className="font-display text-2xl font-black">{title}</h3>
       <List className="mt-4 grid gap-3 text-sm font-bold leading-6 text-[#5c4a42]">
         {items.map((item, index) => (
@@ -403,7 +417,7 @@ export function PlannerPage() {
             <Button variant="secondary">Today</Button>
           </div>
         </div>
-        <section className="kitchen-ledger mt-8 overflow-hidden rounded-[34px] p-4 text-[#5c4a42] shadow-[var(--shadow-editorial)] sm:p-5">
+        <section className="liquid-glass kitchen-ledger mt-8 overflow-hidden rounded-[34px] p-4 text-[#5c4a42] shadow-[var(--shadow-editorial)] sm:p-5">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#78bea8]">{weekRange}</p>
@@ -411,8 +425,8 @@ export function PlannerPage() {
             </div>
             <Pill className="w-fit bg-white/80">Breakfast / Lunch / Dinner</Pill>
           </div>
-          <div className="relative z-10 grid grid-cols-[64px_1fr] overflow-x-auto rounded-[22px] border border-[#5c4a42]/12 bg-white/52">
-            <div className="grid grid-rows-[44px_repeat(3,150px)] border-r border-[#5c4a42]/12 bg-[#f7efe9]/80 text-xs font-bold text-[#5c4a42]/62">
+          <div className="relative z-10 grid grid-cols-[64px_1fr] overflow-x-auto rounded-[22px] border border-white/58 bg-white/38 backdrop-blur-xl">
+            <div className="grid grid-rows-[44px_repeat(3,150px)] border-r border-white/48 bg-white/34 text-xs font-bold text-[#5c4a42]/62">
               <div />
               {["8 AM", "Noon", "6 PM"].map((time) => <div key={time} className="border-t border-[#5c4a42]/12 p-3">{time}</div>)}
             </div>
@@ -421,17 +435,17 @@ export function PlannerPage() {
                 <button
                   key={day.day}
                   type="button"
-                  className="border-r border-[#5c4a42]/12 text-left last:border-r-0"
+                  className="border-r border-white/42 text-left transition hover:bg-white/22 last:border-r-0"
                   onClick={() => setOpenDay(day)}
                 >
-                  <div className="h-11 border-b border-[#5c4a42]/12 px-3 py-2">
+                  <div className="h-11 border-b border-white/42 px-3 py-2">
                     <p className="text-xs font-black text-[#5c4a42]/76">{day.day}</p>
                   </div>
                   {plannerSlots(day).map((slot) => {
                     const recipe = plannerRecipes.find((item) => item.id === slot.recipeId);
                     return (
-                      <div key={`${day.day}-${slot.mealType}`} className="relative h-[150px] border-b border-[#5c4a42]/10 p-3 last:border-b-0">
-                        <PlannerEventCard mealType={slot.mealType} title={slot.meal} className={`h-full border-white/72 ${slotColor(slot.mealType)}`}>
+                      <div key={`${day.day}-${slot.mealType}`} className="relative h-[150px] border-b border-white/34 p-3 last:border-b-0">
+                        <PlannerEventCard mealType={slot.mealType} title={slot.meal} className={`h-full border-white/72 shadow-[0_14px_34px_rgba(92,74,66,0.1)] backdrop-blur-md ${slotColor(slot.mealType)}`}>
                           {recipe && (
                             <ul className="mt-2 grid gap-1 text-[11px] font-bold">
                               {(recipe.ingredientDetails?.map((item) => item.name) || recipe.ingredients).slice(0, 3).map((item) => <li key={item}>- {item}</li>)}
@@ -489,8 +503,8 @@ function PlannerDrawer({
   return (
     <div className="fixed inset-0 z-50 bg-[#5c4a42]/28 backdrop-blur-sm" role="dialog" aria-modal="true">
       <button className="absolute inset-0 cursor-default" aria-label="Close planner drawer" onClick={onClose} />
-      <aside className="absolute bottom-0 right-0 grid max-h-[86vh] w-full gap-4 overflow-auto rounded-t-[28px] border border-[#e9c7b7] bg-[#fffaf6] p-5 shadow-[0_30px_90px_rgba(92,74,66,0.24)] lg:bottom-auto lg:top-0 lg:h-full lg:max-h-none lg:w-[440px] lg:rounded-l-[28px] lg:rounded-tr-none">
-        <div className="sticky top-0 z-10 -mx-5 -mt-5 flex items-start justify-between gap-3 border-b border-[#e9c7b7]/70 bg-[#fffaf6]/95 p-5 backdrop-blur">
+      <aside className="liquid-glass absolute bottom-0 right-0 grid max-h-[86vh] w-full gap-4 overflow-auto rounded-t-[28px] border border-white/58 bg-white/52 p-5 shadow-[0_30px_90px_rgba(92,74,66,0.24)] lg:bottom-auto lg:top-0 lg:h-full lg:max-h-none lg:w-[440px] lg:rounded-l-[28px] lg:rounded-tr-none">
+        <div className="sticky top-0 z-10 -mx-5 -mt-5 flex items-start justify-between gap-3 border-b border-white/52 bg-white/60 p-5 backdrop-blur-xl">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Plan day</p>
             <h2 className="font-display text-3xl font-black">{day.day}</h2>
@@ -502,7 +516,7 @@ function PlannerDrawer({
         {plannerSlots(day).map((slot) => {
           const recipe = recipes.find((item) => item.id === slot.recipeId);
           return (
-            <div key={`${day.day}-${slot.mealType}`} className="rounded-[22px] border border-[#e9c7b7]/70 bg-white/80 p-4">
+            <div key={`${day.day}-${slot.mealType}`} className="liquid-glass rounded-[22px] border border-white/58 bg-white/52 p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.14em] text-[#f59b78]">{slot.mealType}</p>
@@ -532,9 +546,9 @@ function PlannerDrawer({
 }
 
 function slotColor(mealType: MealSlotType) {
-  if (mealType === "Breakfast") return "bg-[#ffccb2]";
-  if (mealType === "Lunch") return "bg-[#f59b78]/88";
-  return "bg-[#e8f4ef]";
+  if (mealType === "Breakfast") return "bg-[#ffccb2]/82";
+  if (mealType === "Lunch") return "bg-[#f59b78]/78";
+  return "bg-[#e8f4ef]/88";
 }
 
 export function ShoppingPage() {
@@ -558,7 +572,7 @@ export function ShoppingPage() {
           <PageTitle eyebrow="Smart shopping list" title="One list for everyone" />
           <Button variant="secondary"><Download size={17} /> Export PDF</Button>
         </div>
-        <Card className="mt-8 overflow-hidden !border-[#e9c7b7]/70 !bg-[linear-gradient(145deg,rgba(255,250,246,0.92)_0%,rgba(247,239,233,0.9)_45%,rgba(255,204,178,0.46)_128%)] !p-0 !shadow-[0_28px_80px_rgba(92,74,66,0.14)] backdrop-blur">
+        <Card className="liquid-glass mt-8 overflow-hidden !border-white/60 !bg-[linear-gradient(145deg,rgba(255,250,246,0.62)_0%,rgba(247,239,233,0.5)_45%,rgba(255,204,178,0.34)_128%)] !p-0 !shadow-[0_28px_80px_rgba(92,74,66,0.14)] backdrop-blur">
           <div className="grid gap-5 border-b border-[#5c4a42]/10 p-5 sm:p-6 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
               <Pill className="mb-4 bg-[#e8f4ef]">
@@ -570,7 +584,7 @@ export function ShoppingPage() {
                 Add ingredients as you plan meals, remove what you do not need, and mark items as bought while shopping.
               </p>
             </div>
-            <div className="grid gap-2 rounded-[22px] bg-white/72 p-4 text-sm font-extrabold text-[#5c4a42] shadow-sm sm:min-w-56">
+            <div className="liquid-glass grid gap-2 rounded-[22px] bg-white/46 p-4 text-sm font-extrabold text-[#5c4a42] shadow-sm sm:min-w-56">
               <span>{checkedCount} bought</span>
               <span>{shopping.length - checkedCount} still needed</span>
             </div>
@@ -586,7 +600,7 @@ export function ShoppingPage() {
 
           <div className="grid gap-3 p-5 sm:p-6">
             {shopping.map((item) => (
-              <div key={item.id} className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-[18px] border border-white/72 bg-white/72 p-3 shadow-[0_12px_30px_rgba(92,74,66,0.06)]">
+              <div key={item.id} className="liquid-glass grid grid-cols-[1fr_auto] items-center gap-3 rounded-[18px] border border-white/72 bg-white/46 p-3 shadow-[0_12px_30px_rgba(92,74,66,0.06)]">
                 <label className="flex min-w-0 cursor-pointer items-center gap-3 text-left font-bold">
                   <input
                     type="checkbox"
@@ -1182,8 +1196,8 @@ function Pricing() {
             key={plan.name}
             className={
               plan.featured
-                ? "relative flex h-full flex-col overflow-hidden border-[#f59b78]/75 bg-[linear-gradient(145deg,#fffaf6_0%,#f7efe9_36%,#ffccb2_102%)] p-6 shadow-[0_30px_80px_rgba(245,155,120,0.28)] ring-2 ring-[#f59b78]/22 lg:min-h-[650px] xl:min-h-[680px]"
-                : "relative flex h-full flex-col overflow-hidden bg-white/88 p-6 shadow-[0_18px_45px_rgba(92,74,66,0.08)] lg:min-h-[650px] xl:min-h-[680px]"
+                ? "liquid-glass relative flex h-full flex-col overflow-hidden border-[#f59b78]/75 bg-[linear-gradient(145deg,rgba(255,250,246,0.82)_0%,rgba(247,239,233,0.72)_36%,rgba(255,204,178,0.58)_102%)] p-6 shadow-[0_30px_80px_rgba(245,155,120,0.28)] ring-2 ring-[#f59b78]/22 lg:min-h-[650px] xl:min-h-[680px]"
+                : "liquid-glass relative flex h-full flex-col overflow-hidden bg-white/58 p-6 shadow-[0_18px_45px_rgba(92,74,66,0.08)] lg:min-h-[650px] xl:min-h-[680px]"
             }
           >
             <div className="flex items-start justify-between gap-3">

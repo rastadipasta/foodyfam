@@ -293,3 +293,60 @@ export function PlannerEventCard({
 export function DashboardCommandPanel({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn("command-panel rounded-[34px] p-5 sm:p-7", className)} {...props} />;
 }
+
+export function LiquidGlassPanel({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn("liquid-glass rounded-[34px] p-5 sm:p-7", className)} {...props}>
+      <div className="relative z-10">{children}</div>
+    </div>
+  );
+}
+
+export function AuroraSection({ className, children, ...props }: HTMLAttributes<HTMLElement>) {
+  return (
+    <section className={cn("aurora-section px-4 py-[var(--section-space)] sm:px-6 lg:px-8", className)} {...props}>
+      <div className="mx-auto max-w-7xl">{children}</div>
+    </section>
+  );
+}
+
+export function GlassHeroFrame({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn("glass-hero-frame rounded-[38px] p-3 sm:p-4", className)} {...props}>
+      <div className="relative z-10">{children}</div>
+    </div>
+  );
+}
+
+export function GlassActionDock({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn("glass-action-dock flex flex-wrap items-center gap-3 rounded-[24px] p-3", className)} {...props} />;
+}
+
+export function LiquidMetric({
+  label,
+  value,
+  body,
+  className
+}: {
+  label: string;
+  value: string;
+  body: string;
+  className?: string;
+}) {
+  return (
+    <LiquidGlassPanel className={cn("rounded-[28px] p-5", className)}>
+      <p className="text-xs font-black uppercase tracking-[0.18em] text-[#78bea8]">{label}</p>
+      <p className="mt-2 font-display text-4xl font-black text-[#1f1d1c]">{value}</p>
+      <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">{body}</p>
+    </LiquidGlassPanel>
+  );
+}
+
+export function FloatingGlassChip({ className, ...props }: HTMLAttributes<HTMLSpanElement>) {
+  return (
+    <span
+      className={cn("floating-glass-chip inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-black uppercase tracking-[0.12em] text-[#5c4a42]", className)}
+      {...props}
+    />
+  );
+}

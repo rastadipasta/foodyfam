@@ -29,7 +29,7 @@ export function RecipeCard({
       className={`grid gap-4 overflow-hidden ${cardPadding} ${textOnly ? "!bg-transparent !p-0 !shadow-none before:hidden" : ""}`}
     >
       {textOnly ? (
-        <RecipeTicket className="grid h-full gap-3 p-5">
+        <RecipeTicket className="liquid-glass grid h-full gap-3 p-5">
           <RecipeCardBody recipe={recipe} compact={compact} textOnly={textOnly} onOpen={onOpen} saved={saved} onSave={() => saveRecipe(recipe.id)} />
         </RecipeTicket>
       ) : (

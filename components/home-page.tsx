@@ -6,11 +6,27 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowRight, Bot, CalendarDays, Carrot, CheckCircle2, MessageCircle, ShoppingBag, Sparkles, Star } from "lucide-react";
 import { SiteShell } from "./layout";
-import { Button, DashboardCommandPanel, EditorialHero, FeatureTile, KitchenLedger, MotionBand, RecipeTicket, SectionShell, SplitProofSection, TrustBadge } from "./ui";
+import {
+  AuroraSection,
+  Button,
+  DashboardCommandPanel,
+  EditorialHero,
+  FeatureTile,
+  FloatingGlassChip,
+  GlassActionDock,
+  GlassHeroFrame,
+  KitchenLedger,
+  LiquidGlassPanel,
+  LiquidMetric,
+  MotionBand,
+  RecipeTicket,
+  SectionShell,
+  SplitProofSection
+} from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeShowcase } from "./recipe-showcase";
 import { demoRecipes, testimonials } from "@/lib/data";
-import { MetricCard, MomentStrip, Reveal } from "./motion";
+import { MomentStrip, Reveal } from "./motion";
 
 const features = [
   ["Meal planner", CalendarDays, "Plan your week in just a few clicks."],
@@ -27,16 +43,17 @@ export function HomePage() {
   return (
     <SiteShell>
       <main>
-        <SectionShell className="relative overflow-hidden pb-10 pt-6 sm:pt-8">
+        <AuroraSection className="relative overflow-hidden pb-10 pt-6 sm:pt-8">
           <EditorialHero
+            className="liquid-glass"
             eyebrow="Editorial Kitchen OS / AI family meals"
             title="One meal, whole family."
             body="Foody Fam turns the food you have into a premium kitchen workflow: one gentle base, a baby portion removed before seasoning, adult finishing at the end, and a planner that keeps the week together."
             actions={
-              <>
+              <GlassActionDock>
                 <Link href="/generator"><Button><Sparkles size={18} /> Generate today&apos;s meal</Button></Link>
                 <Link href="#how"><Button variant="secondary">Explore the workflow <ArrowRight size={17} /></Button></Link>
-              </>
+              </GlassActionDock>
             }
             meta={
               <div className="flex flex-wrap items-center gap-3 text-sm font-extrabold text-[#5c4a42]">
@@ -53,15 +70,16 @@ export function HomePage() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="absolute left-0 top-6 z-20 hidden w-52 rotate-[-5deg] rounded-[22px] bg-white/88 p-4 shadow-[0_18px_48px_rgba(92,74,66,0.16)] backdrop-blur sm:block">
+              <LiquidGlassPanel className="absolute left-0 top-6 z-20 hidden w-52 rotate-[-5deg] rounded-[24px] p-4 sm:block">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Baby ticket</p>
                 <p className="mt-2 text-sm font-bold leading-5 text-[#5c4a42]">Remove portion before salt, spice, honey, or crunchy toppings.</p>
-              </div>
-              <div className="absolute bottom-8 right-0 z-20 hidden w-60 rotate-[4deg] rounded-[22px] bg-[#5c4a42] p-4 text-white shadow-[0_22px_58px_rgba(92,74,66,0.24)] sm:block">
+              </LiquidGlassPanel>
+              <LiquidGlassPanel className="absolute bottom-8 right-0 z-20 hidden w-60 rotate-[4deg] rounded-[24px] bg-[#5c4a42]/88 p-4 text-white sm:block">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-[#ffccb2]">Adult finish</p>
                 <p className="mt-2 text-sm font-bold leading-5">Add herbs, acid, parmesan, pepper, or chili at the end.</p>
-              </div>
-              <div className="relative mx-auto h-[360px] max-w-[680px] overflow-hidden rounded-[42px] border border-white/70 bg-[#ffccb2]/40 shadow-[0_34px_95px_rgba(92,74,66,0.2)] sm:h-[500px]">
+              </LiquidGlassPanel>
+              <GlassHeroFrame className="mx-auto max-w-[680px]">
+              <div className="relative h-[360px] overflow-hidden rounded-[32px] bg-[#ffccb2]/40 sm:h-[500px]">
                 <div className="brand-gradient pointer-events-none absolute bottom-0 right-[-3rem] h-[58%] w-[92%] rounded-tl-[48%] opacity-85" />
                 <Image
                   src="/brand/generated/hero-family-meal.png"
@@ -72,16 +90,18 @@ export function HomePage() {
                   priority
                 />
               </div>
+              </GlassHeroFrame>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <TrustBadge><Sparkles size={14} /> Baby portion before seasoning</TrustBadge>
-                <TrustBadge><CheckCircle2 size={14} /> Planner and shopping ready</TrustBadge>
+                <FloatingGlassChip><Sparkles size={14} /> Baby portion before seasoning</FloatingGlassChip>
+                <FloatingGlassChip><CheckCircle2 size={14} /> Planner and shopping ready</FloatingGlassChip>
               </div>
             </motion.div>
           </EditorialHero>
-        </SectionShell>
+        </AuroraSection>
 
-        <SectionShell className="py-8">
+        <AuroraSection className="py-8">
           <SplitProofSection
+            className="liquid-glass"
             eyebrow="What Foody Fam does"
             title="A shared recipe base with a clear baby split and adult finish."
             points={[
@@ -91,9 +111,9 @@ export function HomePage() {
               "The same recipe can become a weekly planner meal and one family shopping list."
             ]}
           />
-        </SectionShell>
+        </AuroraSection>
 
-        <MotionBand id="how" className="bg-white/38">
+        <MotionBand id="how" className="aurora-section bg-white/24">
             <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
                 <span className="editorial-kicker">Kitchen workflow</span>
@@ -101,10 +121,10 @@ export function HomePage() {
               </div>
               <p className="max-w-md text-sm font-bold leading-6 text-[#5c4a42]">A simple operational rail for the dinner rush: profile, generate, split, plan, shop.</p>
             </div>
-            <KitchenLedger className="grid gap-4 lg:grid-cols-3">
+            <KitchenLedger className="liquid-glass grid gap-4 lg:grid-cols-3">
               {["Tell us about your family", "AI creates one recipe", "Cook together, eat together"].map((title, index) => (
                 <Reveal key={title} delay={index * 0.08}>
-                <RecipeTicket className="h-full">
+                <RecipeTicket className="h-full bg-white/62">
                   <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#5c4a42] font-display text-xl font-black text-white">0{index + 1}</span>
                   <h3 className="mt-5 font-display text-2xl font-black">{title}</h3>
                   <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">
@@ -142,16 +162,16 @@ export function HomePage() {
         <SectionShell>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {features.map(([title, Icon, body]) => (
-              <FeatureTile key={title as string} icon={<Icon size={24} />} title={title as string} body={body as string} />
+              <FeatureTile key={title as string} className="liquid-glass" icon={<Icon size={24} />} title={title as string} body={body as string} />
             ))}
           </div>
         </SectionShell>
 
         <SectionShell>
           <DashboardCommandPanel className="grid gap-5 lg:grid-cols-3">
-            <MetricCard label="Meals generated" value="15k+" body="Demo-ready generation flow with OpenAI integration prepared server-side." />
-            <MetricCard label="Cooking saved" value="2x" body="One process feeds baby, kids, and adults without rebuilding dinner." />
-            <MetricCard label="Family trust" value="4.9" body={testimonials[1]} />
+            <LiquidMetric label="Meals generated" value="15k+" body="Demo-ready generation flow with OpenAI integration prepared server-side." />
+            <LiquidMetric label="Cooking saved" value="2x" body="One process feeds baby, kids, and adults without rebuilding dinner." />
+            <LiquidMetric label="Family trust" value="4.9" body={testimonials[1]} />
           </DashboardCommandPanel>
         </SectionShell>
       </main>

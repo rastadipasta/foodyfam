@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { BarChart3, BookOpen, Bot, CalendarDays, ChefHat, Home, LayoutDashboard, LogOut, Menu, Settings, ShoppingBag, Sparkles, Target, Users, Utensils, X } from "lucide-react";
-import { ActionBar, Button, Card, DashboardCommandPanel, KitchenLedger, Pill, RecipeTicket } from "./ui";
+import { Button, Card, DashboardCommandPanel, GlassActionDock, KitchenLedger, LiquidMetric, Pill, RecipeTicket } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeCard } from "./recipe-card";
 import { demoRecipes } from "@/lib/data";
@@ -13,7 +13,6 @@ import type { MealPlanDay, MealSlotType, Recipe } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 import { cn } from "@/lib/utils";
 import { AssistantPage, NutritionPage, PlannerPage, ProfilesPage, RecipeCloud, ShoppingPage } from "./product-pages";
-import { MetricCard } from "./motion";
 import { signOutActiveAuth } from "@/lib/auth-adapter";
 import { SupabaseSessionBridge } from "./layout";
 
@@ -60,9 +59,9 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
   }
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#fffaf6_0%,#f7efe9_100%)]">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_12%_8%,rgba(255,204,178,0.38),transparent_32%),radial-gradient(circle_at_88%_16%,rgba(120,190,168,0.24),transparent_30%),linear-gradient(180deg,#fffaf6_0%,#f7efe9_100%)]">
       <SupabaseSessionBridge />
-      <header className="sticky top-0 z-40 border-b border-[#5c4a42]/10 bg-[#fffaf6]/88 px-4 py-3 shadow-[0_10px_34px_rgba(92,74,66,0.06)] backdrop-blur lg:hidden">
+      <header className="liquid-glass sticky top-0 z-40 border-b border-white/52 bg-white/52 px-4 py-3 shadow-[0_10px_34px_rgba(92,74,66,0.06)] backdrop-blur-xl lg:hidden">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <Link href="/" className="font-display text-2xl font-black">Foody Fam</Link>
@@ -87,7 +86,7 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
             className="absolute inset-0 bg-[#5c4a42]/28 backdrop-blur-sm"
             onClick={() => setMenuOpen(false)}
           />
-          <aside className="paper-panel absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto rounded-t-[30px] border border-[#e9c7b7] p-4 shadow-[0_24px_70px_rgba(92,74,66,0.28)]">
+          <aside className="liquid-glass absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto rounded-t-[30px] border border-white/58 p-4 shadow-[0_24px_70px_rgba(92,74,66,0.28)]">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="font-display text-3xl font-black">Foody Fam</p>
@@ -113,7 +112,7 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
         </div>
       )}
       <div className="grid lg:grid-cols-[290px_1fr]">
-        <aside className="hidden border-b border-[#5c4a42]/10 bg-[#f7efe9]/82 p-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r lg:backdrop-blur">
+        <aside className="liquid-glass hidden border-b border-white/42 bg-white/34 p-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r lg:backdrop-blur-xl">
           <Link href="/" className="font-display text-3xl font-black">Foody Fam</Link>
           <DashboardNavLinks pathname={pathname} />
           <DashboardAccountBlock
@@ -166,7 +165,7 @@ function DashboardAccountBlock({
   onLogout: () => void;
 }) {
   return (
-    <div className="mt-5 grid gap-2 rounded-[18px] border border-[#e9c7b7] bg-white/82 p-3 shadow-sm lg:mt-auto">
+      <div className="liquid-glass mt-5 grid gap-2 rounded-[18px] border border-white/58 bg-white/46 p-3 shadow-sm lg:mt-auto">
       <div className="flex items-center gap-2.5">
         <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#ffccb2] text-sm font-black text-[#5c4a42]">
           {(authUser?.displayName || "P").slice(0, 1)}
@@ -229,10 +228,10 @@ function DashboardOverview() {
       </div>
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Profile" value={`${profileCompleteness}%`} body={onboardingCompleted ? "Family setup complete and ready for AI recipes." : "Finish onboarding to unlock stronger personalization."} />
-        <MetricCard label="Shopping" value={`${shoppingProgress}%`} body={`${unchecked} items left before the weekly shop is done.`} />
-        <MetricCard label="Planner" value={`${plannedSlots.length}/21`} body="Breakfast, lunch, and dinner slots planned this week." />
-        <MetricCard label="Recipe DB" value={`${databaseRecipes.length}`} body="Verified local base recipes ready for AI matching." />
+        <LiquidMetric label="Profile" value={`${profileCompleteness}%`} body={onboardingCompleted ? "Family setup complete and ready for AI recipes." : "Finish onboarding to unlock stronger personalization."} />
+        <LiquidMetric label="Shopping" value={`${shoppingProgress}%`} body={`${unchecked} items left before the weekly shop is done.`} />
+        <LiquidMetric label="Planner" value={`${plannedSlots.length}/21`} body="Breakfast, lunch, and dinner slots planned this week." />
+        <LiquidMetric label="Recipe DB" value={`${databaseRecipes.length}`} body="Verified local base recipes ready for AI matching." />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
@@ -259,7 +258,7 @@ function DashboardOverview() {
               </RecipeTicket>
             </div>
           </div>
-          <ActionBar className="bg-white/50">
+          <GlassActionDock className="bg-white/34">
             <Button onClick={() => setOpenToday(true)}>Open recipe</Button>
             <Button
               variant="secondary"
@@ -280,10 +279,10 @@ function DashboardOverview() {
               <ShoppingBag size={17} /> Add to shopping list
             </Button>
             {todayMessage && <p className="w-full text-sm font-extrabold text-[#78bea8]">{todayMessage}</p>}
-          </ActionBar>
+          </GlassActionDock>
         </DashboardCommandPanel>
         <div className="grid gap-5">
-          <KitchenLedger className="rounded-[24px]">
+          <KitchenLedger className="liquid-glass rounded-[24px]">
             <div className="flex items-center justify-between gap-3">
               <h2 className="font-display text-2xl font-black">Weekly planner</h2>
               <Link href="/dashboard/planner" className="text-sm font-extrabold text-[#78bea8]">Open</Link>
@@ -292,7 +291,7 @@ function DashboardOverview() {
               {planner.slice(0, 5).map((item) => <Pill key={item.day} className="w-fit">{item.day}: {primaryPlannerMeal(item)}</Pill>)}
             </div>
           </KitchenLedger>
-          <KitchenLedger className="rounded-[24px]">
+          <KitchenLedger className="liquid-glass rounded-[24px]">
             <h2 className="font-display text-2xl font-black">Quick actions</h2>
             <div className="mt-4 grid gap-2">
               <QuickAction href="/dashboard/generator" label="Generate meal" icon={Utensils} />
@@ -305,7 +304,7 @@ function DashboardOverview() {
       </div>
 
       <div className="grid gap-5 lg:grid-cols-3">
-        <Card>
+        <Card className="liquid-glass">
           <h2 className="font-display text-2xl font-black">Recent recipes</h2>
           <div className="mt-4 grid gap-3">
             {(savedRecipes.length ? savedRecipes : recipes.slice(0, 3)).map((recipe) => (
@@ -316,7 +315,7 @@ function DashboardOverview() {
             ))}
           </div>
         </Card>
-        <Card>
+        <Card className="liquid-glass">
           <h2 className="font-display text-2xl font-black">Assistant prompts</h2>
           <div className="mt-4 grid gap-2">
             {["Make this egg-free", "Turn leftovers into lunch", "Check texture for 8 months"].map((prompt) => (
@@ -324,7 +323,7 @@ function DashboardOverview() {
             ))}
           </div>
         </Card>
-        <Card>
+        <Card className="liquid-glass">
           <h2 className="font-display text-2xl font-black">Recommended bases</h2>
           <div className="mt-4 grid gap-3">
             {recommendedBaseRecipes.map((recipe) => (
@@ -335,7 +334,7 @@ function DashboardOverview() {
             ))}
           </div>
         </Card>
-        <Card>
+        <Card className="liquid-glass">
           <h2 className="font-display text-2xl font-black">Nutrition highlights</h2>
           <div className="mt-4 grid gap-3 text-sm font-bold text-[#5c4a42]">
             <p className="flex gap-2"><Target className="text-[#78bea8]" size={17} /> Iron-rich meal target is on track.</p>
@@ -405,8 +404,8 @@ function GeneratorInner() {
           </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 xl:w-[460px]">
-          <MetricCard label="Profile-aware" value="2 kids" body="Baby ages, texture styles, and allergies stay close to the recipe request." />
-          <MetricCard label="Dinner speed" value="25m" body="The flow favors weeknight meals with one cooking path." />
+          <LiquidMetric label="Profile-aware" value="2 kids" body="Baby ages, texture styles, and allergies stay close to the recipe request." />
+          <LiquidMetric label="Dinner speed" value="25m" body="The flow favors weeknight meals with one cooking path." />
         </div>
       </div>
       <GeneratorPanel showLatestResult />

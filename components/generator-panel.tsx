@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { ActionBar, Button, Card, Field, IngredientRail, KitchenLedger, PaperPanel, Pill, RecipeTicket, Select } from "./ui";
+import { Button, Card, Field, GlassActionDock, IngredientRail, KitchenLedger, LiquidGlassPanel, PaperPanel, Pill, RecipeTicket, Select } from "./ui";
 import type { Recipe } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -168,7 +168,7 @@ export function GeneratorPanel({
   }
 
   return (
-    <Card className="glass-tool grid gap-6 overflow-hidden !rounded-[34px] !p-5 sm:!p-7">
+    <Card className="liquid-glass grid gap-6 overflow-hidden !rounded-[34px] !p-5 sm:!p-7">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <span className="editorial-kicker">AI Recipe Generator</span>
@@ -190,7 +190,7 @@ export function GeneratorPanel({
             <div className="relative">
               <Field
                 aria-label="Ingredients"
-                className="min-h-16 rounded-[26px] border-[#f59b78]/35 bg-white/92 px-5 pr-12 text-base shadow-[0_18px_48px_rgba(92,74,66,0.08)]"
+                className="min-h-16 rounded-[26px] border-white/70 bg-white/62 px-5 pr-12 text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_18px_48px_rgba(92,74,66,0.08)] backdrop-blur-xl"
                 {...ingredientsRegister}
                 onChange={(event) => {
                   void ingredientsRegister.onChange(event);
@@ -231,7 +231,7 @@ export function GeneratorPanel({
           <input type="hidden" {...register("goal")} />
         </div>
 
-        <KitchenLedger className="grid gap-3 rounded-[28px] sm:grid-cols-2 lg:grid-cols-4">
+        <KitchenLedger className="liquid-glass grid gap-3 rounded-[28px] sm:grid-cols-2 lg:grid-cols-4">
           <FormBoxLabel label="Baby profile">
             <Select aria-label="Baby profile" {...register("babyProfile")}>
               <option>Any</option>
@@ -290,13 +290,13 @@ export function GeneratorPanel({
           </FormBoxLabel>
         </KitchenLedger>
 
-        <ActionBar className="bg-white/46">
+        <GlassActionDock className="bg-white/36">
           <Button type="submit" disabled={loading} className="w-full lg:w-fit">
             {loading ? <Loader2 className="animate-spin" size={17} /> : <Sparkles size={17} />}
             {loading ? loadingStages[stage] : "Generate family recipe"}
           </Button>
           <IngredientRail items={["verified base", "baby first", "adult finish"]} />
-        </ActionBar>
+        </GlassActionDock>
       </form>
 
       {loading && <PremiumLoader stage={stage} />}
@@ -367,7 +367,7 @@ function buildDefaultGeneratorValues(
 
 function PremiumLoader({ stage }: { stage: number }) {
   return (
-    <PaperPanel className="motion-band overflow-hidden rounded-[30px]">
+    <PaperPanel className="liquid-glass motion-band overflow-hidden rounded-[30px]">
       <div className="flex items-center gap-3">
         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#78bea8]/15 text-[#78bea8]">
           <Loader2 className="animate-spin" size={22} />
@@ -421,7 +421,7 @@ function RecipeResult({
   const canNativeShare = typeof navigator !== "undefined" && "share" in navigator;
 
   return (
-    <KitchenLedger className="grid gap-5 rounded-[34px] bg-white/88 p-5 shadow-[0_18px_45px_rgba(92,74,66,0.08)] sm:p-6">
+    <KitchenLedger className="liquid-glass grid gap-5 rounded-[34px] bg-white/66 p-5 shadow-[0_18px_45px_rgba(92,74,66,0.08)] sm:p-6">
       <div>
         <div className="flex flex-wrap gap-2">
           {recipe.tags.map((tag) => (
@@ -482,7 +482,7 @@ function RecipeResult({
           </div>
           {recipe.databaseMatch && <DatabaseMatchPanel recipe={recipe} />}
         </div>
-        <div className="rounded-[24px] bg-[#f7efe9] p-5">
+        <LiquidGlassPanel className="rounded-[24px] bg-[#f7efe9]/60 p-5">
           <p className="font-display text-xl font-black">Why this works for your family</p>
           <ul className="mt-4 grid gap-3 text-sm font-bold leading-6 text-[#5c4a42]">
             {(recipe.whyItWorks?.length ? recipe.whyItWorks : [recipe.familyPitch || "One cooking base splits into baby and adult plates."]).map((item) => (
@@ -492,7 +492,7 @@ function RecipeResult({
               </li>
             ))}
           </ul>
-        </div>
+        </LiquidGlassPanel>
       </div>
 
       <div className="flex flex-wrap gap-3 border-t border-[#5c4a42]/10 pt-5">
@@ -546,7 +546,7 @@ function DatabaseMatchPanel({ recipe }: { recipe: Recipe }) {
   const match = recipe.databaseMatch;
   if (!match) return null;
   return (
-    <div className="mt-4 rounded-[22px] border border-[#78bea8]/35 bg-[#e8f4ef] p-4">
+    <div className="liquid-glass mt-4 rounded-[22px] border border-[#78bea8]/35 bg-[#e8f4ef]/62 p-4">
       <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.14em] text-[#437967]">
         <ShieldCheck size={15} />
         Based on Foody Fam verified recipe
@@ -568,7 +568,7 @@ function DatabaseMatchPanel({ recipe }: { recipe: Recipe }) {
 
 function ResultMetric({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-[18px] bg-[#f7efe9] p-3">
+    <div className="liquid-glass rounded-[18px] bg-[#f7efe9]/62 p-3">
       <div className="text-[#78bea8]">{icon}</div>
       <p className="mt-2 text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]">{label}</p>
       <p className="mt-1 break-words text-sm font-black leading-5">{value}</p>
@@ -581,7 +581,7 @@ function IngredientCard({ recipe }: { recipe: Recipe }) {
     ? recipe.ingredientDetails.map((item) => `${formatQuantity(item.quantity)} ${item.unit} ${item.name}${item.note ? ` - ${item.note}` : ""}`)
     : recipe.ingredients;
   return (
-    <RecipeTicket className="rounded-[24px] bg-[#f7efe9] p-5">
+    <RecipeTicket className="rounded-[24px] bg-[#f7efe9]/62 p-5">
       <p className="font-display text-xl font-black">Ingredients</p>
       <ul className="mt-4 grid gap-3 text-sm font-bold leading-6 text-[#5c4a42]">
         {items.map((item) => (
@@ -599,7 +599,7 @@ function IngredientCard({ recipe }: { recipe: Recipe }) {
 
 function StepCard({ title, items, accent }: { title: string; items: string[]; accent?: "mint" | "coral" }) {
   return (
-    <RecipeTicket className={`rounded-[24px] p-5 ${accent === "coral" ? "bg-[#ffccb2]/65" : accent === "mint" ? "bg-[#e8f4ef]" : "bg-[#f7efe9]"}`}>
+    <RecipeTicket className={`rounded-[24px] p-5 ${accent === "coral" ? "bg-[#ffccb2]/58" : accent === "mint" ? "bg-[#e8f4ef]/72" : "bg-[#f7efe9]/62"}`}>
       <p className="font-display text-xl font-black">{title}</p>
       <ol className="mt-4 grid gap-3 text-sm font-bold leading-6 text-[#5c4a42]">
         {items.map((item, index) => (
