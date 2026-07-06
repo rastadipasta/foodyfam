@@ -74,7 +74,7 @@ export function HomePage() {
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Baby ticket</p>
                 <p className="mt-2 text-sm font-bold leading-5 text-[#5c4a42]">Remove portion before salt, spice, honey, or crunchy toppings.</p>
               </LiquidGlassPanel>
-              <LiquidGlassPanel className="fable-float-card absolute bottom-8 right-0 z-20 hidden w-60 rotate-[4deg] rounded-[24px] bg-[#5c4a42]/88 p-4 text-white sm:block">
+              <LiquidGlassPanel className="is-dark-glass fable-float-card absolute bottom-8 right-0 z-20 hidden w-60 rotate-[4deg] rounded-[24px] p-4 text-white sm:block">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-[#ffccb2]">Adult finish</p>
                 <p className="mt-2 text-sm font-bold leading-5">Add herbs, acid, parmesan, pepper, or chili at the end.</p>
               </LiquidGlassPanel>
