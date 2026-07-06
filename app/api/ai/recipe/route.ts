@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createDemoRecipe } from "@/lib/ai-demo";
+import { applyBabyNutritionGuardrails, babyNutritionPrompt } from "@/lib/baby-nutrition";
 import { databaseRecipeToRecipe, findBestRecipeMatch } from "@/lib/recipe-database";
 import type { Recipe, RecipeMatchInput } from "@/lib/types";
 
@@ -139,7 +140,7 @@ export async function POST(request: Request) {
     goal?: string;
   };
   const matched = findBestRecipeMatch(body);
-  const matchedRecipe = matched ? databaseRecipeToRecipe(matched.recipe, matched.match) : createDemoRecipe(body);
+  const matchedRecipe = applyBabyNutritionGuardrails(matched ? databaseRecipeToRecipe(matched.recipe, matched.match) : createDemoRecipe(body), body);
 
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({
@@ -169,6 +170,7 @@ export async function POST(request: Request) {
                 "Always include ingredientDetails with practical metric quantities, units, note as an empty string when not needed, and optional false unless it is truly optional.",
                 "Use the provided Foody Fam verified database recipe as the trusted base. Adapt it, but do not ignore it or invent an unrelated recipe.",
                 "Return practical family cooking language, not medical advice. Allergy and baby safety notes must be cautious and recommend checking with a qualified professional when needed.",
+                babyNutritionPrompt(body),
                 "Keep the recipe realistic, weeknight-friendly, and grounded in the provided pantry, appliances, timing, skill level, and avoid list.",
                 "The output must match the provided JSON schema exactly."
               ].join(" ")
@@ -210,7 +212,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI schema validation failed", databaseMatch: matched?.match });
     }
     return NextResponse.json({
-      recipe: { ...parsed.recipe, image: "/brand/generated/hero-family-meal.png", databaseMatch: matched?.match },
+      recipe: applyBabyNutritionGuardrails({ ...parsed.recipe, image: "/brand/generated/hero-family-meal.png", databaseMatch: matched?.match }, body),
       source: "openai",
       databaseMatch: matched?.match
     });

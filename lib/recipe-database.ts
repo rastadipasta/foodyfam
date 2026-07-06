@@ -1,4 +1,5 @@
 import recipeDatabase from "@/data/recipe-database.json";
+import { getBabyNutritionGuidance } from "./baby-nutrition";
 import type { DatabaseRecipe, Recipe, RecipeDatabaseMatch, RecipeMatchInput } from "@/lib/types";
 
 export const databaseRecipes = recipeDatabase as DatabaseRecipe[];
@@ -42,6 +43,8 @@ export function findBestRecipeMatch(input: RecipeMatchInput) {
   const feedingTokens = tokens(input.feedingStyle);
   const maxMinutes = parseMaxMinutes(input.cookingTime);
   const ageAdaptation = resolveAgeAdaptation(input.babyAge);
+  const nutritionGuidance = getBabyNutritionGuidance(input);
+  const nutritionFlags = nutritionGuidance.flags.map((flag) => flag.label);
 
   const ranked = databaseRecipes
     .map((recipe) => {
@@ -82,7 +85,7 @@ export function findBestRecipeMatch(input: RecipeMatchInput) {
           baseRecipeTitle: recipe.title,
           score: Math.max(0, Math.round(score)),
           pantryMatch,
-          allergyFlags: [...requestedAllergens, ...avoidedMatches],
+          allergyFlags: [...requestedAllergens, ...avoidedMatches, ...nutritionFlags],
           ageAdaptation,
           matchReasons: [
             pantryMatch >= 50 ? `${pantryMatch}% pantry overlap` : "Closest verified base recipe",
@@ -94,7 +97,8 @@ export function findBestRecipeMatch(input: RecipeMatchInput) {
           aiChanges: [
             `Use the ${ageAdaptation} baby adaptation`,
             allergyTokens.length ? `Respect allergies: ${allergyTokens.join(", ")}` : "Keep baby portion salt-free",
-            avoidTokens.length ? `Avoid: ${avoidTokens.join(", ")}` : "Adult finishing only after baby portion is removed"
+            avoidTokens.length ? `Avoid: ${avoidTokens.join(", ")}` : "Adult finishing only after baby portion is removed",
+            ...nutritionGuidance.flags.map((flag) => flag.rule)
           ]
         } satisfies RecipeDatabaseMatch
       };

@@ -1,4 +1,5 @@
 import { demoRecipes } from "./data";
+import { applyBabyNutritionGuardrails, getBabyNutritionGuidance } from "./baby-nutrition";
 import type { Recipe } from "./types";
 
 export function createDemoRecipe(input?: {
@@ -24,8 +25,9 @@ export function createDemoRecipe(input?: {
     ? input.ingredients.split(",").map((item) => item.trim()).filter(Boolean)
     : base.ingredients;
   const cuisine = input?.cuisine || "Italian";
+  const guidance = getBabyNutritionGuidance(input || {});
 
-  return {
+  const recipe: Recipe = {
     ...base,
     id: `generated-${Date.now()}`,
     title: `${ingredients[0] || "Family"} & ${ingredients[1] || "Veggie"} ${cuisine} Bowl`,
@@ -42,7 +44,8 @@ export function createDemoRecipe(input?: {
     safetyNotes: [
       "Check texture and temperature before serving baby's portion.",
       "Avoid added salt for babies and follow your pediatric guidance for allergens.",
-      "Cut round or firm foods into age-appropriate shapes."
+      "Cut round or firm foods into age-appropriate shapes.",
+      ...guidance.safetyNotes
     ],
     babyTexture: input?.babyTexture || input?.feedingStyle || "Soft mashed texture",
     shoppingList: [
@@ -89,7 +92,8 @@ export function createDemoRecipe(input?: {
     ],
     allergyWarnings: [
       input?.allergies || input?.diet || "Review family allergies before serving.",
-      input?.avoidIngredients ? `Avoid requested ingredients: ${input.avoidIngredients}.` : "Use clean utensils when preparing allergy-sensitive portions."
+      input?.avoidIngredients ? `Avoid requested ingredients: ${input.avoidIngredients}.` : "Use clean utensils when preparing allergy-sensitive portions.",
+      ...guidance.flags.map((flag) => `${flag.label}: ${flag.rule}`)
     ],
     ingredients: ingredients.length ? ingredients : base.ingredients,
     ingredientDetails: (ingredients.length ? ingredients : base.ingredients).map((ingredient, index) => ({
@@ -118,6 +122,8 @@ export function createDemoRecipe(input?: {
     ],
     adults: ["Season after baby's portion is removed", "Add herbs or parmesan", "Serve hot", "Pack leftovers for lunch"]
   };
+
+  return applyBabyNutritionGuardrails(recipe, input || {});
 }
 
 export function createDemoAssistantMessage(message?: string) {
