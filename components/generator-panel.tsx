@@ -6,7 +6,6 @@ import {
   Check,
   Clock,
   Copy,
-  Loader2,
   Printer,
   Save,
   Share2,
@@ -18,10 +17,11 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Button, Card, Field, GlassActionDock, IngredientRail, KitchenLedger, LiquidGlassPanel, PaperPanel, Pill, RecipeTicket, Select } from "./ui";
-import type { Recipe } from "@/lib/types";
+import { buildGeneratorPreflight } from "@/lib/family-recipe-intelligence";
+import type { GeneratorPreflight, Recipe } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 
 const generatorSchema = z.object({
@@ -46,8 +46,16 @@ const generatorSchema = z.object({
 type GeneratorForm = z.infer<typeof generatorSchema>;
 
 const chips = ["Chicken", "Rice", "Eggs", "Spinach", "Pasta", "Broccoli", "Carrots", "Lentils"];
-const loadingStages = ["Checking allergies", "Splitting baby portion", "Building shopping list", "Writing family instructions"];
+const loadingStages = ["Reading your ingredients", "Checking baby safety", "Splitting baby portion", "Finishing adult plate"];
 const resultTabs = ["Overview", "Baby", "Adults", "Shopping", "Safety"] as const;
+const smartChips = [
+  { label: "Use profile pantry", values: { ingredients: "Eggs, milk, rice, olive oil", pantryItems: "Eggs, milk, rice, olive oil" } },
+  { label: "Iron-rich dinner", values: { ingredients: "Beef, lentils, spinach, tomato", mealType: "Dinner", goal: "Build an iron-rich family dinner with a baby-safe portion." } },
+  { label: "BLW-friendly", values: { feedingStyle: "BLW", babyTexture: "Finger foods", ingredients: "Salmon, potato, zucchini, avocado" } },
+  { label: "Puree-friendly", values: { feedingStyle: "Puree", babyTexture: "Smooth puree", ingredients: "Carrot, lentils, rice, olive oil" } },
+  { label: "Under 30 min", values: { cookingTime: "25 min or less", skillLevel: "Easy" } },
+  { label: "Use leftovers", values: { goal: "Cook once for baby and adults with leftovers for lunch.", mealType: "Dinner" } }
+] as const;
 
 export function GeneratorPanel({
   onResult,
@@ -77,6 +85,7 @@ export function GeneratorPanel({
     handleSubmit,
     setValue,
     getValues,
+    control,
     formState: { errors }
   } = useForm<GeneratorForm>({
     resolver: zodResolver(generatorSchema),
@@ -84,6 +93,9 @@ export function GeneratorPanel({
   });
   const [ingredientsValue, setIngredientsValue] = useState(defaultValues.ingredients);
   const ingredientsRegister = register("ingredients");
+  const watchedValues = useWatch({ control });
+  const visiblePreflightInput = { ...watchedValues, avoidIngredients: "" };
+  const preflight = buildGeneratorPreflight(visiblePreflightInput);
 
   useEffect(() => {
     if (!loading) return;
@@ -120,7 +132,7 @@ export function GeneratorPanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values)
       });
-      const data = (await response.json()) as { recipe: Recipe };
+      const data = (await response.json()) as { recipe: Recipe; preflight?: GeneratorPreflight };
       setResult(data.recipe);
       addGeneratedRecipe(data.recipe);
       setActiveTab("Overview");
@@ -142,6 +154,13 @@ export function GeneratorPanel({
       const next = current ? `${current}, ${chip}` : chip;
       setValue("ingredients", next, { shouldDirty: true, shouldValidate: true });
       setIngredientsValue(next);
+    }
+  }
+
+  function applySmartChip(values: Partial<GeneratorForm>) {
+    for (const [key, value] of Object.entries(values) as [keyof GeneratorForm, string][]) {
+      setValue(key, value, { shouldDirty: true, shouldValidate: true });
+      if (key === "ingredients") setIngredientsValue(value);
     }
   }
 
@@ -184,6 +203,7 @@ export function GeneratorPanel({
       </div>
 
       <form className="grid gap-5" onSubmit={handleSubmit(submit)}>
+        <SmartSuggestionPanel preflight={preflight} />
         <div className="grid gap-4">
           <div>
             <label className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]">Ingredients</label>
@@ -208,10 +228,18 @@ export function GeneratorPanel({
                 </button>
               )}
             </div>
+            <SafetyWarnings preflight={preflight} />
             <div className="mt-3 flex flex-wrap gap-2">
               {chips.map((chip) => (
                 <button key={chip} type="button" onClick={() => addChip(chip)}>
                   <Pill className="transition hover:bg-[#ffccb2]">{chip}</Pill>
+                </button>
+              ))}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {smartChips.map((chip) => (
+                <button key={chip.label} type="button" onClick={() => applySmartChip(chip.values)}>
+                  <Pill className="bg-[#e8f4ef]/82 transition hover:bg-[#ffccb2]">{chip.label}</Pill>
                 </button>
               ))}
             </div>
@@ -292,14 +320,14 @@ export function GeneratorPanel({
 
         <GlassActionDock className="fable-stage bg-white/36">
           <Button type="submit" disabled={loading} className="w-full lg:w-fit">
-            {loading ? <Loader2 className="animate-spin" size={17} /> : <Sparkles size={17} />}
+            <Sparkles size={17} />
             {loading ? loadingStages[stage] : "Generate family recipe"}
           </Button>
           <IngredientRail items={["verified base", "baby first", "adult finish"]} />
         </GlassActionDock>
       </form>
 
-      {loading && <PremiumLoader stage={stage} />}
+      {loading && <SmartGeneratorLoader stage={stage} preflight={preflight} ingredients={ingredientsValue} />}
       {currentResult && !loading && (
         <RecipeResult
           recipe={currentResult}
@@ -365,24 +393,104 @@ function buildDefaultGeneratorValues(
   };
 }
 
-function PremiumLoader({ stage }: { stage: number }) {
+function SmartSuggestionPanel({ preflight }: { preflight: GeneratorPreflight }) {
   return (
-    <PaperPanel className="fable-command-surface liquid-glass motion-band overflow-hidden rounded-[30px]">
-      <div className="flex items-center gap-3">
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#78bea8]/15 text-[#78bea8]">
-          <Loader2 className="animate-spin" size={22} />
-        </span>
+    <LiquidGlassPanel className="rounded-[28px] bg-[#fffaf6]/58 p-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="font-display text-xl font-black text-[#1f1d1c]">{loadingStages[stage]}...</p>
-          <p className="text-sm font-bold text-[#5c4a42]">Foody Fam is building one cooking path with safe baby and adult finishes.</p>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Smart suggestion</p>
+          <h3 className="mt-2 font-display text-2xl font-black text-[#1f1d1c]">{preflight.patternLabel}</h3>
+          <p className="mt-1 text-sm font-bold leading-6 text-[#5c4a42]">
+            {preflight.suggestedMealType} / {preflight.suggestedCuisine} / baby path {preflight.ageBand}
+          </p>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[460px]">
+          <SmartStat label="Confidence" value={`${preflight.confidence}%`} />
+          <SmartStat label="Safety" value={preflight.safetyFlags.length ? `${preflight.safetyFlags.length} flag${preflight.safetyFlags.length > 1 ? "s" : ""}` : "Clear"} />
+          <SmartStat label="Base" value={preflight.matchedBaseRecipeLabel || "Verified match"} />
         </div>
       </div>
-      <div className="mt-5 grid gap-2 sm:grid-cols-4">
-        {loadingStages.map((item, index) => (
-          <div key={item} className="rounded-full bg-[#f7efe9] p-1">
-            <div className={`h-2 rounded-full transition-all ${index <= stage ? "bg-[#78bea8]" : "bg-transparent"}`} />
-          </div>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {preflight.suggestedIngredients.slice(0, 6).map((item) => (
+          <Pill key={item} className="bg-white/82">{item}</Pill>
         ))}
+      </div>
+      {preflight.missingHelpfulInputs.length > 0 && (
+        <p className="mt-3 text-xs font-extrabold text-[#5c4a42]/72">
+          Add {preflight.missingHelpfulInputs.join(", ")} for a sharper match.
+        </p>
+      )}
+    </LiquidGlassPanel>
+  );
+}
+
+function SmartStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-white/70 bg-white/62 p-3 shadow-sm">
+      <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#5c4a42]/64">{label}</p>
+      <p className="mt-1 truncate text-sm font-black text-[#1f1d1c]">{value}</p>
+    </div>
+  );
+}
+
+function SafetyWarnings({ preflight }: { preflight: GeneratorPreflight }) {
+  if (!preflight.safetyFlags.length) {
+    return (
+      <p className="mt-2 text-xs font-extrabold text-[#437967]">
+        Baby safety check: no risky ingredient detected yet.
+      </p>
+    );
+  }
+
+  return (
+    <div className="mt-3 grid gap-2" aria-live="polite">
+      {preflight.safetyFlags.slice(0, 3).map((flag) => (
+        <div key={flag.label} className="rounded-2xl border border-[#f59b78]/30 bg-[#ffccb2]/38 px-3 py-2 text-xs font-bold leading-5 text-[#5c4a42]">
+          <span className="font-black text-[#1f1d1c]">{flag.label}:</span> {flag.reason} The generator will keep this out of the baby portion or prepare it safely.
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SmartGeneratorLoader({ stage, preflight, ingredients }: { stage: number; preflight: GeneratorPreflight; ingredients: string }) {
+  const ingredientChips = ingredients.split(",").map((item) => item.trim()).filter(Boolean).slice(0, 4);
+  const activeStage = loadingStages[stage];
+
+  return (
+    <PaperPanel className="smart-loader fable-command-surface liquid-glass overflow-hidden rounded-[30px]">
+      <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Foody Fam cooking flow</p>
+          <p className="mt-2 font-display text-2xl font-black text-[#1f1d1c]">{activeStage}</p>
+          <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">
+            {preflight.patternLabel} / baby path {preflight.ageBand} / {preflight.safetyFlags.length ? `${preflight.safetyFlags.length} safety flag checked` : "safety check clear"}
+          </p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-4">
+            {loadingStages.map((item, index) => (
+              <div key={item} className={`smart-loader-step rounded-2xl border p-3 ${index <= stage ? "is-active" : ""}`}>
+                <p className="text-[10px] font-black uppercase tracking-[0.12em]">{`0${index + 1}`}</p>
+                <p className="mt-1 text-xs font-black leading-4">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="smart-cooking-surface relative min-h-[250px] rounded-[28px] border border-white/70 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78),0_20px_54px_rgba(92,74,66,0.1)]">
+          <div className="smart-pan absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#5c4a42]/12 bg-[#f7efe9]/86 shadow-[inset_0_12px_26px_rgba(92,74,66,0.08),0_24px_60px_rgba(92,74,66,0.12)]" />
+          <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+            {(ingredientChips.length ? ingredientChips : preflight.suggestedIngredients.slice(0, 4)).map((item, index) => (
+              <span key={item} className={`smart-ingredient-chip smart-chip-${index} rounded-full bg-white/88 px-3 py-1 text-xs font-black text-[#5c4a42] shadow-sm`}>
+                {item}
+              </span>
+            ))}
+          </div>
+          <div className={`smart-baby-bowl absolute bottom-5 left-5 rounded-2xl bg-[#e8f4ef] px-3 py-2 text-xs font-black text-[#315f52] shadow-md ${stage >= 2 ? "is-separated" : ""}`}>
+            Baby bowl
+          </div>
+          <div className={`smart-seasoning absolute bottom-5 right-5 rounded-2xl bg-[#ffccb2] px-3 py-2 text-xs font-black text-[#5c4a42] shadow-md ${stage >= 3 ? "is-lit" : ""}`}>
+            Adult finish
+          </div>
+        </div>
       </div>
     </PaperPanel>
   );

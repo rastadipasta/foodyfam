@@ -1,8 +1,9 @@
-import type { DatabaseRecipe, RecipeMatchInput } from "./types";
+import type { DatabaseRecipe, GeneratorPreflight, RecipeDatabaseMatch, RecipeMatchInput } from "./types";
 import { getBabyNutritionGuidance, resolveBabyAgeBand } from "./baby-nutrition";
 
 type RecipePattern = {
   id: string;
+  label: string;
   match: RegExp;
   formula: string;
   babyMethod: string;
@@ -13,6 +14,7 @@ type RecipePattern = {
 const patterns: RecipePattern[] = [
   {
     id: "soft-grain-bowl",
+    label: "Soft grain bowl",
     match: /rice|risotto|quinoa|couscous|barley|grain|bowl/i,
     formula: "soft grain + protein/legume + 2 vegetables + mild cooking liquid",
     babyMethod: "cook until grains and vegetables are very soft; puree, mash, or chop by age",
@@ -21,6 +23,7 @@ const patterns: RecipePattern[] = [
   },
   {
     id: "sauce-and-pasta",
+    label: "Soft sauce and pasta",
     match: /pasta|noodle|macaroni|spaghetti|lentil|tomato/i,
     formula: "soft sauce base + small pasta or noodles + vegetable + protein/legume",
     babyMethod: "serve sauce smooth or lumpy; cut pasta short and keep it moist",
@@ -29,6 +32,7 @@ const patterns: RecipePattern[] = [
   },
   {
     id: "soup-stew",
+    label: "Soup or stew base",
     match: /soup|stew|curry|dal|lentil|bean|chickpea|broth/i,
     formula: "soft aromatics + vegetable + legume/protein + low-sodium liquid",
     babyMethod: "thicken and cool baby portion; blend smooth for early eaters or mash for older babies",
@@ -37,6 +41,7 @@ const patterns: RecipePattern[] = [
   },
   {
     id: "breakfast-soft",
+    label: "Soft breakfast base",
     match: /oat|porridge|pancake|banana|yogurt|egg|breakfast/i,
     formula: "iron-rich cereal or egg/yogurt base + fruit/vegetable + gentle fat",
     babyMethod: "keep soft and moist; cut pancakes or egg into strips only if developmentally ready",
@@ -45,9 +50,10 @@ const patterns: RecipePattern[] = [
   },
   {
     id: "tray-bake",
+    label: "Soft tray bake",
     match: /chicken|fish|salmon|turkey|beef|potato|carrot|zucchini|broccoli|tray|bake|roast/i,
     formula: "soft roasted protein + soft vegetables + starch + mild oil",
-    babyMethod: "reserve soft unsalted pieces; shred/flass protein and mash vegetables with liquid if needed",
+    babyMethod: "reserve soft unsalted pieces; shred or flake protein and mash vegetables with liquid if needed",
     adultFinish: "finish adults with salt, pepper, spice rub, sauce, lemon, herbs, or crispy toppings",
     bestFor: "adult-friendly dinners with baby-safe separated portions"
   }
@@ -69,6 +75,7 @@ export function buildCompactRecipeContext(input: RecipeMatchInput & { babyTextur
   const ingredients = compactList(input.ingredients || input.pantryItems || base?.ingredients.join(", ") || "family pantry", 10);
   const pattern = choosePattern(`${ingredients.join(", ")} ${input.mealType || ""} ${input.cuisine || ""} ${base?.title || ""}`);
   const ageBand = resolveBabyAgeBand(input.babyAge);
+  const preflight = buildGeneratorPreflight(input, base ? { baseRecipeTitle: base.title, pantryMatch: 0, allergyFlags: [], ageAdaptation: "6-8" } : undefined);
   const baseLine = base
     ? `BASE=${base.title}; ${base.mealType}; ${base.cuisine}; ${base.prepTime + base.cookTime}min; core=${base.ingredients.slice(0, 8).join(", ")}; steps=${base.steps.slice(0, 3).join(" -> ")}.`
     : "BASE=No verified recipe selected; use closest Foody Fam formula.";
@@ -77,14 +84,73 @@ export function buildCompactRecipeContext(input: RecipeMatchInput & { babyTextur
     baseLine,
     `REQUEST=age ${ageBand}; meal ${input.mealType || "flexible"}; cuisine ${input.cuisine || "flexible"}; time ${input.cookingTime || "flexible"}; skill ${input.skillLevel || "easy"}; ingredients ${ingredients.join(", ")}.`,
     `PATTERN=${pattern.id}; formula=${pattern.formula}; baby=${pattern.babyMethod}; adult=${pattern.adultFinish}; best=${pattern.bestFor}.`,
+    `PREFLIGHT=confidence ${preflight.confidence}; suggested ${preflight.suggestedMealType}/${preflight.suggestedCuisine}; notes=${preflight.notes.join(" | ")}.`,
     `SAFETY=${guidance.flags.map((flag) => `${flag.label}: ${flag.rule}`).join(" | ") || "standard baby-safe split; no unsafe ingredient flagged"}.`,
     `AGE_RULE=${guidance.promptRules.slice(0, 5).join(" | ")}.`,
     "OUTPUT_BUDGET=Prioritize ingredientDetails, cookingSteps, baby split, adult finish. Keep secondary notes concise."
   ].join("\n");
 }
 
+export function buildGeneratorPreflight(
+  input: RecipeMatchInput & { babyTexture?: string; feedingStyle?: string; skillLevel?: string; goal?: string; servings?: string },
+  match?: Pick<RecipeDatabaseMatch, "baseRecipeTitle" | "pantryMatch" | "allergyFlags" | "ageAdaptation">
+): GeneratorPreflight {
+  const guidance = getBabyNutritionGuidance(input);
+  const ingredients = compactList(`${input.ingredients || ""},${input.pantryItems || ""}`, 12);
+  const pattern = choosePattern(`${ingredients.join(", ")} ${input.mealType || ""} ${input.cuisine || ""} ${input.feedingStyle || ""}`);
+  const missingHelpfulInputs = [
+    !input.ingredients?.trim() ? "ingredients" : "",
+    !input.babyAge?.trim() || input.babyAge === "Any" ? "baby age" : "",
+    !input.mealType?.trim() || input.mealType === "Any" ? "meal type" : "",
+    !input.cookingTime?.trim() ? "time limit" : ""
+  ].filter(Boolean);
+  const suggestedMealType = suggestMealType(input, pattern);
+  const suggestedCuisine = input.cuisine && input.cuisine !== "Any" ? input.cuisine : "Flexible family";
+  const confidence = Math.max(42, Math.min(96, 92 - missingHelpfulInputs.length * 12 + (match?.pantryMatch ? 4 : 0) - guidance.flags.length * 2));
+  const suggestedIngredients = ingredients.length ? ingredients.slice(0, 6) : suggestIngredients(pattern.id);
+
+  return {
+    ageBand: guidance.ageBand,
+    patternId: pattern.id,
+    patternLabel: pattern.label,
+    safetyFlags: guidance.flags.map((flag) => ({
+      label: flag.label,
+      reason: flag.reason,
+      rule: flag.rule,
+      severity: flag.severity
+    })),
+    suggestedMealType,
+    suggestedCuisine,
+    suggestedIngredients,
+    missingHelpfulInputs,
+    confidence,
+    notes: [
+      `${pattern.label} is the best starting pattern.`,
+      `Baby path: ${guidance.ageBand}.`,
+      guidance.flags.length ? `${guidance.flags.length} safety flag${guidance.flags.length > 1 ? "s" : ""} detected.` : "No risky baby ingredient detected.",
+      match?.baseRecipeTitle ? `Verified base: ${match.baseRecipeTitle}.` : "Will use the closest Foody Fam verified base."
+    ],
+    matchedBaseRecipeLabel: match?.baseRecipeTitle
+  };
+}
+
 function choosePattern(text: string) {
   return patterns.find((pattern) => pattern.match.test(text)) || patterns[0];
+}
+
+function suggestMealType(input: RecipeMatchInput, pattern: RecipePattern) {
+  if (input.mealType && input.mealType !== "Any") return input.mealType;
+  if (pattern.id === "breakfast-soft") return "Breakfast";
+  if (pattern.id === "soup-stew") return "Lunch";
+  return "Dinner";
+}
+
+function suggestIngredients(patternId: string) {
+  if (patternId === "breakfast-soft") return ["oats", "banana", "yogurt", "chia"];
+  if (patternId === "soup-stew") return ["lentils", "carrot", "spinach", "low-sodium broth"];
+  if (patternId === "sauce-and-pasta") return ["small pasta", "tomato", "zucchini", "olive oil"];
+  if (patternId === "tray-bake") return ["chicken", "potato", "carrot", "olive oil"];
+  return ["rice", "chicken", "broccoli", "carrot"];
 }
 
 function compactList(value: string, max: number) {

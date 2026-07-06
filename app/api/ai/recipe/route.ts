@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createDemoRecipe } from "@/lib/ai-demo";
 import { applyBabyNutritionGuardrails, babyNutritionPrompt } from "@/lib/baby-nutrition";
-import { buildCompactRecipeContext, FAMILY_RECIPE_RESEARCH_PACK } from "@/lib/family-recipe-intelligence";
+import { buildCompactRecipeContext, buildGeneratorPreflight, FAMILY_RECIPE_RESEARCH_PACK } from "@/lib/family-recipe-intelligence";
 import { databaseRecipeToRecipe, findBestRecipeMatch } from "@/lib/recipe-database";
 import type { Recipe, RecipeMatchInput } from "@/lib/types";
 
@@ -141,13 +141,15 @@ export async function POST(request: Request) {
     goal?: string;
   };
   const matched = findBestRecipeMatch(body);
+  const preflight = buildGeneratorPreflight(body, matched?.match);
   const matchedRecipe = applyBabyNutritionGuardrails(matched ? databaseRecipeToRecipe(matched.recipe, matched.match) : createDemoRecipe(body), body);
 
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({
       recipe: matchedRecipe,
       source: "database-demo",
-      databaseMatch: matched?.match
+      databaseMatch: matched?.match,
+      preflight
     });
   }
 
@@ -187,6 +189,7 @@ export async function POST(request: Request) {
               `Time: ${body.cookingTime || "30 minutes"}. Appliances: ${body.appliances || "stovetop"}. Skill level: ${body.skillLevel || "easy"}.`,
               `Diet/allergy notes: ${body.diet || "none"}. Known allergies: ${body.allergies || "none"}. Avoid ingredients: ${body.avoidIngredients || "none"}.`,
               `Goal: ${body.goal || "Cook once for baby and adults."}`,
+              `Preflight summary: ${JSON.stringify(preflight)}.`,
               `Compact recipe context:\n${buildCompactRecipeContext(body, matched?.recipe)}.`,
               `Match metadata: ${matched ? JSON.stringify(matched.match) : "none"}.`
             ].join(" ")
@@ -204,21 +207,22 @@ export async function POST(request: Request) {
     });
 
     if (!response.ok) {
-      return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI request failed", databaseMatch: matched?.match });
+      return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI request failed", databaseMatch: matched?.match, preflight });
     }
 
     const data = (await response.json()) as { output_text?: string; output?: Array<{ content?: Array<{ text?: string }> }> };
     const text = data.output_text || data.output?.flatMap((item) => item.content || []).find((item) => item.text)?.text;
     const parsed = text ? (JSON.parse(text) as { recipe?: Recipe }) : { recipe: matchedRecipe };
     if (!parsed.recipe?.title || !parsed.recipe?.description || !Array.isArray(parsed.recipe.shoppingList)) {
-      return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI schema validation failed", databaseMatch: matched?.match });
+      return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI schema validation failed", databaseMatch: matched?.match, preflight });
     }
     return NextResponse.json({
       recipe: applyBabyNutritionGuardrails({ ...parsed.recipe, image: "/brand/generated/hero-family-meal.png", databaseMatch: matched?.match }, body),
       source: "openai",
-      databaseMatch: matched?.match
+      databaseMatch: matched?.match,
+      preflight
     });
   } catch {
-    return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI parsing failed", databaseMatch: matched?.match });
+    return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI parsing failed", databaseMatch: matched?.match, preflight });
   }
 }

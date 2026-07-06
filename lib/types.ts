@@ -163,6 +163,25 @@ export type RecipeMatchInput = {
   feedingStyle?: string;
 };
 
+export type GeneratorPreflight = {
+  ageBand: "under-6" | "6-8" | "8-10" | "10-12" | "12-24";
+  patternId: string;
+  patternLabel: string;
+  safetyFlags: {
+    label: string;
+    reason: string;
+    rule: string;
+    severity: "avoid" | "limit" | "prepare-safely";
+  }[];
+  suggestedMealType: string;
+  suggestedCuisine: string;
+  suggestedIngredients: string[];
+  missingHelpfulInputs: string[];
+  confidence: number;
+  notes: string[];
+  matchedBaseRecipeLabel?: string;
+};
+
 export type RecipeDatabaseMatch = {
   source: "foody-fam-database";
   baseRecipeSlug: string;
