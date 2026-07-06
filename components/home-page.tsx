@@ -45,7 +45,7 @@ export function HomePage() {
       <main>
         <AuroraSection className="relative overflow-hidden pb-10 pt-6 sm:pt-8">
           <EditorialHero
-            className="liquid-glass"
+            className="fable-stage liquid-glass"
             eyebrow="Editorial Kitchen OS / AI family meals"
             title="One meal, whole family."
             body="Foody Fam turns the food you have into a premium kitchen workflow: one gentle base, a baby portion removed before seasoning, adult finishing at the end, and a planner that keeps the week together."
@@ -65,20 +65,20 @@ export function HomePage() {
             }
           >
             <motion.div
-              className="relative min-h-[480px]"
+              className="fable-stage relative min-h-[480px]"
               initial={{ opacity: 0, y: 24, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
             >
-              <LiquidGlassPanel className="absolute left-0 top-6 z-20 hidden w-52 rotate-[-5deg] rounded-[24px] p-4 sm:block">
+              <LiquidGlassPanel className="fable-float-card absolute left-0 top-6 z-20 hidden w-52 rotate-[-5deg] rounded-[24px] p-4 sm:block">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Baby ticket</p>
                 <p className="mt-2 text-sm font-bold leading-5 text-[#5c4a42]">Remove portion before salt, spice, honey, or crunchy toppings.</p>
               </LiquidGlassPanel>
-              <LiquidGlassPanel className="absolute bottom-8 right-0 z-20 hidden w-60 rotate-[4deg] rounded-[24px] bg-[#5c4a42]/88 p-4 text-white sm:block">
+              <LiquidGlassPanel className="fable-float-card absolute bottom-8 right-0 z-20 hidden w-60 rotate-[4deg] rounded-[24px] bg-[#5c4a42]/88 p-4 text-white sm:block">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-[#ffccb2]">Adult finish</p>
                 <p className="mt-2 text-sm font-bold leading-5">Add herbs, acid, parmesan, pepper, or chili at the end.</p>
               </LiquidGlassPanel>
-              <GlassHeroFrame className="mx-auto max-w-[680px]">
+              <GlassHeroFrame className="fable-float-card mx-auto max-w-[680px]">
               <div className="relative h-[360px] overflow-hidden rounded-[32px] bg-[#ffccb2]/40 sm:h-[500px]">
                 <div className="brand-gradient pointer-events-none absolute bottom-0 right-[-3rem] h-[58%] w-[92%] rounded-tl-[48%] opacity-85" />
                 <Image
@@ -168,7 +168,7 @@ export function HomePage() {
         </SectionShell>
 
         <SectionShell>
-          <DashboardCommandPanel className="grid gap-5 lg:grid-cols-3">
+          <DashboardCommandPanel className="fable-stage grid gap-5 lg:grid-cols-3">
             <LiquidMetric label="Meals generated" value="15k+" body="Demo-ready generation flow with OpenAI integration prepared server-side." />
             <LiquidMetric label="Cooking saved" value="2x" body="One process feeds baby, kids, and adults without rebuilding dinner." />
             <LiquidMetric label="Family trust" value="4.9" body={testimonials[1]} />

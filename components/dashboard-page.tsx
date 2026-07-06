@@ -59,9 +59,9 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_12%_8%,rgba(255,204,178,0.38),transparent_32%),radial-gradient(circle_at_88%_16%,rgba(120,190,168,0.24),transparent_30%),linear-gradient(180deg,#fffaf6_0%,#f7efe9_100%)]">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_12%_8%,rgba(255,204,178,0.38),transparent_32%),radial-gradient(circle_at_88%_16%,rgba(120,190,168,0.24),transparent_30%),radial-gradient(circle_at_52%_0%,rgba(207,176,255,0.16),transparent_34%),linear-gradient(180deg,#fffaf6_0%,#f7efe9_100%)]">
       <SupabaseSessionBridge />
-      <header className="liquid-glass sticky top-0 z-40 border-b border-white/52 bg-white/52 px-4 py-3 shadow-[0_10px_34px_rgba(92,74,66,0.06)] backdrop-blur-xl lg:hidden">
+      <header className="fable-topbar liquid-glass sticky top-0 z-40 border-b border-white/52 bg-white/52 px-4 py-3 shadow-[0_10px_34px_rgba(92,74,66,0.06)] backdrop-blur-xl lg:hidden">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <Link href="/" className="font-display text-2xl font-black">Foody Fam</Link>
@@ -86,7 +86,7 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
             className="absolute inset-0 bg-[#5c4a42]/28 backdrop-blur-sm"
             onClick={() => setMenuOpen(false)}
           />
-          <aside className="liquid-glass absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto rounded-t-[30px] border border-white/58 p-4 shadow-[0_24px_70px_rgba(92,74,66,0.28)]">
+          <aside className="fable-command-surface liquid-glass absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto rounded-t-[30px] border border-white/58 p-4 shadow-[0_24px_70px_rgba(92,74,66,0.28)]">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="font-display text-3xl font-black">Foody Fam</p>
@@ -112,7 +112,7 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
         </div>
       )}
       <div className="grid lg:grid-cols-[290px_1fr]">
-        <aside className="liquid-glass hidden border-b border-white/42 bg-white/34 p-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r lg:backdrop-blur-xl">
+        <aside className="fable-sidebar liquid-glass hidden border-b border-white/42 bg-white/34 p-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r lg:backdrop-blur-xl">
           <Link href="/" className="font-display text-3xl font-black">Foody Fam</Link>
           <DashboardNavLinks pathname={pathname} />
           <DashboardAccountBlock
@@ -235,7 +235,7 @@ function DashboardOverview() {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
-        <DashboardCommandPanel className="grid content-between gap-6">
+        <DashboardCommandPanel className="fable-command-surface grid content-between gap-6">
           <div>
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <Pill className="bg-[#e8f4ef]">Today&apos;s meal</Pill>

@@ -12,10 +12,10 @@ export function Button({
   return (
     <button
       className={cn(
-        "tap-target inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-extrabold transition duration-200 ease-[var(--ease-soft)] active:translate-y-0.5 active:scale-[0.98] active:shadow-none focus:outline-none focus:ring-4 focus:ring-[#78bea8]/25 disabled:cursor-not-allowed disabled:opacity-60",
-        variant === "primary" && "bg-[#78bea8] text-white shadow-[var(--shadow-mint)] hover:-translate-y-0.5 hover:bg-[#68ad98]",
-        variant === "coral" && "bg-[#f59b78] text-white shadow-[0_14px_32px_rgba(245,155,120,0.28)] hover:-translate-y-0.5 hover:bg-[#ed8965]",
-        variant === "secondary" && "border border-[#78bea8]/45 bg-white/84 text-[#5c4a42] shadow-sm backdrop-blur hover:-translate-y-0.5 hover:border-[#78bea8] hover:bg-[#fffaf6]",
+        "tap-target inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-extrabold transition duration-200 ease-[var(--ease-soft)] active:translate-y-0.5 active:scale-[0.97] active:shadow-none focus:outline-none focus:ring-4 focus:ring-[#78bea8]/25 disabled:cursor-not-allowed disabled:opacity-60",
+        variant === "primary" && "bg-[#78bea8] text-white shadow-[0_16px_38px_rgba(120,190,168,0.32),inset_0_1px_0_rgba(255,255,255,0.34)] hover:-translate-y-1 hover:bg-[#68ad98] hover:shadow-[0_22px_52px_rgba(120,190,168,0.36),inset_0_1px_0_rgba(255,255,255,0.42)]",
+        variant === "coral" && "bg-[#f59b78] text-white shadow-[0_16px_38px_rgba(245,155,120,0.32),inset_0_1px_0_rgba(255,255,255,0.34)] hover:-translate-y-1 hover:bg-[#ed8965] hover:shadow-[0_22px_54px_rgba(245,155,120,0.38),inset_0_1px_0_rgba(255,255,255,0.42)]",
+        variant === "secondary" && "border border-white/70 bg-white/66 text-[#5c4a42] shadow-[0_12px_30px_rgba(92,74,66,0.08),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-xl hover:-translate-y-1 hover:border-[#78bea8]/60 hover:bg-[#fffaf6]/82 hover:shadow-[0_18px_44px_rgba(92,74,66,0.12)]",
         variant === "ghost" && "bg-transparent text-[#5c4a42] hover:bg-[#f7efe9]",
         className
       )}
@@ -42,7 +42,7 @@ export const Field = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputE
     <input
       ref={ref}
       className={cn(
-        "tap-target w-full rounded-2xl border border-[#e9c7b7] bg-white/86 px-4 text-sm font-semibold text-[#1f1d1c] shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] outline-none transition focus:border-[#78bea8] focus:ring-4 focus:ring-[#78bea8]/15",
+        "tap-target w-full rounded-2xl border border-white/70 bg-white/72 px-4 text-sm font-semibold text-[#1f1d1c] shadow-[inset_0_1px_0_rgba(255,255,255,0.84),0_12px_28px_rgba(92,74,66,0.06)] outline-none backdrop-blur-xl transition focus:border-[#78bea8] focus:bg-white/86 focus:ring-4 focus:ring-[#78bea8]/15",
         className
       )}
       {...props}
@@ -54,7 +54,7 @@ export function Select({ className, ...props }: SelectHTMLAttributes<HTMLSelectE
   return (
     <select
       className={cn(
-        "tap-target w-full rounded-2xl border border-[#e9c7b7] bg-white/86 px-4 text-sm font-semibold text-[#1f1d1c] shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] outline-none transition focus:border-[#78bea8] focus:ring-4 focus:ring-[#78bea8]/15",
+        "tap-target w-full rounded-2xl border border-white/70 bg-white/72 px-4 text-sm font-semibold text-[#1f1d1c] shadow-[inset_0_1px_0_rgba(255,255,255,0.84),0_12px_28px_rgba(92,74,66,0.06)] outline-none backdrop-blur-xl transition focus:border-[#78bea8] focus:bg-white/86 focus:ring-4 focus:ring-[#78bea8]/15",
         className
       )}
       {...props}
@@ -66,7 +66,7 @@ export function TextArea({ className, ...props }: React.TextareaHTMLAttributes<H
   return (
     <textarea
       className={cn(
-        "min-h-28 w-full resize-none rounded-2xl border border-[#e9c7b7] bg-white/86 px-4 py-3 text-sm font-semibold text-[#1f1d1c] shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] outline-none transition focus:border-[#78bea8] focus:ring-4 focus:ring-[#78bea8]/15",
+        "min-h-28 w-full resize-none rounded-2xl border border-white/70 bg-white/72 px-4 py-3 text-sm font-semibold text-[#1f1d1c] shadow-[inset_0_1px_0_rgba(255,255,255,0.84),0_12px_28px_rgba(92,74,66,0.06)] outline-none backdrop-blur-xl transition focus:border-[#78bea8] focus:bg-white/86 focus:ring-4 focus:ring-[#78bea8]/15",
         className
       )}
       {...props}

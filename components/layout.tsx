@@ -53,7 +53,7 @@ export function Header() {
   }
 
   return (
-    <header className="liquid-glass sticky top-0 z-50 border-b border-white/52 bg-white/48 shadow-[0_10px_34px_rgba(92,74,66,0.06)] backdrop-blur-xl">
+    <header className="fable-topbar liquid-glass sticky top-0 z-50 border-b border-white/52 bg-white/48 shadow-[0_10px_34px_rgba(92,74,66,0.06)] backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
           <Image src="/brand/logo.png" alt="Foody Fam" width={132} height={66} className="h-14 w-auto object-contain" priority />
@@ -104,7 +104,7 @@ export function Header() {
         </button>
       </div>
       {open && (
-        <div className="liquid-glass border-t border-white/52 bg-white/58 px-4 pb-4 shadow-[0_20px_50px_rgba(92,74,66,0.08)] backdrop-blur-xl lg:hidden">
+        <div className="fable-command-surface liquid-glass border-t border-white/52 bg-white/58 px-4 pb-4 shadow-[0_20px_50px_rgba(92,74,66,0.08)] backdrop-blur-xl lg:hidden">
           <div className="grid gap-2">
             {nav.map((item) => (
               <Link
@@ -243,7 +243,7 @@ export function Footer() {
 
   return (
     <footer className="mt-16 bg-[radial-gradient(circle_at_18%_10%,rgba(255,204,178,0.36),transparent_34%),radial-gradient(circle_at_84%_20%,rgba(120,190,168,0.24),transparent_30%),linear-gradient(180deg,#e8f4ef_0%,#f7efe9_100%)] px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-      <div className="liquid-glass mx-auto grid max-w-7xl gap-5 rounded-[32px] p-4 sm:gap-10 sm:p-7 lg:grid-cols-[1.2fr_2fr_1.2fr]">
+      <div className="fable-command-surface liquid-glass mx-auto grid max-w-7xl gap-5 rounded-[32px] p-4 sm:gap-10 sm:p-7 lg:grid-cols-[1.2fr_2fr_1.2fr]">
         <div className="relative z-10 rounded-[22px] border border-white/58 bg-white/40 p-4 backdrop-blur sm:border-0 sm:bg-transparent sm:p-0">
           <Image src="/brand/logo.png" alt="Foody Fam" width={142} height={70} className="mx-auto mb-3 h-16 w-auto object-contain sm:mx-0" />
           <p className="font-display mx-auto max-w-xs text-center text-3xl font-black leading-none text-[#5c4a42] sm:mx-0 sm:text-left sm:text-2xl">One meal, whole family.</p>

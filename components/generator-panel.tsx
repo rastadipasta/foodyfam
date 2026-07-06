@@ -168,7 +168,7 @@ export function GeneratorPanel({
   }
 
   return (
-    <Card className="liquid-glass grid gap-6 overflow-hidden !rounded-[34px] !p-5 sm:!p-7">
+    <Card className="fable-command-surface liquid-glass grid gap-6 overflow-hidden !rounded-[34px] !p-5 sm:!p-7">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <span className="editorial-kicker">AI Recipe Generator</span>
@@ -190,7 +190,7 @@ export function GeneratorPanel({
             <div className="relative">
               <Field
                 aria-label="Ingredients"
-                className="min-h-16 rounded-[26px] border-white/70 bg-white/62 px-5 pr-12 text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_18px_48px_rgba(92,74,66,0.08)] backdrop-blur-xl"
+                className="fable-command-input min-h-16 rounded-[26px] border-white/70 bg-white/62 px-5 pr-12 text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_18px_48px_rgba(92,74,66,0.08)] backdrop-blur-xl"
                 {...ingredientsRegister}
                 onChange={(event) => {
                   void ingredientsRegister.onChange(event);
@@ -231,7 +231,7 @@ export function GeneratorPanel({
           <input type="hidden" {...register("goal")} />
         </div>
 
-        <KitchenLedger className="liquid-glass grid gap-3 rounded-[28px] sm:grid-cols-2 lg:grid-cols-4">
+        <KitchenLedger className="fable-stage liquid-glass grid gap-3 rounded-[28px] sm:grid-cols-2 lg:grid-cols-4">
           <FormBoxLabel label="Baby profile">
             <Select aria-label="Baby profile" {...register("babyProfile")}>
               <option>Any</option>
@@ -290,7 +290,7 @@ export function GeneratorPanel({
           </FormBoxLabel>
         </KitchenLedger>
 
-        <GlassActionDock className="bg-white/36">
+        <GlassActionDock className="fable-stage bg-white/36">
           <Button type="submit" disabled={loading} className="w-full lg:w-fit">
             {loading ? <Loader2 className="animate-spin" size={17} /> : <Sparkles size={17} />}
             {loading ? loadingStages[stage] : "Generate family recipe"}
@@ -367,7 +367,7 @@ function buildDefaultGeneratorValues(
 
 function PremiumLoader({ stage }: { stage: number }) {
   return (
-    <PaperPanel className="liquid-glass motion-band overflow-hidden rounded-[30px]">
+    <PaperPanel className="fable-command-surface liquid-glass motion-band overflow-hidden rounded-[30px]">
       <div className="flex items-center gap-3">
         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#78bea8]/15 text-[#78bea8]">
           <Loader2 className="animate-spin" size={22} />
@@ -421,7 +421,7 @@ function RecipeResult({
   const canNativeShare = typeof navigator !== "undefined" && "share" in navigator;
 
   return (
-    <KitchenLedger className="liquid-glass grid gap-5 rounded-[34px] bg-white/66 p-5 shadow-[0_18px_45px_rgba(92,74,66,0.08)] sm:p-6">
+    <KitchenLedger className="fable-command-surface liquid-glass grid gap-5 rounded-[34px] bg-white/66 p-5 shadow-[0_18px_45px_rgba(92,74,66,0.08)] sm:p-6">
       <div>
         <div className="flex flex-wrap gap-2">
           {recipe.tags.map((tag) => (

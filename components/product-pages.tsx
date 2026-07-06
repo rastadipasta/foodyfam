@@ -66,6 +66,7 @@ export function GeneratorPage() {
       <main className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid gap-5">
           <PageHero
+            className="fable-stage liquid-glass"
             eyebrow="AI Recipe Generator"
             title="Build one family meal"
             body="Start with ingredients, then let Foody Fam split the same cooking flow into a baby portion and an adult finish."
@@ -154,7 +155,7 @@ export function RecipesPage() {
           </div>
         </div>
         <div className="mt-8 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-          <PaperPanel>
+          <PaperPanel className="fable-command-surface">
             <h2 className="font-display text-3xl font-black">100 verified base recipes</h2>
             <p className="font-bold leading-7 text-[#5c4a42]">AI now starts from structured Foody Fam recipes instead of a blank prompt.</p>
             <IngredientRail className="mt-5" items={["Breakfast", "Dinner", "BLW", "Freezer friendly", "Chicken", "Vegetarian", "Air fryer"]} />
@@ -164,7 +165,7 @@ export function RecipesPage() {
             body="Each recipe carries baby age paths, allergen flags, adult finishing, shopping data, and matching tags so generation starts from a safer base."
           />
         </div>
-        <Card className="liquid-glass mt-8">
+        <Card className="fable-command-surface liquid-glass mt-8">
           <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
             <FilterField label="Meal type">
               <Select aria-label="Meal type filter" value={mealType} onChange={(event) => setMealType(event.target.value)}>
@@ -256,7 +257,7 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
 
   return (
         <div className="fixed inset-0 z-50 grid place-items-end bg-[#5c4a42]/30 px-0 py-0 backdrop-blur-sm sm:place-items-center sm:px-4 sm:py-6" role="dialog" aria-modal="true">
-      <div className="liquid-glass flex max-h-[96dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-[30px] border border-white/58 shadow-[0_30px_90px_rgba(92,74,66,0.28)] sm:max-h-[94vh] sm:rounded-[36px]">
+      <div className="fable-command-surface liquid-glass flex max-h-[96dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-[30px] border border-white/58 shadow-[0_30px_90px_rgba(92,74,66,0.28)] sm:max-h-[94vh] sm:rounded-[36px]">
         <div className="relative z-10 shrink-0 border-b border-white/48 bg-white/54 p-4 backdrop-blur-xl sm:p-5">
           <div className="flex items-start justify-between gap-3">
           <div>
@@ -417,7 +418,7 @@ export function PlannerPage() {
             <Button variant="secondary">Today</Button>
           </div>
         </div>
-        <section className="liquid-glass kitchen-ledger mt-8 overflow-hidden rounded-[34px] p-4 text-[#5c4a42] shadow-[var(--shadow-editorial)] sm:p-5">
+        <section className="fable-calendar liquid-glass kitchen-ledger mt-8 overflow-hidden rounded-[34px] p-4 text-[#5c4a42] shadow-[var(--shadow-editorial)] sm:p-5">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#78bea8]">{weekRange}</p>
@@ -503,7 +504,7 @@ function PlannerDrawer({
   return (
     <div className="fixed inset-0 z-50 bg-[#5c4a42]/28 backdrop-blur-sm" role="dialog" aria-modal="true">
       <button className="absolute inset-0 cursor-default" aria-label="Close planner drawer" onClick={onClose} />
-      <aside className="liquid-glass absolute bottom-0 right-0 grid max-h-[86vh] w-full gap-4 overflow-auto rounded-t-[28px] border border-white/58 bg-white/52 p-5 shadow-[0_30px_90px_rgba(92,74,66,0.24)] lg:bottom-auto lg:top-0 lg:h-full lg:max-h-none lg:w-[440px] lg:rounded-l-[28px] lg:rounded-tr-none">
+      <aside className="fable-command-surface liquid-glass absolute bottom-0 right-0 grid max-h-[86vh] w-full gap-4 overflow-auto rounded-t-[28px] border border-white/58 bg-white/52 p-5 shadow-[0_30px_90px_rgba(92,74,66,0.24)] lg:bottom-auto lg:top-0 lg:h-full lg:max-h-none lg:w-[440px] lg:rounded-l-[28px] lg:rounded-tr-none">
         <div className="sticky top-0 z-10 -mx-5 -mt-5 flex items-start justify-between gap-3 border-b border-white/52 bg-white/60 p-5 backdrop-blur-xl">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Plan day</p>
@@ -572,7 +573,7 @@ export function ShoppingPage() {
           <PageTitle eyebrow="Smart shopping list" title="One list for everyone" />
           <Button variant="secondary"><Download size={17} /> Export PDF</Button>
         </div>
-        <Card className="liquid-glass mt-8 overflow-hidden !border-white/60 !bg-[linear-gradient(145deg,rgba(255,250,246,0.62)_0%,rgba(247,239,233,0.5)_45%,rgba(255,204,178,0.34)_128%)] !p-0 !shadow-[0_28px_80px_rgba(92,74,66,0.14)] backdrop-blur">
+        <Card className="fable-command-surface liquid-glass mt-8 overflow-hidden !border-white/60 !bg-[linear-gradient(145deg,rgba(255,250,246,0.62)_0%,rgba(247,239,233,0.5)_45%,rgba(255,204,178,0.34)_128%)] !p-0 !shadow-[0_28px_80px_rgba(92,74,66,0.14)] backdrop-blur">
           <div className="grid gap-5 border-b border-[#5c4a42]/10 p-5 sm:p-6 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
               <Pill className="mb-4 bg-[#e8f4ef]">
@@ -1196,8 +1197,8 @@ function Pricing() {
             key={plan.name}
             className={
               plan.featured
-                ? "liquid-glass relative flex h-full flex-col overflow-hidden border-[#f59b78]/75 bg-[linear-gradient(145deg,rgba(255,250,246,0.82)_0%,rgba(247,239,233,0.72)_36%,rgba(255,204,178,0.58)_102%)] p-6 shadow-[0_30px_80px_rgba(245,155,120,0.28)] ring-2 ring-[#f59b78]/22 lg:min-h-[650px] xl:min-h-[680px]"
-                : "liquid-glass relative flex h-full flex-col overflow-hidden bg-white/58 p-6 shadow-[0_18px_45px_rgba(92,74,66,0.08)] lg:min-h-[650px] xl:min-h-[680px]"
+                ? "fable-plan liquid-glass relative flex h-full flex-col overflow-hidden border-[#f59b78]/75 bg-[linear-gradient(145deg,rgba(255,250,246,0.82)_0%,rgba(247,239,233,0.72)_36%,rgba(255,204,178,0.58)_102%)] p-6 shadow-[0_30px_80px_rgba(245,155,120,0.28)] ring-2 ring-[#f59b78]/22 lg:min-h-[650px] xl:min-h-[680px]"
+                : "fable-plan liquid-glass relative flex h-full flex-col overflow-hidden bg-white/58 p-6 shadow-[0_18px_45px_rgba(92,74,66,0.08)] lg:min-h-[650px] xl:min-h-[680px]"
             }
           >
             <div className="flex items-start justify-between gap-3">
