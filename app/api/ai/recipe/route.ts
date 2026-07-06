@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createDemoRecipe } from "@/lib/ai-demo";
 import { applyBabyNutritionGuardrails, babyNutritionPrompt } from "@/lib/baby-nutrition";
+import { buildCompactRecipeContext, FAMILY_RECIPE_RESEARCH_PACK } from "@/lib/family-recipe-intelligence";
 import { databaseRecipeToRecipe, findBestRecipeMatch } from "@/lib/recipe-database";
 import type { Recipe, RecipeMatchInput } from "@/lib/types";
 
@@ -170,6 +171,7 @@ export async function POST(request: Request) {
                 "Always include ingredientDetails with practical metric quantities, units, note as an empty string when not needed, and optional false unless it is truly optional.",
                 "Use the provided Foody Fam verified database recipe as the trusted base. Adapt it, but do not ignore it or invent an unrelated recipe.",
                 "Return practical family cooking language, not medical advice. Allergy and baby safety notes must be cautious and recommend checking with a qualified professional when needed.",
+                FAMILY_RECIPE_RESEARCH_PACK,
                 babyNutritionPrompt(body),
                 "Keep the recipe realistic, weeknight-friendly, and grounded in the provided pantry, appliances, timing, skill level, and avoid list.",
                 "The output must match the provided JSON schema exactly."
@@ -185,8 +187,8 @@ export async function POST(request: Request) {
               `Time: ${body.cookingTime || "30 minutes"}. Appliances: ${body.appliances || "stovetop"}. Skill level: ${body.skillLevel || "easy"}.`,
               `Diet/allergy notes: ${body.diet || "none"}. Known allergies: ${body.allergies || "none"}. Avoid ingredients: ${body.avoidIngredients || "none"}.`,
               `Goal: ${body.goal || "Cook once for baby and adults."}`,
-              `Verified base recipe JSON: ${JSON.stringify(matched?.recipe || matchedRecipe)}.`,
-              `Match metadata: ${JSON.stringify(matched?.match || matchedRecipe.databaseMatch || null)}.`
+              `Compact recipe context:\n${buildCompactRecipeContext(body, matched?.recipe)}.`,
+              `Match metadata: ${matched ? JSON.stringify(matched.match) : "none"}.`
             ].join(" ")
           }
         ],
