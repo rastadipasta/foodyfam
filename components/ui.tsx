@@ -102,12 +102,18 @@ export function FeatureTile({
   icon,
   title,
   body,
+  tone = "mint",
   className,
   ...props
-}: HTMLAttributes<HTMLDivElement> & { icon?: React.ReactNode; title: string; body: string }) {
+}: HTMLAttributes<HTMLDivElement> & {
+  icon?: React.ReactNode;
+  title: string;
+  body: string;
+  tone?: "mint" | "peach" | "coral" | "cream";
+}) {
   return (
-    <div className={cn("recipe-note gentle-lift rounded-[24px] p-5", className)} {...props}>
-      {icon && <span className="mb-4 inline-flex rounded-2xl bg-[#e8f4ef] p-3 text-[#78bea8]">{icon}</span>}
+    <div className={cn("feature-tile recipe-note gentle-lift rounded-[24px] p-5", `feature-tile-${tone}`, className)} {...props}>
+      {icon && <span className="feature-tile-icon mb-4 inline-flex rounded-2xl p-3">{icon}</span>}
       <h3 className="font-display text-xl font-black text-[#1f1d1c]">{title}</h3>
       <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">{body}</p>
     </div>

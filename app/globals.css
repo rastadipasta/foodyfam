@@ -25,6 +25,7 @@
   --depth-deep: 0 44px 120px rgba(92, 74, 66, 0.2), 0 16px 42px rgba(120, 190, 168, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
   --depth-fable: 0 70px 150px rgba(92, 74, 66, 0.22), 0 28px 70px rgba(245, 155, 120, 0.14), 0 12px 34px rgba(120, 190, 168, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   --depth-edge: inset 0 1px 0 rgba(255, 255, 255, 0.86), inset 0 -1px 0 rgba(92, 74, 66, 0.06);
+  --depth-hover: 0 30px 76px rgba(92, 74, 66, 0.16), 0 10px 30px rgba(245, 155, 120, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.82);
   --liquid-blur: 22px;
   --aurora-peach: rgba(245, 155, 120, 0.34);
   --aurora-mint: rgba(120, 190, 168, 0.24);
@@ -101,6 +102,7 @@ body::after {
     radial-gradient(circle at 70% 70%, rgba(120, 190, 168, 0.16), transparent 58%);
   filter: blur(20px);
   animation: editorial-float 14s var(--ease-editorial) infinite alternate;
+  will-change: transform;
 }
 
 main {
@@ -142,6 +144,7 @@ main::after {
   opacity: 0.72;
   transform: rotate(14deg);
   animation: fable-orbit 20s var(--ease-editorial) infinite alternate;
+  will-change: transform;
 }
 
 button,
@@ -352,8 +355,9 @@ span {
     radial-gradient(circle at 76% 36%, var(--aurora-mint), transparent 24rem),
     radial-gradient(circle at 52% 8%, var(--fable-orchid), transparent 22rem),
     radial-gradient(circle at 50% 82%, rgba(255, 255, 255, 0.7), transparent 28rem);
-  filter: blur(8px);
-  animation: liquid-aurora 18s var(--ease-editorial) infinite alternate;
+  filter: blur(6px);
+  animation: liquid-aurora 24s var(--ease-editorial) infinite alternate;
+  will-change: transform;
 }
 
 .aurora-section::after,
@@ -512,7 +516,8 @@ span {
   background:
     radial-gradient(circle at 18% 24%, rgba(255, 204, 178, 0.42), transparent 22rem),
     radial-gradient(circle at 76% 58%, rgba(120, 190, 168, 0.2), transparent 22rem);
-  animation: editorial-drift 16s var(--ease-editorial) infinite alternate;
+  animation: editorial-drift 24s var(--ease-editorial) infinite alternate;
+  will-change: transform;
 }
 
 .command-panel {
@@ -541,12 +546,12 @@ span {
 }
 
 .gentle-lift {
-  transition: transform 240ms var(--ease-soft), box-shadow 240ms var(--ease-soft), border-color 240ms var(--ease-soft);
+  transition: transform 220ms var(--ease-soft), box-shadow 220ms var(--ease-soft), border-color 220ms var(--ease-soft);
 }
 
 .gentle-lift:hover {
-  transform: translateY(-8px) scale(1.01);
-  box-shadow: var(--depth-deep);
+  transform: translate3d(0, -5px, 0);
+  box-shadow: var(--depth-hover);
 }
 
 .tap-target {
@@ -568,16 +573,104 @@ span {
   box-shadow: var(--depth-soft);
 }
 
+.home-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.feature-tile {
+  min-height: 15rem;
+  border-color: rgba(255, 255, 255, 0.76);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.62), transparent 34%),
+    radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.7), transparent 12rem),
+    linear-gradient(145deg, rgba(255, 250, 246, 0.94), rgba(247, 239, 233, 0.68));
+  box-shadow: var(--depth-float);
+  backdrop-filter: blur(16px) saturate(1.12);
+  -webkit-backdrop-filter: blur(16px) saturate(1.12);
+}
+
+.feature-tile::before {
+  left: 20px;
+  right: auto;
+  width: min(10rem, calc(100% - 40px));
+}
+
+.feature-tile-icon {
+  color: var(--cocoa);
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: var(--depth-edge), 0 12px 28px rgba(92, 74, 66, 0.08);
+}
+
+.feature-tile-mint {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.66), transparent 32%),
+    radial-gradient(circle at 88% 12%, rgba(120, 190, 168, 0.26), transparent 14rem),
+    linear-gradient(145deg, rgba(255, 250, 246, 0.96), rgba(232, 244, 239, 0.76));
+}
+
+.feature-tile-mint .feature-tile-icon {
+  color: var(--mint);
+}
+
+.feature-tile-peach {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.64), transparent 34%),
+    radial-gradient(circle at 92% 8%, rgba(255, 204, 178, 0.5), transparent 14rem),
+    linear-gradient(145deg, rgba(255, 250, 246, 0.96), rgba(255, 204, 178, 0.3));
+}
+
+.feature-tile-coral {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.64), transparent 36%),
+    radial-gradient(circle at 92% 8%, rgba(245, 155, 120, 0.32), transparent 14rem),
+    linear-gradient(145deg, rgba(255, 250, 246, 0.97), rgba(233, 199, 183, 0.44));
+}
+
+.feature-tile-coral .feature-tile-icon {
+  color: var(--coral);
+}
+
+.feature-tile-cream {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.66), transparent 36%),
+    radial-gradient(circle at 92% 8%, rgba(92, 74, 66, 0.1), transparent 14rem),
+    linear-gradient(145deg, rgba(255, 250, 246, 0.98), rgba(247, 239, 233, 0.82));
+}
+
+.proof-metric-grid {
+  display: grid;
+  gap: 1rem;
+}
+
 @media (hover: hover) {
   .liquid-glass:hover {
-    transform: translateY(-3px);
+    transform: translate3d(0, -3px, 0);
     border-color: rgba(255, 255, 255, 0.86);
-    box-shadow: var(--depth-deep);
+    box-shadow: var(--depth-hover);
   }
 
   .glass-action-dock:hover,
   .floating-glass-chip:hover {
     box-shadow: var(--depth-float);
+  }
+}
+
+@media (min-width: 640px) {
+  .home-bento-grid,
+  .proof-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-bento-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .proof-metric-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -644,6 +737,20 @@ span {
   main::after {
     opacity: 0.45;
     filter: blur(34px);
+    animation: none;
+  }
+
+  body::after,
+  .aurora-section::before,
+  .motion-band::before,
+  .floating-glass-chip {
+    animation: none;
+  }
+
+  .feature-tile {
+    min-height: 12.5rem;
+    backdrop-filter: blur(10px) saturate(1.05);
+    -webkit-backdrop-filter: blur(10px) saturate(1.05);
   }
 }
 

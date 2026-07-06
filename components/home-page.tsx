@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, Bot, CalendarDays, Carrot, CheckCircle2, MessageCircle, ShoppingBag, Sparkles, Star } from "lucide-react";
+import { ArrowRight, Bot, CalendarDays, Carrot, CheckCircle2, MessageCircle, ShoppingBag, Sparkles, Star, type LucideIcon } from "lucide-react";
 import { SiteShell } from "./layout";
 import {
   AuroraSection,
@@ -28,13 +28,29 @@ import { RecipeShowcase } from "./recipe-showcase";
 import { demoRecipes, testimonials } from "@/lib/data";
 import { MomentStrip, Reveal } from "./motion";
 
-const features = [
-  ["Meal planner", CalendarDays, "Plan your week in just a few clicks."],
-  ["Shopping list", ShoppingBag, "One list for the whole family."],
-  ["Nutrition insights", Carrot, "Healthy choices made simple."],
-  ["AI Assistant", MessageCircle, "Ask about swaps, allergies, and freezing."],
-  ["Baby profiles", Bot, "Texture and allergy-aware meals."],
-  ["Cook once", CheckCircle2, "One process, everyone fed."]
+type FeatureTone = "mint" | "peach" | "coral" | "cream";
+
+type LandingFeature = {
+  title: string;
+  icon: LucideIcon;
+  body: string;
+  tone: FeatureTone;
+  className?: string;
+};
+
+const features: LandingFeature[] = [
+  { title: "Meal planner", icon: CalendarDays, body: "Plan your week in just a few clicks.", tone: "mint", className: "lg:col-span-2" },
+  { title: "Shopping list", icon: ShoppingBag, body: "One list for the whole family.", tone: "peach" },
+  { title: "Nutrition insights", icon: Carrot, body: "Healthy choices made simple.", tone: "cream" },
+  { title: "AI Assistant", icon: MessageCircle, body: "Ask about swaps, allergies, and freezing.", tone: "coral" },
+  { title: "Baby profiles", icon: Bot, body: "Texture and allergy-aware meals.", tone: "mint" },
+  { title: "Cook once", icon: CheckCircle2, body: "One process, everyone fed.", tone: "peach", className: "lg:col-span-2" }
+];
+
+const proofMetrics = [
+  { label: "Meals generated", value: "15k+", body: "Demo-ready generation flow with OpenAI integration prepared server-side." },
+  { label: "Cooking saved", value: "2x", body: "One process feeds baby, kids, and adults without rebuilding dinner." },
+  { label: "Family trust", value: "4.9", body: testimonials[1] }
 ];
 
 export function HomePage() {
@@ -148,7 +164,7 @@ export function HomePage() {
             </Reveal>
         </SectionShell>
 
-        <SectionShell>
+        <SectionShell className="pt-6">
             <div className="mb-7 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
               <div>
                 <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">Family moments</p>
@@ -159,19 +175,26 @@ export function HomePage() {
             <MomentStrip />
         </SectionShell>
 
-        <SectionShell>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map(([title, Icon, body]) => (
-              <FeatureTile key={title as string} className="liquid-glass" icon={<Icon size={24} />} title={title as string} body={body as string} />
+        <SectionShell className="pt-4">
+          <div className="home-bento-grid">
+            {features.map(({ title, icon: Icon, body, tone, className }) => (
+              <FeatureTile
+                key={title}
+                className={className}
+                icon={<Icon size={24} />}
+                title={title}
+                body={body}
+                tone={tone}
+              />
             ))}
           </div>
         </SectionShell>
 
-        <SectionShell>
-          <DashboardCommandPanel className="fable-stage grid gap-5 lg:grid-cols-3">
-            <LiquidMetric label="Meals generated" value="15k+" body="Demo-ready generation flow with OpenAI integration prepared server-side." />
-            <LiquidMetric label="Cooking saved" value="2x" body="One process feeds baby, kids, and adults without rebuilding dinner." />
-            <LiquidMetric label="Family trust" value="4.9" body={testimonials[1]} />
+        <SectionShell className="pt-4">
+          <DashboardCommandPanel className="proof-metric-grid fable-stage">
+            {proofMetrics.map((metric) => (
+              <LiquidMetric key={metric.label} {...metric} />
+            ))}
           </DashboardCommandPanel>
         </SectionShell>
       </main>
