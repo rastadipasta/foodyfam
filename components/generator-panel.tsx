@@ -203,7 +203,6 @@ export function GeneratorPanel({
       </div>
 
       <form className="grid gap-5" onSubmit={handleSubmit(submit)}>
-        <SmartSuggestionPanel preflight={preflight} />
         <div className="grid gap-4">
           <div>
             <label className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]">Ingredients</label>
@@ -391,46 +390,6 @@ function buildDefaultGeneratorValues(
     skillLevel: "Easy",
     goal: preferences.cookingGoals[0] || "Cook once for baby and adults with leftovers for lunch."
   };
-}
-
-function SmartSuggestionPanel({ preflight }: { preflight: GeneratorPreflight }) {
-  return (
-    <LiquidGlassPanel className="rounded-[28px] bg-[#fffaf6]/58 p-4">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Smart suggestion</p>
-          <h3 className="mt-2 font-display text-2xl font-black text-[#1f1d1c]">{preflight.patternLabel}</h3>
-          <p className="mt-1 text-sm font-bold leading-6 text-[#5c4a42]">
-            {preflight.suggestedMealType} / {preflight.suggestedCuisine} / baby path {preflight.ageBand}
-          </p>
-        </div>
-        <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[460px]">
-          <SmartStat label="Confidence" value={`${preflight.confidence}%`} />
-          <SmartStat label="Safety" value={preflight.safetyFlags.length ? `${preflight.safetyFlags.length} flag${preflight.safetyFlags.length > 1 ? "s" : ""}` : "Clear"} />
-          <SmartStat label="Base" value={preflight.matchedBaseRecipeLabel || "Verified match"} />
-        </div>
-      </div>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {preflight.suggestedIngredients.slice(0, 6).map((item) => (
-          <Pill key={item} className="bg-white/82">{item}</Pill>
-        ))}
-      </div>
-      {preflight.missingHelpfulInputs.length > 0 && (
-        <p className="mt-3 text-xs font-extrabold text-[#5c4a42]/72">
-          Add {preflight.missingHelpfulInputs.join(", ")} for a sharper match.
-        </p>
-      )}
-    </LiquidGlassPanel>
-  );
-}
-
-function SmartStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-white/70 bg-white/62 p-3 shadow-sm">
-      <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#5c4a42]/64">{label}</p>
-      <p className="mt-1 truncate text-sm font-black text-[#1f1d1c]">{value}</p>
-    </div>
-  );
 }
 
 function SafetyWarnings({ preflight }: { preflight: GeneratorPreflight }) {

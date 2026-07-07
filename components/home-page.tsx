@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, Bot, CalendarDays, Carrot, CheckCircle2, MessageCircle, ShoppingBag, Sparkles, Star, type LucideIcon } from "lucide-react";
+import { Bot, CalendarDays, Carrot, CheckCircle2, MessageCircle, ShoppingBag, Sparkles, Star, type LucideIcon } from "lucide-react";
 import { SiteShell } from "./layout";
 import {
   AuroraSection,
@@ -12,16 +12,10 @@ import {
   DashboardCommandPanel,
   EditorialHero,
   FeatureTile,
-  FloatingGlassChip,
   GlassActionDock,
   GlassHeroFrame,
-  KitchenLedger,
-  LiquidGlassPanel,
   LiquidMetric,
-  MotionBand,
-  RecipeTicket,
-  SectionShell,
-  SplitProofSection
+  SectionShell
 } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
 import { RecipeShowcase } from "./recipe-showcase";
@@ -68,7 +62,7 @@ export function HomePage() {
             actions={
               <GlassActionDock>
                 <Link href="/generator"><Button><Sparkles size={18} /> Generate today&apos;s meal</Button></Link>
-                <Link href="#how"><Button variant="secondary">Explore the workflow <ArrowRight size={17} /></Button></Link>
+                <Link href="/generator"><Button variant="secondary">Open generator</Button></Link>
               </GlassActionDock>
             }
             meta={
@@ -86,14 +80,6 @@ export function HomePage() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
             >
-              <LiquidGlassPanel className="fable-float-card absolute left-0 top-6 z-20 hidden w-52 rotate-[-5deg] rounded-[24px] p-4 sm:block">
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Baby ticket</p>
-                <p className="mt-2 text-sm font-bold leading-5 text-[#5c4a42]">Remove portion before salt, spice, honey, or crunchy toppings.</p>
-              </LiquidGlassPanel>
-              <LiquidGlassPanel className="is-dark-glass fable-float-card absolute bottom-8 right-0 z-20 hidden w-60 rotate-[4deg] rounded-[24px] p-4 text-white sm:block">
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#ffccb2]">Adult finish</p>
-                <p className="mt-2 text-sm font-bold leading-5">Add herbs, acid, parmesan, pepper, or chili at the end.</p>
-              </LiquidGlassPanel>
               <GlassHeroFrame className="fable-float-card mx-auto max-w-[680px]">
               <div className="relative h-[360px] overflow-hidden rounded-[32px] bg-[#ffccb2]/40 sm:h-[500px]">
                 <div className="brand-gradient pointer-events-none absolute bottom-0 right-[-3rem] h-[58%] w-[92%] rounded-tl-[48%] opacity-85" />
@@ -107,52 +93,9 @@ export function HomePage() {
                 />
               </div>
               </GlassHeroFrame>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <FloatingGlassChip><Sparkles size={14} /> Baby portion before seasoning</FloatingGlassChip>
-                <FloatingGlassChip><CheckCircle2 size={14} /> Planner and shopping ready</FloatingGlassChip>
-              </div>
             </motion.div>
           </EditorialHero>
         </AuroraSection>
-
-        <AuroraSection className="py-8">
-          <SplitProofSection
-            className="liquid-glass"
-            eyebrow="What Foody Fam does"
-            title="A shared recipe base with a clear baby split and adult finish."
-            points={[
-              "Foody Fam creates one gentle cooking base for the whole family.",
-              "The baby portion is removed before salt, strong spices, honey, crunchy toppings, or adult finishes.",
-              "Adults get flavor at the end with herbs, acidity, cheese, salt, pepper, or spice.",
-              "The same recipe can become a weekly planner meal and one family shopping list."
-            ]}
-          />
-        </AuroraSection>
-
-        <MotionBand id="how" className="aurora-section bg-white/24">
-            <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-              <div>
-                <span className="editorial-kicker">Kitchen workflow</span>
-                <h2 className="mt-4 font-display text-5xl font-black">How <span className="text-[#f59b78]">Foody Fam</span> works</h2>
-              </div>
-              <p className="max-w-md text-sm font-bold leading-6 text-[#5c4a42]">A simple operational rail for the dinner rush: profile, generate, split, plan, shop.</p>
-            </div>
-            <KitchenLedger className="liquid-glass grid gap-4 lg:grid-cols-3">
-              {["Tell us about your family", "AI creates one recipe", "Cook together, eat together"].map((title, index) => (
-                <Reveal key={title} delay={index * 0.08}>
-                <RecipeTicket className="h-full bg-white/62">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#5c4a42] font-display text-xl font-black text-white">0{index + 1}</span>
-                  <h3 className="mt-5 font-display text-2xl font-black">{title}</h3>
-                  <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">
-                    {index === 0 && "Add ages, preferences, allergies, and ingredients you have."}
-                    {index === 1 && "Get one recipe with baby-friendly and adult-friendly instructions."}
-                    {index === 2 && "Use one grocery list, one cooking process, and shared family plates."}
-                  </p>
-                </RecipeTicket>
-                </Reveal>
-              ))}
-            </KitchenLedger>
-        </MotionBand>
 
         <SectionShell className="py-10">
             <GeneratorPanel onResult={() => router.push("/dashboard/generator")} />
