@@ -53,14 +53,14 @@ export function Header() {
   }
 
   return (
-    <header className="fable-topbar liquid-glass sticky top-0 z-50 border-b border-white/52 bg-white/48 shadow-[0_10px_34px_rgba(92,74,66,0.06)] backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 border-b border-[#eaded5] bg-[#fffaf6]/92 shadow-[0_8px_24px_rgba(92,74,66,0.04)] backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
-          <Image src="/brand/logo.png" alt="Foody Fam" width={132} height={66} className="h-14 w-auto object-contain" priority />
+          <Image src="/brand/logo.png" alt="Foody Fam" width={132} height={66} className="h-12 w-auto object-contain" priority />
         </Link>
-        <nav className="hidden items-center gap-2 rounded-full border border-white/70 bg-white/42 p-1 text-sm font-extrabold text-[#3c332f] shadow-sm backdrop-blur-xl lg:flex">
+        <nav className="hidden items-center gap-9 text-sm font-extrabold text-[#1f1d1c] lg:flex">
           {nav.map((item) => (
-            <Link key={item.href} href={item.href} className="rounded-full px-4 py-2 transition hover:bg-[#f7efe9] hover:text-[#78bea8]">
+            <Link key={item.href} href={item.href} className="transition hover:text-[#78bea8]">
               {item.label}
             </Link>
           ))}
@@ -88,10 +88,10 @@ export function Header() {
         ) : (
           <div className="hidden items-center gap-3 lg:flex">
             <Link href="/login">
-              <Button variant="secondary">Log in</Button>
+              <Button variant="ghost" className="text-[#1f1d1c]">Log in</Button>
             </Link>
             <Link href="/register">
-              <Button>Sign up</Button>
+              <Button className="bg-[#405f46] px-6 text-white hover:bg-[#314b37]">Get started</Button>
             </Link>
           </div>
         )}

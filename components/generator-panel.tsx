@@ -20,6 +20,7 @@ import type { ReactNode } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Button, Card, Field, GlassActionDock, IngredientRail, KitchenLedger, LiquidGlassPanel, PaperPanel, Pill, RecipeTicket, Select } from "./ui";
+import { cn } from "@/lib/utils";
 import { buildGeneratorPreflight } from "@/lib/family-recipe-intelligence";
 import type { GeneratorPreflight, Recipe } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
@@ -59,10 +60,12 @@ const smartChips = [
 
 export function GeneratorPanel({
   onResult,
-  showLatestResult = false
+  showLatestResult = false,
+  variant = "default"
 }: {
   onResult?: (recipe: Recipe) => void;
   showLatestResult?: boolean;
+  variant?: "default" | "homepage";
 }) {
   const [loading, setLoading] = useState(false);
   const [stage, setStage] = useState(0);
@@ -187,7 +190,14 @@ export function GeneratorPanel({
   }
 
   return (
-    <Card className="fable-command-surface liquid-glass grid gap-6 overflow-hidden !rounded-[34px] !p-5 sm:!p-7">
+    <Card
+      className={cn(
+        "grid gap-6 overflow-hidden !p-5 sm:!p-7",
+        variant === "homepage"
+          ? "!rounded-[34px] border-[#eaded5] bg-white/92 shadow-[0_28px_80px_rgba(92,74,66,0.14)]"
+          : "fable-command-surface liquid-glass !rounded-[34px]"
+      )}
+    >
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <span className="editorial-kicker">AI Recipe Generator</span>
