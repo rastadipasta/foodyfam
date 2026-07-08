@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Facebook, Instagram, LogOut, Mail, Menu, Settings, Sparkles, UserRound, X } from "lucide-react";
+import { Facebook, Instagram, LogOut, Mail, Menu, ShieldCheck, Settings, Sparkles, UserRound, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "./ui";
 import { cn } from "@/lib/utils";
@@ -44,6 +44,7 @@ export function Header() {
   const isAuthenticated = useAppStore((state) => state.isAuthenticated);
   const logout = useAppStore((state) => state.logout);
   const loggedIn = isAuthenticated && authUser;
+  const isAdmin = authUser?.role === "admin";
 
   async function handleLogout() {
     await signOutActiveAuth();
@@ -70,9 +71,19 @@ export function Header() {
             <Link href="/dashboard">
               <Button variant="secondary">Dashboard</Button>
             </Link>
+            {isAdmin && (
+              <Link href="/admin">
+                <Button variant="secondary"><ShieldCheck size={16} /> Admin</Button>
+              </Link>
+            )}
             <Link href="/dashboard/profiles" className="flex items-center gap-2 rounded-full border border-[#eaded5] bg-white px-3 py-2 text-sm font-extrabold text-[#5c4a42] shadow-sm transition hover:bg-[#fffaf6]">
-              <span className="grid h-8 w-8 place-items-center rounded-full bg-[#ffccb2] text-xs font-black">
-                {authUser.displayName.slice(0, 1)}
+              <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-[#ffccb2] text-xs font-black">
+                {authUser.avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={authUser.avatarUrl} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  authUser.displayName.slice(0, 1)
+                )}
               </span>
               {authUser.displayName.split(" ")[0]}
             </Link>
@@ -122,8 +133,13 @@ export function Header() {
             {loggedIn ? (
               <div className="grid gap-2 rounded-[22px] border border-[#e9c7b7] bg-white p-3">
                 <div className="flex items-center gap-3">
-                  <span className="grid h-11 w-11 place-items-center rounded-full bg-[#ffccb2] font-black text-[#5c4a42]">
-                    {authUser.displayName.slice(0, 1)}
+                  <span className="grid h-11 w-11 place-items-center overflow-hidden rounded-full bg-[#ffccb2] font-black text-[#5c4a42]">
+                    {authUser.avatarUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={authUser.avatarUrl} alt="" className="h-full w-full object-cover" />
+                    ) : (
+                      authUser.displayName.slice(0, 1)
+                    )}
                   </span>
                   <div className="min-w-0">
                     <p className="truncate font-black text-[#3c332f]">{authUser.displayName}</p>
@@ -136,6 +152,11 @@ export function Header() {
                 <Link href="/dashboard/settings" onClick={() => setOpen(false)}>
                   <Button variant="secondary" className="w-full"><Settings size={16} /> Settings</Button>
                 </Link>
+                {isAdmin && (
+                  <Link href="/admin" onClick={() => setOpen(false)}>
+                    <Button variant="secondary" className="w-full"><ShieldCheck size={16} /> Admin</Button>
+                  </Link>
+                )}
                 <Button variant="ghost" className="w-full" onClick={() => void handleLogout()}>
                   <LogOut size={16} />
                   Log out

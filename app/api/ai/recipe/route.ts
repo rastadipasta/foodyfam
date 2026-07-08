@@ -141,14 +141,17 @@ export async function POST(request: Request) {
     avoidIngredients?: string;
     mealType?: string;
     goal?: string;
+    subscriptionStatus?: "Free" | "Premium" | "Unlimited";
   };
   const matched = findBestRecipeMatch(body);
   const preflight = buildGeneratorPreflight(body, matched?.match);
   const matchedRecipe = applyBabyNutritionGuardrails(matched ? databaseRecipeToRecipe(matched.recipe, matched.match) : createDemoRecipe(body), body);
+  const includeGeneratedImage = body.subscriptionStatus === "Premium" || body.subscriptionStatus === "Unlimited";
+  const recipeWithPlanImage = (recipe: Recipe) => withPlanRecipeImage(recipe, includeGeneratedImage);
 
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({
-      recipe: { ...matchedRecipe, image: fallbackRecipeImage },
+      recipe: await recipeWithPlanImage({ ...matchedRecipe, image: fallbackRecipeImage }),
       source: "database-demo",
       databaseMatch: matched?.match,
       preflight
@@ -210,7 +213,7 @@ export async function POST(request: Request) {
 
     if (!response.ok) {
       return NextResponse.json({
-        recipe: await withGeneratedRecipeImage({ ...matchedRecipe, image: fallbackRecipeImage }),
+        recipe: await recipeWithPlanImage({ ...matchedRecipe, image: fallbackRecipeImage }),
         source: "database-demo",
         warning: "OpenAI request failed",
         databaseMatch: matched?.match,
@@ -223,7 +226,7 @@ export async function POST(request: Request) {
     const parsed = text ? (JSON.parse(text) as { recipe?: Recipe }) : { recipe: matchedRecipe };
     if (!parsed.recipe?.title || !parsed.recipe?.description || !Array.isArray(parsed.recipe.shoppingList)) {
       return NextResponse.json({
-        recipe: await withGeneratedRecipeImage({ ...matchedRecipe, image: fallbackRecipeImage }),
+        recipe: await recipeWithPlanImage({ ...matchedRecipe, image: fallbackRecipeImage }),
         source: "database-demo",
         warning: "OpenAI schema validation failed",
         databaseMatch: matched?.match,
@@ -232,20 +235,25 @@ export async function POST(request: Request) {
     }
     const guardedRecipe = applyBabyNutritionGuardrails({ ...parsed.recipe, image: fallbackRecipeImage, databaseMatch: matched?.match }, body);
     return NextResponse.json({
-      recipe: await withGeneratedRecipeImage(guardedRecipe),
+      recipe: await recipeWithPlanImage(guardedRecipe),
       source: "openai",
       databaseMatch: matched?.match,
       preflight
     });
   } catch {
     return NextResponse.json({
-      recipe: await withGeneratedRecipeImage({ ...matchedRecipe, image: fallbackRecipeImage }),
+      recipe: await recipeWithPlanImage({ ...matchedRecipe, image: fallbackRecipeImage }),
       source: "database-demo",
       warning: "OpenAI parsing failed",
       databaseMatch: matched?.match,
       preflight
     });
   }
+}
+
+async function withPlanRecipeImage(recipe: Recipe, includeGeneratedImage: boolean): Promise<Recipe> {
+  if (!includeGeneratedImage) return { ...recipe, image: "" };
+  return withGeneratedRecipeImage(recipe);
 }
 
 async function withGeneratedRecipeImage(recipe: Recipe): Promise<Recipe> {

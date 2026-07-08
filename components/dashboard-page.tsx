@@ -15,6 +15,10 @@ import { cn } from "@/lib/utils";
 import { AssistantPage, NutritionPage, PlannerPage, ProfilesPage, RecipeCloud, ShoppingPage } from "./product-pages";
 import { signOutActiveAuth } from "@/lib/auth-adapter";
 import { SupabaseSessionBridge } from "./layout";
+import { FeatureGate } from "./feature-lock";
+import type { PlanFeature } from "@/lib/plan-gating";
+import { isSupabaseConfigured } from "@/lib/supabase/client";
+import { removeProfileAvatar, uploadProfileAvatar } from "@/lib/supabase/profile-sync";
 
 const dashboardNav = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -30,15 +34,28 @@ const dashboardNav = [
 ];
 
 export function DashboardPage({ section = "overview" }: { section?: string }) {
+  const plan = useAppStore((state) => state.settingsPreferences.subscriptionStatus);
   if (section === "generator") return <DashboardChrome><GeneratorInner /></DashboardChrome>;
-  if (section === "planner") return <DashboardChrome embedded="planner"><PlannerInner /></DashboardChrome>;
-  if (section === "shopping") return <DashboardChrome embedded="shopping"><ShoppingInner /></DashboardChrome>;
-  if (section === "recipes") return <DashboardChrome><RecipesInner /></DashboardChrome>;
-  if (section === "nutrition") return <DashboardChrome embedded="nutrition"><NutritionInner /></DashboardChrome>;
+  if (section === "planner") return <DashboardChrome embedded="planner"><GatedDashboardSection plan={plan} feature="planner"><PlannerInner /></GatedDashboardSection></DashboardChrome>;
+  if (section === "shopping") return <DashboardChrome embedded="shopping"><GatedDashboardSection plan={plan} feature="shoppingList"><ShoppingInner /></GatedDashboardSection></DashboardChrome>;
+  if (section === "recipes") return <DashboardChrome><GatedDashboardSection plan={plan} feature="savedRecipes"><RecipesInner /></GatedDashboardSection></DashboardChrome>;
+  if (section === "nutrition") return <DashboardChrome embedded="nutrition"><GatedDashboardSection plan={plan} feature="nutrition"><NutritionInner /></GatedDashboardSection></DashboardChrome>;
   if (section === "profiles") return <DashboardChrome embedded="profiles"><ProfilesInner /></DashboardChrome>;
-  if (section === "assistant") return <DashboardChrome embedded="assistant"><AssistantInner /></DashboardChrome>;
+  if (section === "assistant") return <DashboardChrome embedded="assistant"><GatedDashboardSection plan={plan} feature="assistant"><AssistantInner /></GatedDashboardSection></DashboardChrome>;
   if (section === "settings") return <DashboardChrome><SettingsInner /></DashboardChrome>;
   return <DashboardChrome><DashboardOverview /></DashboardChrome>;
+}
+
+function GatedDashboardSection({
+  plan,
+  feature,
+  children
+}: {
+  plan: "Free" | "Premium" | "Unlimited";
+  feature: PlanFeature;
+  children: React.ReactNode;
+}) {
+  return <FeatureGate plan={plan} feature={feature}>{children}</FeatureGate>;
 }
 
 function DashboardChrome({ children, embedded }: { children: React.ReactNode; embedded?: string }) {
@@ -399,17 +416,13 @@ export function Overview() {
 function GeneratorInner() {
   return (
     <div className="grid gap-5">
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+      <div>
         <div>
           <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">AI Generator</p>
           <h1 className="mt-2 font-display text-4xl font-black">Generate a family recipe</h1>
           <p className="mt-2 max-w-2xl font-bold leading-7 text-[#5c4a42]">
             Build one cooking flow with ingredients, baby portion timing, and adult finishing steps.
           </p>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2 xl:w-[460px]">
-          <LiquidMetric label="Profile-aware" value="2 kids" body="Baby ages, texture styles, and allergies stay close to the recipe request." />
-          <LiquidMetric label="Dinner speed" value="25m" body="The flow favors weeknight meals with one cooking path." />
         </div>
       </div>
       <GeneratorPanel showLatestResult />
@@ -479,7 +492,6 @@ function AssistantInner() {
 function SettingsInner() {
   const router = useRouter();
   const authUser = useAppStore((state) => state.authUser);
-  const authMode = useAppStore((state) => state.authMode);
   const authProvider = useAppStore((state) => state.authProvider);
   const lastLoginAt = useAppStore((state) => state.lastLoginAt);
   const onboardingCompleted = useAppStore((state) => state.onboardingCompleted);
@@ -488,16 +500,77 @@ function SettingsInner() {
   const preferences = useAppStore((state) => state.familyPreferences);
   const settingsPreferences = useAppStore((state) => state.settingsPreferences);
   const updateSettingsPreferences = useAppStore((state) => state.updateSettingsPreferences);
+  const updateAuthUser = useAppStore((state) => state.updateAuthUser);
   const logout = useAppStore((state) => state.logout);
+  const [avatarStatus, setAvatarStatus] = useState("");
+  const [avatarBusy, setAvatarBusy] = useState(false);
+
+  async function handleAvatarChange(file: File | undefined) {
+    if (!file) return;
+    setAvatarBusy(true);
+    setAvatarStatus("");
+    try {
+      const avatarUrl = isSupabaseConfigured() ? await uploadProfileAvatar(file) : await fileToDataUrl(file);
+      updateAuthUser({ avatarUrl });
+      setAvatarStatus(isSupabaseConfigured() ? "Profile photo updated." : "Demo profile photo preview updated.");
+    } catch {
+      setAvatarStatus("Could not update profile photo. Try a JPG, PNG, or WebP under 5 MB.");
+    } finally {
+      setAvatarBusy(false);
+    }
+  }
+
+  async function handleAvatarRemove() {
+    setAvatarBusy(true);
+    try {
+      if (isSupabaseConfigured()) await removeProfileAvatar();
+      updateAuthUser({ avatarUrl: undefined });
+      setAvatarStatus("Profile photo removed.");
+    } finally {
+      setAvatarBusy(false);
+    }
+  }
+
   return (
     <div className="grid gap-5">
       <h1 className="font-display text-4xl font-black">Account & billing</h1>
       <div className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
         <Card>
           <h2 className="font-display text-2xl font-black">Account overview</h2>
+          <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full bg-[#405f46] text-2xl font-black text-[#fffaf6] shadow-[0_16px_38px_rgba(64,95,70,0.18)]">
+              {authUser?.avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={authUser.avatarUrl} alt={`${authUser.displayName} profile`} className="h-full w-full object-cover" />
+              ) : (
+                authUser?.displayName?.slice(0, 1).toUpperCase() || "F"
+              )}
+            </div>
+            <div className="grid gap-3">
+              <div className="flex flex-wrap gap-3">
+                <label className="tap-target inline-flex cursor-pointer items-center justify-center rounded-full bg-[#405f46] px-5 py-2.5 text-sm font-extrabold text-[#fffaf6] shadow-sm transition active:scale-[0.98]">
+                  {avatarBusy ? "Uploading..." : "Upload profile photo"}
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    className="sr-only"
+                    disabled={avatarBusy}
+                    onChange={(event) => void handleAvatarChange(event.target.files?.[0])}
+                  />
+                </label>
+                <Button type="button" variant="secondary" disabled={avatarBusy || !authUser?.avatarUrl} onClick={() => void handleAvatarRemove()}>
+                  Remove photo
+                </Button>
+              </div>
+              <p className="text-xs font-bold leading-5 text-[#5c4a42]/72">JPG, PNG, or WebP.</p>
+              {avatarStatus && <p className="text-sm font-extrabold text-[#437967]">{avatarStatus}</p>}
+            </div>
+          </div>
           <div className="mt-4 grid gap-3 text-sm font-bold text-[#5c4a42]">
             <p>User: {authUser?.displayName || "Demo Parent"} ({authUser?.email || "parent@foodyfam.demo"})</p>
             <p>Login method: {authProvider || authUser?.provider || "password"}</p>
+            <p>Role: {authUser?.role || "user"}</p>
+            <p>Account: {authUser?.accountStatus || "active"}</p>
             <p>Email: {authUser?.emailVerified ? "verified" : "demo/unverified"}</p>
             <p>Last login: {lastLoginAt ? new Date(lastLoginAt).toLocaleString() : "Not recorded yet"}</p>
             <p>Onboarding: {onboardingCompleted ? "complete" : "open"}</p>
@@ -579,17 +652,6 @@ function SettingsInner() {
           </div>
         </Card>
       </div>
-      <Card>
-        <h2 className="font-display text-2xl font-black">Integration status</h2>
-        <div className="mt-4 grid gap-3 text-sm font-bold text-[#5c4a42] sm:grid-cols-2">
-          <p>Auth mode: {authMode}</p>
-          <p>OAuth callback: ready at /auth/callback</p>
-          <p>Supabase Auth: adapter interface prepared</p>
-          <p>Profile database: ProfileAdapter prepared</p>
-          <p>OpenAI: server-side only through .env.local</p>
-          <p>Passwords: never stored in localStorage</p>
-        </div>
-      </Card>
     </div>
   );
 }
@@ -630,6 +692,15 @@ function subscriptionCopy(status: "Free" | "Premium" | "Unlimited") {
   if (status === "Free") return "3 meal generations and basic AI results.";
   if (status === "Premium") return "14 weekly generations, planner, nutrition, and assistant.";
   return "All recipes, shopping list, planner, saving, sharing, and priority AI.";
+}
+
+function fileToDataUrl(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
 }
 
 function plannerSlots(day: MealPlanDay) {

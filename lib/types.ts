@@ -19,6 +19,8 @@ export type AuthUser = {
   providerId?: string;
   emailVerified: boolean;
   lastLoginAt: string;
+  role?: "user" | "admin";
+  accountStatus?: "active" | "suspended";
 };
 
 export type OnboardingDraft = {
@@ -60,6 +62,8 @@ export type SettingsPreferences = {
   measurementSystem: "metric" | "us";
   temperatureUnit: "celsius" | "fahrenheit";
   subscriptionStatus: "Free" | "Premium" | "Unlimited";
+  billingInterval?: "monthly" | "yearly";
+  subscriptionCurrentPeriodEnd?: string;
 };
 
 export type Recipe = {

@@ -77,7 +77,7 @@ export function AuthCallbackPage() {
         const snapshot = await loadSupabaseSnapshot(data.user);
         if (!mounted) return;
         hydrateFromSupabaseSnapshot(snapshot);
-        router.replace(snapshot.onboardingCompleted ? "/dashboard" : "/onboarding");
+        router.replace("/dashboard");
       } catch {
         if (!mounted) return;
         setError("We could not finish this sign-in. Please try again.");
@@ -165,7 +165,7 @@ function AuthCard({ mode }: { mode: AuthMode }) {
       const user = await adapter.signInWithOAuth(provider);
       const completed = mode === "register" ? false : onboardingCompleted;
       loginWithProvider(user, completed);
-      router.push(completed ? "/dashboard" : "/onboarding");
+      router.push(mode === "register" ? "/onboarding" : "/dashboard");
     } catch {
       setError(`Could not connect ${provider}. Try again.`);
     } finally {
@@ -198,14 +198,14 @@ function AuthCard({ mode }: { mode: AuthMode }) {
                 if (data.user) {
                   const snapshot = await loadSupabaseSnapshot(data.user);
                   hydrateFromSupabaseSnapshot(snapshot);
-                  router.push(snapshot.onboardingCompleted ? "/dashboard" : "/onboarding");
+                  router.push("/dashboard");
                   return;
                 }
                 loginSupabaseUser(user, onboardingCompleted);
               } else {
                 loginDemoUser(user, onboardingCompleted);
               }
-              router.push(onboardingCompleted ? "/dashboard" : "/onboarding");
+              router.push("/dashboard");
             } catch {
               setError("Login failed. Check your details and try again.");
             } finally {

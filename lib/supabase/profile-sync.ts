@@ -63,7 +63,9 @@ export function authUserFromSupabase(user: User, profile?: Record<string, unknow
     provider,
     providerId: user.identities?.[0]?.id || user.id,
     emailVerified: Boolean(user.email_confirmed_at),
-    lastLoginAt: user.last_sign_in_at || new Date().toISOString()
+    lastLoginAt: user.last_sign_in_at || new Date().toISOString(),
+    role: profile?.role === "admin" ? "admin" : "user",
+    accountStatus: profile?.account_status === "suspended" ? "suspended" : "active"
   };
 }
 
@@ -150,7 +152,9 @@ export async function loadSupabaseSnapshot(user: User): Promise<SupabaseAppSnaps
     settingsPreferences: {
       measurementSystem: profile?.measurement_system === "us" ? "us" : "metric",
       temperatureUnit: profile?.temperature_unit === "fahrenheit" ? "fahrenheit" : "celsius",
-      subscriptionStatus: parseSubscriptionStatus(profile?.subscription_status)
+      subscriptionStatus: parseSubscriptionStatus(profile?.subscription_status),
+      billingInterval: profile?.billing_interval === "yearly" ? "yearly" : "monthly",
+      subscriptionCurrentPeriodEnd: asString(profile?.subscription_current_period_end) || undefined
     },
     savedRecipeIds: ((savedRows.data || []) as Record<string, unknown>[]).map((row) => asString(row.recipe_id)).filter(Boolean),
     generatedRecipes,
@@ -169,23 +173,61 @@ export async function syncAccountProfile(user: Partial<AuthUser>, onboardingComp
   const supabase = getSupabaseBrowserClient();
   const userId = await getCurrentUserId();
   if (!supabase || !userId) return;
-  await supabase.from("profiles").update({
-    email: user.email,
-    display_name: user.displayName,
-    avatar_url: user.avatarUrl || null,
-    onboarding_completed: onboardingCompleted
-  }).eq("id", userId);
+  const payload: Record<string, unknown> = {};
+  if (user.email !== undefined) payload.email = user.email;
+  if (user.displayName !== undefined) payload.display_name = user.displayName;
+  if (user.avatarUrl !== undefined) payload.avatar_url = user.avatarUrl || null;
+  if (onboardingCompleted !== undefined) payload.onboarding_completed = onboardingCompleted;
+  if (user.role !== undefined) payload.role = user.role;
+  if (user.accountStatus !== undefined) payload.account_status = user.accountStatus;
+  if (Object.keys(payload).length === 0) return;
+  await supabase.from("profiles").update(payload).eq("id", userId);
 }
 
 export async function syncSettings(preferences: Partial<SettingsPreferences>) {
   const supabase = getSupabaseBrowserClient();
   const userId = await getCurrentUserId();
   if (!supabase || !userId) return;
-  await supabase.from("profiles").update({
-    measurement_system: preferences.measurementSystem,
-    temperature_unit: preferences.temperatureUnit,
-    subscription_status: preferences.subscriptionStatus
-  }).eq("id", userId);
+  const payload: Record<string, unknown> = {};
+  if (preferences.measurementSystem !== undefined) payload.measurement_system = preferences.measurementSystem;
+  if (preferences.temperatureUnit !== undefined) payload.temperature_unit = preferences.temperatureUnit;
+  if (preferences.subscriptionStatus !== undefined) payload.subscription_status = preferences.subscriptionStatus;
+  if (preferences.billingInterval !== undefined) payload.billing_interval = preferences.billingInterval;
+  if (preferences.subscriptionCurrentPeriodEnd !== undefined) {
+    payload.subscription_current_period_end = preferences.subscriptionCurrentPeriodEnd || null;
+  }
+  if (Object.keys(payload).length === 0) return;
+  await supabase.from("profiles").update(payload).eq("id", userId);
+}
+
+export async function uploadProfileAvatar(file: File) {
+  const supabase = getSupabaseBrowserClient();
+  const userId = await getCurrentUserId();
+  if (!supabase || !userId) throw new Error("Supabase avatar upload is not configured.");
+  const ext = file.type === "image/png" ? "png" : file.type === "image/jpeg" ? "jpg" : "webp";
+  const path = `${userId}/avatar.${ext}`;
+  const { error } = await supabase.storage.from("avatars").upload(path, file, {
+    upsert: true,
+    contentType: file.type || "image/webp",
+    cacheControl: "3600"
+  });
+  if (error) throw error;
+  const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+  const avatarUrl = data.publicUrl ? `${data.publicUrl}?v=${Date.now()}` : "";
+  await supabase.from("profiles").update({ avatar_url: avatarUrl }).eq("id", userId);
+  return avatarUrl;
+}
+
+export async function removeProfileAvatar() {
+  const supabase = getSupabaseBrowserClient();
+  const userId = await getCurrentUserId();
+  if (!supabase || !userId) return;
+  await supabase.storage.from("avatars").remove([
+    `${userId}/avatar.webp`,
+    `${userId}/avatar.png`,
+    `${userId}/avatar.jpg`
+  ]);
+  await supabase.from("profiles").update({ avatar_url: null }).eq("id", userId);
 }
 
 export async function syncFamilyMember(member: FamilyMember) {

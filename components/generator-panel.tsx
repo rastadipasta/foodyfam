@@ -83,6 +83,7 @@ export function GeneratorPanel({
   const generatedRecipes = useAppStore((state) => state.generatedRecipes);
   const babyProfiles = useAppStore((state) => state.babyProfiles);
   const preferences = useAppStore((state) => state.familyPreferences);
+  const subscriptionStatus = useAppStore((state) => state.settingsPreferences.subscriptionStatus);
   const primaryBaby = babyProfiles[0];
   const defaultValues = buildDefaultGeneratorValues(primaryBaby, preferences);
 
@@ -127,7 +128,7 @@ export function GeneratorPanel({
       const response = await fetch("/api/ai/recipe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values)
+        body: JSON.stringify({ ...values, subscriptionStatus })
       });
       const data = (await response.json()) as { recipe: Recipe; preflight?: GeneratorPreflight };
       setResult(data.recipe);
@@ -333,6 +334,7 @@ export function GeneratorPanel({
         <div ref={resultRef} className="scroll-mt-24">
           <RecipeResult
             recipe={currentResult}
+            showImage={subscriptionStatus !== "Free"}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             saved={saved}
@@ -445,6 +447,7 @@ function SmartGeneratorLoader() {
 
 function RecipeResult({
   recipe,
+  showImage,
   activeTab,
   setActiveTab,
   saved,
@@ -458,6 +461,7 @@ function RecipeResult({
   shoppingMessage
 }: {
   recipe: Recipe;
+  showImage: boolean;
   activeTab: (typeof resultTabs)[number];
   setActiveTab: (tab: (typeof resultTabs)[number]) => void;
   saved: boolean;
@@ -477,8 +481,8 @@ function RecipeResult({
 
   return (
     <KitchenLedger className="grid gap-5 rounded-[34px] bg-white p-5 shadow-[0_18px_45px_rgba(92,74,66,0.08)] sm:p-6">
-      <div className="grid gap-5 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
-        <RecipeImageFrame recipe={recipe} />
+      <div className={cn("grid gap-5 lg:items-center", showImage ? "lg:grid-cols-[0.78fr_1.22fr]" : "lg:grid-cols-1")}>
+        {showImage && <RecipeImageFrame recipe={recipe} />}
         <div>
           <div className="flex flex-wrap gap-2">
             {recipe.tags.map((tag) => (
