@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -53,16 +54,68 @@ const workflowSteps = [
   }
 ];
 
-const pricingPreview = [
-  { name: "Free", price: "$0", detail: "Forever", body: "Try the generator", features: ["3 meals per week", "Basic recipes", "Baby-safe versions"], cta: "Get started" },
-  { name: "Family", price: "$7.99", detail: "/month", body: "For growing families", features: ["Unlimited meals", "Weekly meal planner", "Smart grocery lists", "Favorites & history"], cta: "Start free trial", featured: true },
-  { name: "Premium", price: "$12.99", detail: "/month", body: "For power planners", features: ["AI Pantry features", "Advanced filters", "Nutrition insights", "Priority support"], cta: "Start free trial" }
+const yearlyPricingPreview = [
+  {
+    name: "Free",
+    price: "€0",
+    detail: "",
+    body: "Try the Foody Fam workflow with a small, useful starter plan.",
+    features: ["3 meal generations", "Basic AI meal result", "Baby/adult split instructions"],
+    cta: "Start free"
+  },
+  {
+    name: "Premium",
+    price: "€8",
+    detail: "/ month",
+    body: "For families who want planning and AI help, without the full recipe library or shopping list.",
+    features: ["14 meal generations per week", "Meal planner access", "Nutrition insights", "AI assistant"],
+    cta: "Upgrade to Premium",
+    featured: true
+  },
+  {
+    name: "Unlimited",
+    price: "€13",
+    detail: "/ month",
+    body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
+    features: ["Unlimited meal generations", "Full verified recipe library", "Shopping list and pantry matching", "Priority AI assistant"],
+    cta: "Go Unlimited"
+  }
+];
+
+const monthlyPricingPreview = [
+  {
+    name: "Free",
+    price: "€0",
+    detail: "",
+    body: "Try the Foody Fam workflow with a small, useful starter plan.",
+    features: ["3 meal generations", "Basic AI meal result", "Baby/adult split instructions"],
+    cta: "Start free"
+  },
+  {
+    name: "Premium",
+    price: "€12",
+    detail: "/ month",
+    body: "For families who want planning and AI help, without the full recipe library or shopping list.",
+    features: ["14 meal generations per week", "Meal planner access", "Nutrition insights", "AI assistant"],
+    cta: "Upgrade to Premium",
+    featured: true
+  },
+  {
+    name: "Unlimited",
+    price: "€20",
+    detail: "/ month",
+    body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
+    features: ["Unlimited meal generations", "Full verified recipe library", "Shopping list and pantry matching", "Priority AI assistant"],
+    cta: "Go Unlimited"
+  }
 ];
 
 const trustLogos = ["babycenter", "Good Housekeeping", "Parents", "yahoo!", "Forbes", "TODAY"];
 
 export function HomePage() {
   const router = useRouter();
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
+  const visiblePricing = billingCycle === "monthly" ? monthlyPricingPreview : yearlyPricingPreview;
 
   return (
     <SiteShell>
@@ -95,25 +148,12 @@ export function HomePage() {
                     Generate today&apos;s meal
                   </Button>
                 </Link>
-                <Link href="/generator">
+                <Link href="/pricing">
                   <Button variant="secondary" className="min-h-14 border-[#eaded5] bg-white px-7 text-[#243929]">
-                    Open generator
+                    View our plans
                     <ArrowRight size={18} />
                   </Button>
                 </Link>
-              </div>
-              <div className="mt-9 grid grid-cols-2 gap-5 sm:grid-cols-4">
-                {heroBenefits.map(({ icon: Icon, label, detail }) => (
-                  <div key={label} className="flex items-center gap-3 text-[#5c4a42]">
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-[#eaded5] bg-white">
-                      <Icon size={18} />
-                    </span>
-                    <span className="text-xs font-extrabold leading-4">
-                      {label}<br />
-                      <span className="font-bold text-[#5c4a42]/70">{detail}</span>
-                    </span>
-                  </div>
-                ))}
               </div>
             </motion.div>
 
@@ -135,30 +175,25 @@ export function HomePage() {
                 <div className="absolute inset-y-0 left-0 hidden w-1/3 bg-gradient-to-r from-[#fffaf6] to-transparent lg:block" />
               </div>
 
-              <div className="absolute right-5 top-8 rounded-[22px] border border-white/80 bg-white/90 p-4 shadow-[0_18px_44px_rgba(92,74,66,0.16)] backdrop-blur-md sm:right-14 sm:top-14">
-                <div className="flex items-center gap-3">
-                  <div className="flex -space-x-2">
-                    {["S", "J", "P"].map((avatar) => (
-                      <span key={avatar} className="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-[#ffccb2] text-xs font-black text-[#5c4a42]">
-                        {avatar}
-                      </span>
-                    ))}
+              <div className="absolute bottom-5 left-4 right-4 z-10 grid grid-cols-2 gap-3 rounded-[28px] border border-white/82 bg-white/82 p-4 shadow-[0_20px_48px_rgba(92,74,66,0.14)] backdrop-blur-md sm:grid-cols-4 sm:rounded-full sm:px-5 lg:bottom-7 lg:left-6 lg:right-6 lg:flex lg:items-center lg:justify-between lg:gap-6 lg:px-6">
+                {heroBenefits.map(({ icon: Icon, label, detail }) => (
+                  <div key={label} className="flex min-w-0 items-center gap-3 text-[#5c4a42] lg:flex-1">
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#eaded5] bg-[#fffaf6] sm:h-11 sm:w-11">
+                      <Icon size={17} />
+                    </span>
+                    <span className="break-normal text-xs font-extrabold leading-5 [overflow-wrap:normal]">
+                      {label}<br />
+                      <span className="font-bold text-[#5c4a42]/68">{detail}</span>
+                    </span>
                   </div>
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#5c4a42]/60">Trusted by</p>
-                    <p className="text-sm font-black text-[#243929]">10,000+ families</p>
-                  </div>
-                </div>
-                <div className="mt-3 flex gap-1 text-[#f8bd2e]">
-                  {Array.from({ length: 5 }).map((_, index) => <Star key={index} size={15} fill="currentColor" />)}
-                </div>
+                ))}
               </div>
 
-              <div className="absolute bottom-7 right-4 grid h-36 w-36 place-items-center rounded-full border border-[#d8c9bd] bg-white/92 p-4 text-center shadow-[0_22px_52px_rgba(92,74,66,0.18)] backdrop-blur sm:bottom-12 sm:right-16 sm:h-44 sm:w-44">
+              <div className="absolute right-4 top-4 z-20 grid h-32 w-32 place-items-center rounded-full border border-[#d8c9bd] bg-white/92 p-4 text-center shadow-[0_22px_52px_rgba(92,74,66,0.18)] backdrop-blur sm:right-7 sm:top-7 sm:h-40 sm:w-40 lg:right-10 lg:top-10 lg:h-44 lg:w-44">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.18em] text-[#5c4a42]/60">AI meal planner</p>
-                  <p className="mt-3 [font-family:Georgia,serif] text-xl leading-6 text-[#243929] sm:text-2xl">For babies,<br />kids & adults</p>
-                  <Leaf className="mx-auto mt-2 text-[#78bea8]" size={22} />
+                  <p className="whitespace-nowrap text-[7px] font-black uppercase tracking-[0.18em] text-[#5c4a42]/60 sm:text-[9px]">AI meal planner</p>
+                  <p className="mt-2 whitespace-nowrap [font-family:Georgia,serif] text-[1.12rem] leading-[1.02] tracking-[-0.035em] text-[#243929] sm:mt-3 sm:text-[1.65rem]">For babies,<br />kids & adults</p>
+                  <Leaf className="mx-auto mt-2 text-[#78bea8]" size={20} />
                 </div>
               </div>
             </motion.div>
@@ -227,42 +262,50 @@ export function HomePage() {
             <section className="rounded-[30px] border border-[#eaded5] bg-white/82 p-5 shadow-[0_24px_70px_rgba(92,74,66,0.1)]">
               <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-xs font-black uppercase tracking-[0.18em] text-[#5c4a42]/66">Choose your plan</p>
-                <div className="flex items-center gap-3 text-xs font-black text-[#5c4a42]">
-                  Monthly
-                  <span className="relative h-6 w-11 rounded-full bg-[#405f46]">
-                    <span className="absolute right-1 top-1 h-4 w-4 rounded-full bg-white" />
-                  </span>
-                  Yearly
-                  <Pill className="border-0 bg-[#e8f4ef] text-[#3f6f5d]">Save 20%</Pill>
+                <div className="flex items-center gap-2 rounded-full border border-[#eaded5] bg-[#fffaf6] p-1 text-xs font-black text-[#5c4a42] shadow-sm">
+                  <button
+                    type="button"
+                    className={`rounded-full px-3 py-2 transition ${billingCycle === "monthly" ? "bg-[#405f46] text-white shadow-sm" : "hover:bg-white"}`}
+                    onClick={() => setBillingCycle("monthly")}
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    type="button"
+                    className={`rounded-full px-3 py-2 transition ${billingCycle === "yearly" ? "bg-[#405f46] text-white shadow-sm" : "hover:bg-white"}`}
+                    onClick={() => setBillingCycle("yearly")}
+                  >
+                    Yearly
+                  </button>
                 </div>
               </div>
               <div className="grid gap-4 md:grid-cols-3">
-                {pricingPreview.map((plan) => (
+                {visiblePricing.map((plan) => (
                   <article
                     key={plan.name}
-                    className={`relative rounded-[22px] border bg-white p-5 ${plan.featured ? "border-[#f59b78] shadow-[0_18px_48px_rgba(245,155,120,0.16)]" : "border-[#eaded5]"}`}
+                    className={`relative flex h-full min-h-[390px] flex-col rounded-[22px] border p-5 ${plan.featured ? "border-[#405f46] bg-[#405f46] text-white shadow-[0_22px_58px_rgba(64,95,70,0.28)]" : "border-[#eaded5] bg-white"}`}
                   >
-                    {plan.featured && <span className="absolute -top-3 right-4 rounded-full bg-[#f59b78] px-3 py-1 text-[10px] font-black text-white">Most popular</span>}
-                    <h3 className="text-lg font-black text-[#243929]">{plan.name}</h3>
+                    {plan.featured && <span className="absolute -top-3 right-4 rounded-full bg-[#fffaf6] px-3 py-1 text-[10px] font-black text-[#405f46] shadow-sm">Most popular</span>}
+                    <h3 className={`text-lg font-black ${plan.featured ? "text-white" : "text-[#243929]"}`}>{plan.name}</h3>
                     <div className="mt-4 flex items-end gap-1">
-                      <span className="text-4xl font-black text-[#243929]">{plan.price}</span>
-                      <span className="pb-1 text-xs font-bold text-[#5c4a42]/66">{plan.detail}</span>
+                      <span className={`text-4xl font-black ${plan.featured ? "text-white" : "text-[#243929]"}`}>{plan.price}</span>
+                      <span className={`pb-1 text-xs font-bold ${plan.featured ? "text-white/72" : "text-[#5c4a42]/66"}`}>{plan.detail}</span>
                     </div>
-                    <p className="mt-3 min-h-10 text-sm font-bold leading-5 text-[#5c4a42]/76">{plan.body}</p>
+                    <p className={`mt-3 min-h-10 text-sm font-bold leading-5 ${plan.featured ? "text-white/78" : "text-[#5c4a42]/76"}`}>{plan.body}</p>
                     <ul className="mt-5 grid gap-2">
                       {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-center gap-2 text-sm font-bold text-[#5c4a42]">
-                          <Check size={15} className="text-[#78bea8]" />
+                        <li key={feature} className={`flex items-center gap-2 text-sm font-bold ${plan.featured ? "text-white/88" : "text-[#5c4a42]"}`}>
+                          <Check size={15} className={plan.featured ? "text-[#ffccb2]" : "text-[#78bea8]"} />
                           {feature}
                         </li>
                       ))}
                     </ul>
-                    <Link href="/pricing" className="mt-6 block">
-                      <Button variant={plan.featured ? "primary" : "secondary"} className={`w-full ${plan.featured ? "bg-[#405f46] hover:bg-[#314b37]" : "border-[#eaded5] bg-[#fffaf6]"}`}>
+                    {plan.featured && <p className="mt-4 text-center text-xs font-bold text-white/66">7-day free trial</p>}
+                    <Link href="/pricing" className="mt-auto block pt-6">
+                      <Button variant="secondary" className={`min-h-12 w-full whitespace-nowrap px-3 text-sm ${plan.featured ? "border-white/20 bg-white text-[#243929] hover:bg-[#fffaf6]" : "border-[#eaded5] bg-[#fffaf6]"}`}>
                         {plan.cta}
                       </Button>
                     </Link>
-                    {plan.featured && <p className="mt-3 text-center text-xs font-bold text-[#5c4a42]/60">7-day free trial</p>}
                   </article>
                 ))}
               </div>

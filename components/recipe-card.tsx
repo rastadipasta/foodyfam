@@ -29,7 +29,7 @@ export function RecipeCard({
       className={`grid gap-4 overflow-hidden ${cardPadding} ${textOnly ? "!bg-transparent !p-0 !shadow-none before:hidden" : ""}`}
     >
       {textOnly ? (
-        <RecipeTicket className="liquid-glass grid h-full gap-3 p-5">
+        <RecipeTicket className="grid h-full gap-3 bg-white p-5">
           <RecipeCardBody recipe={recipe} compact={compact} textOnly={textOnly} onOpen={onOpen} saved={saved} onSave={() => saveRecipe(recipe.id)} />
         </RecipeTicket>
       ) : (
@@ -68,11 +68,11 @@ function RecipeCardBody({
         <div className="flex items-start justify-between gap-3">
           <div>
             {onOpen ? (
-              <button className="text-left font-display text-xl font-black leading-tight text-[#1f1d1c] transition hover:text-[#f59b78]" onClick={() => onOpen(recipe)}>
+              <button className="text-left font-display text-xl font-black leading-tight text-[#1f1d1c]" onClick={() => onOpen(recipe)}>
                 {recipe.title}
               </button>
             ) : (
-              <Link href={`/recipes/${recipe.slug}`} className="font-display text-xl font-black leading-tight text-[#1f1d1c] transition hover:text-[#f59b78]">
+              <Link href={`/recipes/${recipe.slug}`} className="font-display text-xl font-black leading-tight text-[#1f1d1c]">
                 {recipe.title}
               </Link>
             )}
@@ -88,7 +88,7 @@ function RecipeCardBody({
           </div>
           <button
             aria-label={saved ? "Remove from saved" : "Save recipe"}
-            className="tap-target rounded-full bg-[#f7efe9] p-3 text-[#f59b78] shadow-sm transition hover:scale-105 hover:bg-[#ffccb2]/70 active:scale-95"
+            className="tap-target rounded-full bg-[#f7efe9] p-3 text-[#f59b78] shadow-sm transition active:scale-95"
             onClick={onSave}
           >
             <Heart size={18} fill={saved ? "currentColor" : "none"} />

@@ -59,9 +59,9 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_12%_8%,rgba(255,204,178,0.38),transparent_32%),radial-gradient(circle_at_88%_16%,rgba(120,190,168,0.24),transparent_30%),radial-gradient(circle_at_52%_0%,rgba(207,176,255,0.16),transparent_34%),linear-gradient(180deg,#fffaf6_0%,#f7efe9_100%)]">
+    <div className="dashboard-shell min-h-screen bg-[#fffaf6]">
       <SupabaseSessionBridge />
-      <header className="fable-topbar liquid-glass sticky top-0 z-40 border-b border-white/52 bg-white/52 px-4 py-3 shadow-[0_10px_34px_rgba(92,74,66,0.06)] backdrop-blur-xl lg:hidden">
+      <header className="sticky top-0 z-40 border-b border-[#eaded5] bg-[#fffaf6]/94 px-4 py-3 shadow-[0_8px_24px_rgba(92,74,66,0.04)] backdrop-blur-xl lg:hidden">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <Link href="/" className="font-display text-2xl font-black">Foody Fam</Link>
@@ -86,7 +86,7 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
             className="absolute inset-0 bg-[#5c4a42]/28 backdrop-blur-sm"
             onClick={() => setMenuOpen(false)}
           />
-          <aside className="fable-command-surface liquid-glass absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto rounded-t-[30px] border border-white/58 p-4 shadow-[0_24px_70px_rgba(92,74,66,0.28)]">
+          <aside className="absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto rounded-t-[30px] border border-[#eaded5] bg-[#fffaf6] p-4 shadow-[0_24px_70px_rgba(92,74,66,0.22)]">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="font-display text-3xl font-black">Foody Fam</p>
@@ -112,7 +112,7 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
         </div>
       )}
       <div className="grid lg:grid-cols-[290px_1fr]">
-        <aside className="fable-sidebar liquid-glass hidden border-b border-white/42 bg-white/34 p-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r lg:backdrop-blur-xl">
+        <aside className="relative z-20 hidden border-b border-[#eaded5] bg-[#fffaf6] p-4 shadow-[12px_0_46px_rgba(92,74,66,0.05)] lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
           <Link href="/" className="font-display text-3xl font-black">Foody Fam</Link>
           <DashboardNavLinks pathname={pathname} />
           <DashboardAccountBlock
@@ -132,23 +132,27 @@ function DashboardChrome({ children, embedded }: { children: React.ReactNode; em
 
 function DashboardNavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   return (
-    <nav className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
-      {dashboardNav.map(({ href, label, icon: Icon }) => (
-        <Link
-          key={href}
-          href={href}
-          onClick={onNavigate}
-          className={cn(
-            "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold transition active:scale-[0.99]",
-            pathname === href || (href !== "/dashboard" && pathname.startsWith(href))
-              ? "bg-white text-[#f59b78] shadow-sm"
-              : "text-[#5c4a42] hover:bg-white/70 hover:shadow-sm"
-          )}
-        >
-          <Icon size={18} />
-          {label}
-        </Link>
-      ))}
+    <nav className="relative z-10 mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+      {dashboardNav.map(({ href, label, icon: Icon }) => {
+        const active = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
+        return (
+          <Link
+            key={href}
+            href={href}
+            onClick={onNavigate}
+            aria-current={active ? "page" : undefined}
+            className={cn(
+              "relative flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold transition active:scale-[0.99]",
+              active
+                ? "bg-[#405f46] text-[#fffaf6] shadow-[0_12px_28px_rgba(64,95,70,0.22)] ring-1 ring-[#405f46]/12"
+                : "text-[#5c4a42] hover:bg-white hover:shadow-sm"
+            )}
+          >
+            <Icon size={18} className={active ? "text-[#fffaf6]" : "text-current"} />
+            <span className={active ? "text-[#fffaf6]" : "text-current"}>{label}</span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }
@@ -165,7 +169,7 @@ function DashboardAccountBlock({
   onLogout: () => void;
 }) {
   return (
-      <div className="liquid-glass mt-5 grid gap-2 rounded-[18px] border border-white/58 bg-white/46 p-3 shadow-sm lg:mt-auto">
+      <div className="mt-5 grid gap-2 rounded-[18px] border border-[#eaded5] bg-white p-3 shadow-sm lg:mt-auto">
       <div className="flex items-center gap-2.5">
         <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#ffccb2] text-sm font-black text-[#5c4a42]">
           {(authUser?.displayName || "P").slice(0, 1)}
@@ -219,7 +223,7 @@ function DashboardOverview() {
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">Dashboard</p>
-          <h1 className="font-display text-5xl font-black">Welcome back, {authUser?.displayName?.split(" ")[0] || "Parent"}.</h1>
+          <h1 className="[font-family:Georgia,serif] text-5xl font-normal tracking-[-0.045em] text-[#243929]">Welcome back, {authUser?.displayName?.split(" ")[0] || "Parent"}.</h1>
           <p className="mt-2 max-w-2xl font-bold leading-7 text-[#5c4a42]">
             {familyMembers.length} family members, {babyProfiles.length} baby profiles, and a {preferences.favoriteCuisines[0] || "family"} dinner rhythm ready for today.
           </p>
@@ -235,7 +239,7 @@ function DashboardOverview() {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
-        <DashboardCommandPanel className="fable-command-surface grid content-between gap-6">
+        <DashboardCommandPanel className="grid content-between gap-6">
           <div>
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <Pill className="bg-[#e8f4ef]">Today&apos;s meal</Pill>
@@ -243,7 +247,7 @@ function DashboardOverview() {
               <Pill>{todayRecipe.difficulty}</Pill>
               <Pill>{todayRecipe.servings} servings</Pill>
             </div>
-            <h2 className="font-display text-4xl font-black leading-tight md:text-5xl">{todayRecipe.title}</h2>
+            <h2 className="[font-family:Georgia,serif] text-4xl font-normal leading-tight tracking-[-0.035em] text-[#243929] md:text-5xl">{todayRecipe.title}</h2>
             <p className="mt-4 max-w-3xl text-lg font-bold leading-8 text-[#5c4a42]">
               {todayRecipe.description || todayRecipe.familyPitch || "One shared base, one baby-safe portion, and one adult finish for a calmer dinner."}
             </p>
@@ -282,7 +286,7 @@ function DashboardOverview() {
           </GlassActionDock>
         </DashboardCommandPanel>
         <div className="grid gap-5">
-          <KitchenLedger className="liquid-glass rounded-[24px]">
+          <KitchenLedger className="rounded-[24px] bg-white">
             <div className="flex items-center justify-between gap-3">
               <h2 className="font-display text-2xl font-black">Weekly planner</h2>
               <Link href="/dashboard/planner" className="text-sm font-extrabold text-[#78bea8]">Open</Link>
@@ -291,7 +295,7 @@ function DashboardOverview() {
               {planner.slice(0, 5).map((item) => <Pill key={item.day} className="w-fit">{item.day}: {primaryPlannerMeal(item)}</Pill>)}
             </div>
           </KitchenLedger>
-          <KitchenLedger className="liquid-glass rounded-[24px]">
+          <KitchenLedger className="rounded-[24px] bg-white">
             <h2 className="font-display text-2xl font-black">Quick actions</h2>
             <div className="mt-4 grid gap-2">
               <QuickAction href="/dashboard/generator" label="Generate meal" icon={Utensils} />
@@ -304,7 +308,7 @@ function DashboardOverview() {
       </div>
 
       <div className="grid gap-5 lg:grid-cols-3">
-        <Card className="liquid-glass">
+        <Card>
           <h2 className="font-display text-2xl font-black">Recent recipes</h2>
           <div className="mt-4 grid gap-3">
             {(savedRecipes.length ? savedRecipes : recipes.slice(0, 3)).map((recipe) => (
@@ -315,7 +319,7 @@ function DashboardOverview() {
             ))}
           </div>
         </Card>
-        <Card className="liquid-glass">
+        <Card>
           <h2 className="font-display text-2xl font-black">Assistant prompts</h2>
           <div className="mt-4 grid gap-2">
             {["Make this egg-free", "Turn leftovers into lunch", "Check texture for 8 months"].map((prompt) => (
@@ -323,7 +327,7 @@ function DashboardOverview() {
             ))}
           </div>
         </Card>
-        <Card className="liquid-glass">
+        <Card>
           <h2 className="font-display text-2xl font-black">Recommended bases</h2>
           <div className="mt-4 grid gap-3">
             {recommendedBaseRecipes.map((recipe) => (
@@ -334,7 +338,7 @@ function DashboardOverview() {
             ))}
           </div>
         </Card>
-        <Card className="liquid-glass">
+        <Card>
           <h2 className="font-display text-2xl font-black">Nutrition highlights</h2>
           <div className="mt-4 grid gap-3 text-sm font-bold text-[#5c4a42]">
             <p className="flex gap-2"><Target className="text-[#78bea8]" size={17} /> Iron-rich meal target is on track.</p>
@@ -350,7 +354,7 @@ function DashboardOverview() {
 
 function QuickAction({ href, label, icon: Icon }: { href: string; label: string; icon: typeof Utensils }) {
   return (
-    <Link href={href} className="flex items-center justify-between rounded-2xl bg-white/86 px-4 py-3 text-sm font-extrabold text-[#5c4a42] shadow-sm transition hover:-translate-y-0.5 active:scale-[0.99]">
+    <Link href={href} className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 text-sm font-extrabold text-[#5c4a42] shadow-sm transition hover:bg-[#fffaf6] active:scale-[0.99]">
       <span className="flex items-center gap-2"><Icon size={17} />{label}</span>
       <span>{">"}</span>
     </Link>

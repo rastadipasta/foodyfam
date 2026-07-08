@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { CalendarPlus, Check, Clock, Download, Heart, Mail, Plus, Search, Send, ShoppingBasket, Sparkles, Trash2, X } from "lucide-react";
@@ -9,11 +9,8 @@ import { SiteShell } from "./layout";
 import {
   Button,
   Card,
-  FeatureTile,
   GlassActionDock,
-  IngredientRail,
   PageHero,
-  PaperPanel,
   Pill,
   PlannerEventCard,
   RecipeTicket,
@@ -29,7 +26,7 @@ import { databaseRecipes, databaseRecipeToRecipe } from "@/lib/recipe-database";
 import { seoGuides } from "@/lib/seo-content";
 import type { BabyProfile, FamilyMember, FamilyPreferences, MealPlanDay, MealSlotType, Recipe, RecipeDatabaseMatch } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
-import { FloatingPhoto, MetricCard, MomentStrip, Reveal } from "./motion";
+import { FloatingPhoto, MetricCard, Reveal } from "./motion";
 
 const nutritionData = [
   { day: "Mon", protein: 72, iron: 64, fiber: 58 },
@@ -48,11 +45,14 @@ const pieData = [
 export function SimpleMarketingPage({ type }: { type: "pricing" | "blog" | "about" | "contact" }) {
   return (
     <SiteShell>
-      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <main className="app-page">
+        <div className="editorial-page-main">
         {type === "pricing" && <Pricing />}
         {type === "blog" && <Blog />}
         {type === "about" && <About />}
         {type === "contact" && <Contact />}
+        <PublicCtaBand className="mt-10" />
+        </div>
       </main>
     </SiteShell>
   );
@@ -63,23 +63,14 @@ export function GeneratorPage() {
 
   return (
     <SiteShell>
-      <main className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:px-8">
+      <main className="app-page">
+        <div className="editorial-page-main grid gap-8">
         <div className="grid gap-5">
           <PageHero
-            className="fable-stage liquid-glass"
             eyebrow="AI Recipe Generator"
             title="Build one family meal"
             body="Start with ingredients, then let Foody Fam split the same cooking flow into a baby portion and an adult finish."
-          >
-            <PaperPanel className="rounded-[28px]">
-              <p className="font-display text-2xl font-black">Generator rhythm</p>
-              <div className="mt-4 grid gap-3 text-sm font-bold leading-6 text-[#5c4a42]">
-                <p>1. Add the main ingredients you have.</p>
-                <p>2. Foody Fam finds a verified base recipe.</p>
-                <p>3. The result starts with quantities and clear cooking steps.</p>
-              </div>
-            </PaperPanel>
-          </PageHero>
+          />
           <GeneratorPanel onResult={() => router.push("/dashboard/generator")} />
           <SeoCopySection
             title="AI recipe generation for one family meal"
@@ -89,6 +80,8 @@ export function GeneratorPage() {
               ["How to cook one meal for baby and adults", "/blog/how-to-cook-one-meal-for-baby-and-adults"]
             ]}
           />
+        </div>
+        <PublicCtaBand />
         </div>
       </main>
     </SiteShell>
@@ -133,7 +126,8 @@ export function RecipesPage() {
     );
   return (
     <SiteShell>
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <main className="app-page">
+        <div className="editorial-page-main">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <PageTitle eyebrow="Recipe library" title="Saved for every age" />
           <div className="relative w-full md:max-w-sm">
@@ -154,18 +148,11 @@ export function RecipesPage() {
             )}
           </div>
         </div>
-        <div className="mt-8 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-          <PaperPanel className="fable-command-surface">
-            <h2 className="font-display text-3xl font-black">100 verified base recipes</h2>
-            <p className="font-bold leading-7 text-[#5c4a42]">AI now starts from structured Foody Fam recipes instead of a blank prompt.</p>
-            <IngredientRail className="mt-5" items={["Breakfast", "Dinner", "BLW", "Freezer friendly", "Chicken", "Vegetarian", "Air fryer"]} />
-          </PaperPanel>
-          <FeatureTile
-            title="AI-ready recipe notes"
-            body="Each recipe carries baby age paths, allergen flags, adult finishing, shopping data, and matching tags so generation starts from a safer base."
-          />
-        </div>
-        <Card className="fable-command-surface liquid-glass mt-8">
+        <Card className="mt-8 !rounded-[30px] !bg-white">
+          <div className="mb-5">
+            <h2 className="[font-family:Georgia,serif] text-3xl font-normal tracking-[-0.03em] text-[#243929]">100 verified base recipes</h2>
+            <p className="mt-2 max-w-3xl font-bold leading-7 text-[#5c4a42]">AI now starts from structured Foody Fam recipes instead of a blank prompt.</p>
+          </div>
           <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
             <FilterField label="Meal type">
               <Select aria-label="Meal type filter" value={mealType} onChange={(event) => setMealType(event.target.value)}>
@@ -210,6 +197,8 @@ export function RecipesPage() {
           {(recipes.length ? recipes : demoRecipes).map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} textOnly onOpen={setOpenRecipe} />)}
         </div>
         {openRecipe && <RecipeCloud recipe={openRecipe} onClose={() => setOpenRecipe(null)} />}
+        <PublicCtaBand className="mt-10" />
+        </div>
       </main>
     </SiteShell>
   );
@@ -257,7 +246,7 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
 
   return (
         <div className="fixed inset-0 z-50 grid place-items-end bg-[#5c4a42]/30 px-0 py-0 backdrop-blur-sm sm:place-items-center sm:px-4 sm:py-6" role="dialog" aria-modal="true">
-      <div className="fable-command-surface liquid-glass flex max-h-[96dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-[30px] border border-white/58 shadow-[0_30px_90px_rgba(92,74,66,0.28)] sm:max-h-[94vh] sm:rounded-[36px]">
+      <div className="flex max-h-[96dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-[30px] border border-[#eaded5] bg-[#fffaf6] shadow-[0_30px_90px_rgba(92,74,66,0.22)] sm:max-h-[94vh] sm:rounded-[36px]">
         <div className="relative z-10 shrink-0 border-b border-white/48 bg-white/54 p-4 backdrop-blur-xl sm:p-5">
           <div className="flex items-start justify-between gap-3">
           <div>
@@ -265,7 +254,7 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
             <h2 className="mt-2 font-display text-3xl font-black leading-tight sm:text-4xl">{recipe.title}</h2>
             <p className="mt-3 max-w-2xl font-bold leading-7 text-[#5c4a42]">{recipe.description || recipe.familyPitch}</p>
           </div>
-          <button className="rounded-full bg-white p-3 text-[#5c4a42] shadow-sm transition hover:scale-105" aria-label="Close recipe" onClick={onClose}>
+          <button className="rounded-full bg-white p-3 text-[#5c4a42] shadow-sm transition active:scale-95" aria-label="Close recipe" onClick={onClose}>
             <X size={20} />
           </button>
           </div>
@@ -333,7 +322,7 @@ export function RecipeCloud({ recipe, onClose }: { recipe: Recipe; onClose: () =
 
 function MiniFact({ icon, label, value }: { icon?: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="liquid-glass rounded-[20px] border border-white/58 bg-white/54 p-4 shadow-sm">
+    <div className="rounded-[20px] border border-[#eaded5] bg-white p-4 shadow-sm">
       <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.14em] text-[#78bea8]">{icon}{label}</p>
       <p className="mt-2 font-display text-xl font-black">{value}</p>
     </div>
@@ -343,7 +332,7 @@ function MiniFact({ icon, label, value }: { icon?: React.ReactNode; label: strin
 function CloudSection({ title, items, ordered = false, icon }: { title: string; items: string[]; ordered?: boolean; icon?: React.ReactNode }) {
   const List = ordered ? "ol" : "ul";
   return (
-    <div className="liquid-glass rounded-[24px] border border-white/58 bg-white/54 p-5 shadow-sm">
+    <div className="rounded-[24px] border border-[#eaded5] bg-white p-5 shadow-sm">
       <h3 className="font-display text-2xl font-black">{title}</h3>
       <List className="mt-4 grid gap-3 text-sm font-bold leading-6 text-[#5c4a42]">
         {items.map((item, index) => (
@@ -409,7 +398,8 @@ export function PlannerPage() {
   const weekRange = "This week";
   return (
     <SiteShell>
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <main className="app-page">
+        <div className="editorial-page-main">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <PageTitle eyebrow="Weekly meal planner" title="One week, one calmer kitchen" />
           <div className="flex flex-wrap gap-2">
@@ -418,7 +408,7 @@ export function PlannerPage() {
             <Button variant="secondary">Today</Button>
           </div>
         </div>
-        <section className="fable-calendar liquid-glass kitchen-ledger mt-8 overflow-hidden rounded-[34px] p-4 text-[#5c4a42] shadow-[var(--shadow-editorial)] sm:p-5">
+        <section className="kitchen-ledger mt-8 overflow-hidden rounded-[34px] bg-white p-4 text-[#5c4a42] sm:p-5">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#78bea8]">{weekRange}</p>
@@ -426,8 +416,8 @@ export function PlannerPage() {
             </div>
             <Pill className="w-fit bg-white/80">Breakfast / Lunch / Dinner</Pill>
           </div>
-          <div className="relative z-10 grid grid-cols-[64px_1fr] overflow-x-auto rounded-[22px] border border-white/58 bg-white/38 backdrop-blur-xl">
-            <div className="grid grid-rows-[44px_repeat(3,150px)] border-r border-white/48 bg-white/34 text-xs font-bold text-[#5c4a42]/62">
+          <div className="relative z-10 grid grid-cols-[64px_1fr] overflow-x-auto rounded-[22px] border border-[#eaded5] bg-[#fffaf6]">
+            <div className="grid grid-rows-[44px_repeat(3,150px)] border-r border-[#eaded5] bg-white text-xs font-bold text-[#5c4a42]/62">
               <div />
               {["8 AM", "Noon", "6 PM"].map((time) => <div key={time} className="border-t border-[#5c4a42]/12 p-3">{time}</div>)}
             </div>
@@ -436,17 +426,17 @@ export function PlannerPage() {
                 <button
                   key={day.day}
                   type="button"
-                  className="border-r border-white/42 text-left transition hover:bg-white/22 last:border-r-0"
+                  className="border-r border-[#eaded5] text-left transition hover:bg-white last:border-r-0"
                   onClick={() => setOpenDay(day)}
                 >
-                  <div className="h-11 border-b border-white/42 px-3 py-2">
+                  <div className="h-11 border-b border-[#eaded5] px-3 py-2">
                     <p className="text-xs font-black text-[#5c4a42]/76">{day.day}</p>
                   </div>
                   {plannerSlots(day).map((slot) => {
                     const recipe = plannerRecipes.find((item) => item.id === slot.recipeId);
                     return (
-                      <div key={`${day.day}-${slot.mealType}`} className="relative h-[150px] border-b border-white/34 p-3 last:border-b-0">
-                        <PlannerEventCard mealType={slot.mealType} title={slot.meal} className={`h-full border-white/72 shadow-[0_14px_34px_rgba(92,74,66,0.1)] backdrop-blur-md ${slotColor(slot.mealType)}`}>
+                      <div key={`${day.day}-${slot.mealType}`} className="relative h-[150px] border-b border-[#eaded5]/70 p-3 last:border-b-0">
+                        <PlannerEventCard mealType={slot.mealType} title={slot.meal} className={`h-full border-[#eaded5] shadow-[0_10px_24px_rgba(92,74,66,0.08)] ${slotColor(slot.mealType)}`}>
                           {recipe && (
                             <ul className="mt-2 grid gap-1 text-[11px] font-bold">
                               {(recipe.ingredientDetails?.map((item) => item.name) || recipe.ingredients).slice(0, 3).map((item) => <li key={item}>- {item}</li>)}
@@ -481,6 +471,8 @@ export function PlannerPage() {
             ["Browse recipe library", "/recipes"]
           ]}
         />
+        <PublicCtaBand className="mt-10" />
+        </div>
       </main>
     </SiteShell>
   );
@@ -504,8 +496,8 @@ function PlannerDrawer({
   return (
     <div className="fixed inset-0 z-50 bg-[#5c4a42]/28 backdrop-blur-sm" role="dialog" aria-modal="true">
       <button className="absolute inset-0 cursor-default" aria-label="Close planner drawer" onClick={onClose} />
-      <aside className="fable-command-surface liquid-glass absolute bottom-0 right-0 grid max-h-[86vh] w-full gap-4 overflow-auto rounded-t-[28px] border border-white/58 bg-white/52 p-5 shadow-[0_30px_90px_rgba(92,74,66,0.24)] lg:bottom-auto lg:top-0 lg:h-full lg:max-h-none lg:w-[440px] lg:rounded-l-[28px] lg:rounded-tr-none">
-        <div className="sticky top-0 z-10 -mx-5 -mt-5 flex items-start justify-between gap-3 border-b border-white/52 bg-white/60 p-5 backdrop-blur-xl">
+      <aside className="absolute bottom-0 right-0 grid max-h-[86vh] w-full gap-4 overflow-auto rounded-t-[28px] border border-[#eaded5] bg-[#fffaf6] p-5 shadow-[0_30px_90px_rgba(92,74,66,0.22)] lg:bottom-auto lg:top-0 lg:h-full lg:max-h-none lg:w-[440px] lg:rounded-l-[28px] lg:rounded-tr-none">
+        <div className="sticky top-0 z-10 -mx-5 -mt-5 flex items-start justify-between gap-3 border-b border-[#eaded5] bg-[#fffaf6] p-5">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Plan day</p>
             <h2 className="font-display text-3xl font-black">{day.day}</h2>
@@ -517,7 +509,7 @@ function PlannerDrawer({
         {plannerSlots(day).map((slot) => {
           const recipe = recipes.find((item) => item.id === slot.recipeId);
           return (
-            <div key={`${day.day}-${slot.mealType}`} className="liquid-glass rounded-[22px] border border-white/58 bg-white/52 p-4">
+            <div key={`${day.day}-${slot.mealType}`} className="rounded-[22px] border border-[#eaded5] bg-white p-4 shadow-sm">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.14em] text-[#f59b78]">{slot.mealType}</p>
@@ -568,12 +560,13 @@ export function ShoppingPage() {
 
   return (
     <SiteShell>
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <main className="app-page">
+        <div className="editorial-page-main">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <PageTitle eyebrow="Smart shopping list" title="One list for everyone" />
           <Button variant="secondary"><Download size={17} /> Export PDF</Button>
         </div>
-        <Card className="fable-command-surface liquid-glass mt-8 overflow-hidden !border-white/60 !bg-[linear-gradient(145deg,rgba(255,250,246,0.62)_0%,rgba(247,239,233,0.5)_45%,rgba(255,204,178,0.34)_128%)] !p-0 !shadow-[0_28px_80px_rgba(92,74,66,0.14)] backdrop-blur">
+        <Card className="mt-8 overflow-hidden !border-[#eaded5] !bg-white !p-0 !shadow-[0_24px_64px_rgba(92,74,66,0.1)]">
           <div className="grid gap-5 border-b border-[#5c4a42]/10 p-5 sm:p-6 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
               <Pill className="mb-4 bg-[#e8f4ef]">
@@ -585,7 +578,7 @@ export function ShoppingPage() {
                 Add ingredients as you plan meals, remove what you do not need, and mark items as bought while shopping.
               </p>
             </div>
-            <div className="liquid-glass grid gap-2 rounded-[22px] bg-white/46 p-4 text-sm font-extrabold text-[#5c4a42] shadow-sm sm:min-w-56">
+            <div className="grid gap-2 rounded-[22px] border border-[#eaded5] bg-[#fffaf6] p-4 text-sm font-extrabold text-[#5c4a42] shadow-sm sm:min-w-56">
               <span>{checkedCount} bought</span>
               <span>{shopping.length - checkedCount} still needed</span>
             </div>
@@ -601,7 +594,7 @@ export function ShoppingPage() {
 
           <div className="grid gap-3 p-5 sm:p-6">
             {shopping.map((item) => (
-              <div key={item.id} className="liquid-glass grid grid-cols-[1fr_auto] items-center gap-3 rounded-[18px] border border-white/72 bg-white/46 p-3 shadow-[0_12px_30px_rgba(92,74,66,0.06)]">
+              <div key={item.id} className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-[18px] border border-[#eaded5] bg-[#fffaf6] p-3 shadow-[0_10px_24px_rgba(92,74,66,0.045)]">
                 <label className="flex min-w-0 cursor-pointer items-center gap-3 text-left font-bold">
                   <input
                     type="checkbox"
@@ -614,7 +607,7 @@ export function ShoppingPage() {
                 <button
                   type="button"
                   aria-label={`Remove ${item.label}`}
-                  className="grid h-9 w-9 place-items-center rounded-full bg-white text-[#5c4a42] shadow-sm transition hover:-translate-y-0.5 hover:text-[#f59b78]"
+                  className="grid h-9 w-9 place-items-center rounded-full bg-white text-[#5c4a42] shadow-sm transition hover:text-[#f59b78]"
                   onClick={() => removeShoppingItem(item.id)}
                 >
                   <Trash2 size={16} />
@@ -637,6 +630,8 @@ export function ShoppingPage() {
             ["Generate a recipe", "/generator"]
           ]}
         />
+        <PublicCtaBand className="mt-10" />
+        </div>
       </main>
     </SiteShell>
   );
@@ -677,9 +672,10 @@ export function PantryPage() {
 export function NutritionPage() {
   return (
     <SiteShell>
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <main className="app-page">
+        <div className="editorial-page-main">
         <PageTitle eyebrow="Nutrition" title="Tiny details, clear choices" />
-        <div className="mt-8"><FloatingPhoto src={pagePhotos.nutrition} title="Nutrition without spreadsheet energy" caption="Protein, iron, fiber, and vitamin signals are shown in plain family language." /></div>
+        <p className="mt-4 max-w-3xl text-lg font-bold leading-8 text-[#5c4a42]">Protein, iron, fiber, and vitamin signals are shown in plain family language.</p>
         <div className="mt-8"><NutritionCharts /></div>
         <SeoCopySection
           className="mt-8"
@@ -690,6 +686,8 @@ export function NutritionPage() {
             ["Allergy-aware planning", "/blog/baby-food-allergens-and-meal-planning"]
           ]}
         />
+        <PublicCtaBand className="mt-10" />
+        </div>
       </main>
     </SiteShell>
   );
@@ -722,9 +720,9 @@ export function AssistantPage() {
 
   return (
     <SiteShell>
-      <main className="mx-auto grid max-w-5xl gap-5 px-4 py-10 sm:px-6 lg:px-8">
+      <main className="app-page">
+        <div className="editorial-page-main grid max-w-5xl gap-5">
         <PageTitle eyebrow="AI cooking assistant" title="Ask before dinner gets loud" />
-        <FloatingPhoto src={pagePhotos.assistant} title="A calm helper in the kitchen" caption="Ingredient swaps, texture checks, leftovers, and allergy-aware answers stay one tap away." />
         <Card className="grid max-h-[620px] gap-4 overflow-hidden">
           <div className="scrollbar-soft grid max-h-[420px] gap-3 overflow-auto pr-2">
             {chat.map((message) => (
@@ -749,6 +747,8 @@ export function AssistantPage() {
             </Button>
           </div>
         </Card>
+        <PublicCtaBand />
+        </div>
       </main>
     </SiteShell>
   );
@@ -821,9 +821,9 @@ export function ProfilesPage() {
 
   return (
     <SiteShell>
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <main className="app-page">
+        <div className="editorial-page-main">
         <PageTitle eyebrow="Profiles" title="Foody Fam remembers everyone" />
-        <div className="mt-8"><MomentStrip /></div>
         <div className="mt-8 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
           <Card className="grid content-start gap-4">
             <div>
@@ -938,6 +938,7 @@ export function ProfilesPage() {
             <Button className="w-fit" onClick={() => updateFamilyPreferences(preferenceValues)}>Save preferences</Button>
           </Card>
         </div>
+        </div>
       </main>
     </SiteShell>
   );
@@ -1014,9 +1015,19 @@ export function OnboardingPage() {
 
   return (
     <SiteShell>
-      <main className="mx-auto grid max-w-7xl gap-6 px-4 py-10 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8">
-        <FloatingPhoto src={pagePhotos.onboarding} title="Set the table once" caption="Seven quick steps teach Foody Fam who eats, what to avoid, and what tools are in the kitchen." />
-        <Card className="grid gap-6">
+      <main className="app-page">
+        <div className="editorial-page-main grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+        <Card className="grid min-h-[420px] content-between gap-6 !rounded-[36px]">
+          <div>
+            <Pill className="bg-[#e8f4ef]">Set the table once</Pill>
+            <h1 className="mt-5 [font-family:Georgia,serif] text-5xl font-normal leading-[0.95] tracking-[-0.045em] text-[#243929]">Teach Foody Fam your family rhythm.</h1>
+            <p className="mt-5 text-base font-bold leading-7 text-[#5c4a42]">Seven quick steps teach Foody Fam who eats, what to avoid, and what tools are in the kitchen.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {steps.slice(0, 6).map((item) => <Pill key={item} className="bg-white">{item}</Pill>)}
+          </div>
+        </Card>
+        <Card className="grid gap-6 !rounded-[36px] !bg-white">
           <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">Onboarding</p>
           <div>
             <div className="flex items-center justify-between gap-3">
@@ -1088,6 +1099,7 @@ export function OnboardingPage() {
             )}
           </div>
         </Card>
+        </div>
       </main>
     </SiteShell>
   );
@@ -1145,34 +1157,34 @@ function Pricing() {
   const plans = [
     {
       name: "Free",
-      price: "$0",
+      price: "€0",
       body: "Try the Foody Fam workflow with a small, useful starter plan.",
       badge: "Starter",
       cta: "Start free",
-      variant: "primary" as const,
+      variant: "secondary" as const,
       featured: false,
       points: ["3 meal generations", "Basic AI meal result", "Baby/adult split instructions", "Local demo profile setup"],
       limits: ["Limited generation history"]
     },
     {
       name: "Premium",
-      price: "$12 / month",
+      price: "€12 / month",
       body: "For families who want planning and AI help, without the full recipe library or shopping list.",
-      badge: "Planning",
+      badge: "Most popular",
       cta: "Upgrade to Premium",
-      variant: "coral" as const,
-      featured: false,
+      variant: "secondary" as const,
+      featured: true,
       points: ["14 meal generations per week", "Meal planner access", "Nutrition insights", "AI assistant"],
       limits: ["No recipe library access", "No shopping list"]
     },
     {
       name: "Unlimited",
-      price: "$20 / month",
+      price: "€20 / month",
       body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
       badge: "Everything included",
       cta: "Go Unlimited",
       variant: "coral" as const,
-      featured: true,
+      featured: false,
       points: [
         "Unlimited meal generations",
         "Full verified recipe library",
@@ -1197,43 +1209,43 @@ function Pricing() {
             key={plan.name}
             className={
               plan.featured
-                ? "fable-plan liquid-glass relative flex h-full flex-col overflow-hidden border-[#f59b78]/75 bg-[linear-gradient(145deg,rgba(255,250,246,0.82)_0%,rgba(247,239,233,0.72)_36%,rgba(255,204,178,0.58)_102%)] p-6 shadow-[0_30px_80px_rgba(245,155,120,0.28)] ring-2 ring-[#f59b78]/22 lg:min-h-[650px] xl:min-h-[680px]"
-                : "fable-plan liquid-glass relative flex h-full flex-col overflow-hidden bg-white/58 p-6 shadow-[0_18px_45px_rgba(92,74,66,0.08)] lg:min-h-[650px] xl:min-h-[680px]"
+                ? "relative flex h-full flex-col overflow-hidden border-[#405f46] bg-[#405f46] p-6 text-white shadow-[0_28px_70px_rgba(64,95,70,0.28)] lg:min-h-[650px] xl:min-h-[680px]"
+                : "relative flex h-full flex-col overflow-hidden border-[#eaded5] bg-white p-6 shadow-[0_18px_45px_rgba(92,74,66,0.08)] lg:min-h-[650px] xl:min-h-[680px]"
             }
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <Pill className={plan.featured ? "mb-4 bg-[#5c4a42] text-white" : "mb-4 bg-[#e8f4ef]"}>
+                <Pill className={plan.featured ? "mb-4 border-white/20 bg-white text-[#405f46]" : "mb-4 bg-[#e8f4ef]"}>
                   {plan.badge}
                 </Pill>
-                <h2 className="font-display text-3xl font-black">{plan.name}</h2>
+                <h2 className={`font-display text-3xl font-black ${plan.featured ? "text-white" : "text-[#243929]"}`}>{plan.name}</h2>
               </div>
-              {plan.featured && <Sparkles className="text-[#f59b78]" size={28} />}
+              {plan.featured && <Sparkles className="text-[#ffccb2]" size={28} />}
             </div>
-            <p className={`mt-3 text-3xl font-black ${plan.featured ? "text-[#5c4a42]" : "text-[#f59b78]"}`}>{plan.price}</p>
-            <p className="mt-3 min-h-24 text-sm font-extrabold leading-7 text-[#5c4a42]">{plan.body}</p>
+            <p className={`mt-3 text-3xl font-black ${plan.featured ? "text-white" : "text-[#f59b78]"}`}>{plan.price}</p>
+            <p className={`mt-3 min-h-24 text-sm font-extrabold leading-7 ${plan.featured ? "text-white/82" : "text-[#5c4a42]"}`}>{plan.body}</p>
             <ul className="mt-6 grid gap-4">
               {plan.points.map((point) => (
-                <li key={point} className="flex gap-2 font-bold text-[#3d3632]">
-                  <Check className="mt-0.5 shrink-0 text-[#78bea8]" size={18} />
+                <li key={point} className={`flex gap-2 font-bold ${plan.featured ? "text-white/90" : "text-[#3d3632]"}`}>
+                  <Check className={`mt-0.5 shrink-0 ${plan.featured ? "text-[#ffccb2]" : "text-[#78bea8]"}`} size={18} />
                   <span>{point}</span>
                 </li>
               ))}
             </ul>
             {plan.limits.length > 0 && (
-              <div className="mt-7 rounded-[20px] bg-[#f7efe9]/86 p-5">
-                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]/70">Not included</p>
+              <div className={`mt-7 rounded-[20px] p-5 ${plan.featured ? "bg-white/10" : "bg-[#f7efe9]/86"}`}>
+                <p className={`text-xs font-black uppercase tracking-[0.14em] ${plan.featured ? "text-white/68" : "text-[#5c4a42]/70"}`}>Not included</p>
                 <div className="mt-3 grid gap-2.5">
                   {plan.limits.map((limit) => (
-                    <p key={limit} className="flex gap-2 text-sm font-extrabold text-[#5c4a42]">
-                      <X className="mt-0.5 shrink-0 text-[#f59b78]" size={16} />
+                    <p key={limit} className={`flex gap-2 text-sm font-extrabold ${plan.featured ? "text-white/82" : "text-[#5c4a42]"}`}>
+                      <X className={`mt-0.5 shrink-0 ${plan.featured ? "text-[#ffccb2]" : "text-[#f59b78]"}`} size={16} />
                       {limit}
                     </p>
                   ))}
                 </div>
               </div>
             )}
-            <Button className={`mt-auto w-full translate-y-0 ${plan.featured ? "min-h-12 shadow-[0_16px_34px_rgba(245,155,120,0.34)]" : "min-h-12"}`} variant={plan.variant}>
+            <Button className={`mt-auto w-full translate-y-0 ${plan.featured ? "min-h-12 border-white/20 bg-white text-[#243929] hover:bg-[#fffaf6]" : "min-h-12"}`} variant={plan.variant}>
               {plan.cta}
             </Button>
           </RecipeTicket>
@@ -1263,9 +1275,9 @@ function Blog() {
         {seoGuides.map((guide, index) => (
           <Reveal key={guide.slug} delay={(index % 3) * 0.06}>
             <Link href={`/blog/${guide.slug}`}>
-              <Card className="h-full transition hover:-translate-y-1">
+              <Card className="h-full">
                 <p className="text-xs font-black uppercase tracking-[0.14em] text-[#78bea8]">Foody Fam guide</p>
-                <h2 className="mt-3 font-display text-2xl font-black">{guide.title}</h2>
+                <h2 className="mt-3 [font-family:Georgia,serif] text-2xl font-normal tracking-[-0.025em] text-[#243929]">{guide.title}</h2>
                 <p className="mt-3 text-sm font-bold leading-6 text-[#5c4a42]">{guide.description}</p>
               </Card>
             </Link>
@@ -1278,20 +1290,22 @@ function Blog() {
 
 function About() {
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
+    <div className="grid gap-6">
       <PageTitle eyebrow="About" title="Built for the dinner rush" />
-      <FloatingPhoto src={pagePhotos.about} title="Designed around real families" caption="The product treats dinner as a workflow, not a recipe archive." />
-      <Card className="lg:col-span-2"><p className="text-lg font-bold leading-8 text-[#5c4a42]">Foody Fam turns one shared cooking process into safe, age-aware plates for babies, kids, and adults. The product is intentionally centered on reducing duplicate cooking, duplicate planning, and duplicate grocery lists.</p></Card>
+      <Card className="max-w-4xl">
+        <Pill className="mb-5 bg-[#e8f4ef]">Designed around real families</Pill>
+        <p className="text-lg font-bold leading-8 text-[#5c4a42]">Foody Fam turns one shared cooking process into safe, age-aware plates for babies, kids, and adults. The product is intentionally centered on reducing duplicate cooking, duplicate planning, and duplicate grocery lists.</p>
+      </Card>
     </div>
   );
 }
 
 function Contact() {
   return (
-    <div className="grid gap-6 lg:grid-cols-[0.8fr_1fr]">
+    <div className="grid gap-6 lg:grid-cols-[0.8fr_1fr] lg:items-start">
       <PageTitle eyebrow="Contact" title="Tell us what dinner needs" />
-      <FloatingPhoto src={pagePhotos.contact} title="Talk to the kitchen team" caption="Send feedback, feature ideas, or family meal challenges." />
-      <Card className="grid gap-4">
+      <Card className="grid gap-4 lg:col-start-2 lg:row-span-2">
+        <Pill className="w-fit bg-[#e8f4ef]">Talk to the kitchen team</Pill>
         <Field placeholder="Name" />
         <Field placeholder="Email" />
         <TextArea placeholder="How can we help?" />
@@ -1304,9 +1318,8 @@ function Contact() {
 function PageTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="max-w-3xl">
-      <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">{eyebrow}</p>
-      <h1 className="mt-2 font-display text-balance text-4xl font-black leading-tight sm:text-5xl">{title}</h1>
-      <div className="mt-4 h-1 w-28 rounded-full bg-[linear-gradient(90deg,#78bea8,#ffccb2,#f59b78)]" />
+      <Pill className="border-[#e9c7b7] bg-white px-5 py-2 text-[11px] uppercase tracking-[0.16em]">{eyebrow}</Pill>
+      <h1 className="mt-5 [font-family:Georgia,serif] text-balance text-5xl font-normal leading-[0.95] tracking-[-0.045em] text-[#243929] sm:text-6xl">{title}</h1>
     </div>
   );
 }
@@ -1325,7 +1338,7 @@ function SeoCopySection({
   return (
     <section className={`paper-panel rounded-[30px] p-5 sm:p-6 ${className}`}>
       <div className="relative z-10">
-      <h2 className="font-display text-3xl font-black">{title}</h2>
+      <h2 className="[font-family:Georgia,serif] text-3xl font-normal tracking-[-0.03em] text-[#243929]">{title}</h2>
       <p className="mt-3 max-w-4xl text-sm font-bold leading-7 text-[#5c4a42]">{body}</p>
       <div className="mt-4 flex flex-wrap gap-2">
         {links.map(([label, href]) => (
@@ -1335,6 +1348,24 @@ function SeoCopySection({
         ))}
       </div>
       </div>
+    </section>
+  );
+}
+
+function PublicCtaBand({ className = "" }: { className?: string }) {
+  const pathname = usePathname();
+  if (pathname.startsWith("/dashboard")) return null;
+  return (
+    <section className={`rounded-[30px] bg-[#405f46] px-6 py-7 text-white shadow-[0_28px_70px_rgba(64,95,70,0.24)] sm:px-9 lg:flex lg:items-center lg:justify-between ${className}`}>
+      <div>
+        <h2 className="[font-family:Georgia,serif] text-2xl font-normal tracking-[-0.02em] sm:text-3xl">Healthy babies. Happy families. Less stress.</h2>
+        <p className="mt-2 text-sm font-bold text-white/78">Foody Fam brings everyone to the table.</p>
+      </div>
+      <Link href="/register" className="mt-6 block lg:mt-0">
+        <Button variant="secondary" className="min-h-14 w-full bg-white px-8 text-[#243929] lg:w-auto">
+          Get started - it&apos;s free
+        </Button>
+      </Link>
     </section>
   );
 }

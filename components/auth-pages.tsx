@@ -11,10 +11,8 @@ import { z } from "zod";
 import { getPreferredAuthAdapter, type OAuthProvider } from "@/lib/auth-adapter";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadSupabaseSnapshot } from "@/lib/supabase/profile-sync";
-import { pagePhotos } from "@/lib/data";
 import { useAppStore } from "@/store/useAppStore";
 import { SiteShell } from "./layout";
-import { FloatingPhoto } from "./motion";
 import { Button, Card, Field, Pill } from "./ui";
 
 const loginSchema = z.object({
@@ -47,9 +45,11 @@ type ForgotForm = z.infer<typeof forgotSchema>;
 export function AuthPage({ mode }: { mode: AuthMode }) {
   return (
     <SiteShell>
-      <main className="mx-auto grid max-w-7xl gap-6 px-4 py-10 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+      <main className="app-page">
+        <div className="editorial-page-main grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <AuthVisual />
         <AuthCard mode={mode} />
+        </div>
       </main>
     </SiteShell>
   );
@@ -112,13 +112,12 @@ export function AuthCallbackPage() {
 function AuthVisual() {
   return (
     <div className="grid content-start gap-5">
-      <FloatingPhoto
-        src={pagePhotos.auth}
-        title="Your family food memory"
-        caption="Profiles, pantry, saved meals, and planner choices stay ready for the next dinner."
-      />
-      <Card className="grid gap-4">
-        <h2 className="font-display text-2xl font-black">Dinner remembers your family</h2>
+      <Card className="grid min-h-[420px] content-between gap-8 !rounded-[36px] bg-[linear-gradient(145deg,#fff_0%,#fffaf6_58%,#f7efe9_100%)] p-7 lg:p-9">
+        <div>
+          <Pill className="bg-[#e8f4ef]">One meal, whole family</Pill>
+          <h2 className="mt-6 [font-family:Georgia,serif] text-5xl font-normal leading-[0.95] tracking-[-0.045em] text-[#243929]">Dinner remembers your family</h2>
+          <p className="mt-5 max-w-md text-base font-bold leading-7 text-[#5c4a42]">Profiles, pantry, saved meals, and planner choices stay ready for the next dinner.</p>
+        </div>
         <div className="grid gap-3 text-sm font-bold text-[#5c4a42]">
           {[
             "Keep baby profiles, allergies, saved meals, and planner choices together.",
@@ -175,10 +174,10 @@ function AuthCard({ mode }: { mode: AuthMode }) {
   }
 
   return (
-    <Card className="grid content-start gap-5">
+    <Card className="grid content-start gap-5 !rounded-[36px] !bg-white p-6 sm:p-8">
       <div>
-        <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78bea8]">Secure demo auth</p>
-        <h1 className="mt-2 font-display text-4xl font-black">{title}</h1>
+        <Pill className="bg-[#e8f4ef]">Secure account</Pill>
+        <h1 className="mt-4 [font-family:Georgia,serif] text-5xl font-normal tracking-[-0.04em] text-[#243929]">{title}</h1>
         <p className="mt-2 font-bold leading-7 text-[#5c4a42]">{body}</p>
       </div>
 

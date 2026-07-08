@@ -4,7 +4,9 @@
 api.txt
 graphify-out
 qa-screenshots
-resources
+resources/*
+!resources/Dacherry/
+!resources/Dacherry/Dacherry.ttf
 *.log
 .dev-server-*.log
 .dev-server-port

@@ -6,7 +6,9 @@ import { databaseRecipeToRecipe, findBestRecipeMatch } from "@/lib/recipe-databa
 import type { Recipe, RecipeMatchInput } from "@/lib/types";
 
 export const runtime = "nodejs";
-export const maxDuration = 30;
+export const maxDuration = 60;
+
+const fallbackRecipeImage = "/brand/generated/hero-family-meal.png";
 
 const stringArray = { type: "array", items: { type: "string" } };
 const ingredientDetailsSchema = {
@@ -146,7 +148,7 @@ export async function POST(request: Request) {
 
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({
-      recipe: matchedRecipe,
+      recipe: { ...matchedRecipe, image: fallbackRecipeImage },
       source: "database-demo",
       databaseMatch: matched?.match,
       preflight
@@ -207,22 +209,94 @@ export async function POST(request: Request) {
     });
 
     if (!response.ok) {
-      return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI request failed", databaseMatch: matched?.match, preflight });
+      return NextResponse.json({
+        recipe: await withGeneratedRecipeImage({ ...matchedRecipe, image: fallbackRecipeImage }),
+        source: "database-demo",
+        warning: "OpenAI request failed",
+        databaseMatch: matched?.match,
+        preflight
+      });
     }
 
     const data = (await response.json()) as { output_text?: string; output?: Array<{ content?: Array<{ text?: string }> }> };
     const text = data.output_text || data.output?.flatMap((item) => item.content || []).find((item) => item.text)?.text;
     const parsed = text ? (JSON.parse(text) as { recipe?: Recipe }) : { recipe: matchedRecipe };
     if (!parsed.recipe?.title || !parsed.recipe?.description || !Array.isArray(parsed.recipe.shoppingList)) {
-      return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI schema validation failed", databaseMatch: matched?.match, preflight });
+      return NextResponse.json({
+        recipe: await withGeneratedRecipeImage({ ...matchedRecipe, image: fallbackRecipeImage }),
+        source: "database-demo",
+        warning: "OpenAI schema validation failed",
+        databaseMatch: matched?.match,
+        preflight
+      });
     }
+    const guardedRecipe = applyBabyNutritionGuardrails({ ...parsed.recipe, image: fallbackRecipeImage, databaseMatch: matched?.match }, body);
     return NextResponse.json({
-      recipe: applyBabyNutritionGuardrails({ ...parsed.recipe, image: "/brand/generated/hero-family-meal.png", databaseMatch: matched?.match }, body),
+      recipe: await withGeneratedRecipeImage(guardedRecipe),
       source: "openai",
       databaseMatch: matched?.match,
       preflight
     });
   } catch {
-    return NextResponse.json({ recipe: matchedRecipe, source: "database-demo", warning: "OpenAI parsing failed", databaseMatch: matched?.match, preflight });
+    return NextResponse.json({
+      recipe: await withGeneratedRecipeImage({ ...matchedRecipe, image: fallbackRecipeImage }),
+      source: "database-demo",
+      warning: "OpenAI parsing failed",
+      databaseMatch: matched?.match,
+      preflight
+    });
   }
+}
+
+async function withGeneratedRecipeImage(recipe: Recipe): Promise<Recipe> {
+  const generatedImage = await generateRecipeImage(recipe);
+  return { ...recipe, image: generatedImage || recipe.image || fallbackRecipeImage };
+}
+
+async function generateRecipeImage(recipe: Recipe) {
+  if (!process.env.OPENAI_API_KEY) return null;
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/images/generations", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: process.env.OPENAI_IMAGE_MODEL || "gpt-image-1-mini",
+        prompt: buildRecipeImagePrompt(recipe),
+        size: process.env.OPENAI_IMAGE_SIZE || "1024x1024",
+        quality: process.env.OPENAI_IMAGE_QUALITY || "medium",
+        output_format: process.env.OPENAI_IMAGE_FORMAT || "webp",
+        output_compression: Number(process.env.OPENAI_IMAGE_COMPRESSION || 80),
+        n: 1
+      })
+    });
+
+    if (!response.ok) return null;
+    const data = (await response.json()) as { data?: Array<{ b64_json?: string }> };
+    const imageBase64 = data.data?.[0]?.b64_json;
+    if (!imageBase64) return null;
+    return `data:image/${process.env.OPENAI_IMAGE_FORMAT || "webp"};base64,${imageBase64}`;
+  } catch {
+    return null;
+  }
+}
+
+function buildRecipeImagePrompt(recipe: Recipe) {
+  const ingredients = recipe.ingredientDetails?.length
+    ? recipe.ingredientDetails.map((item) => item.name).slice(0, 8)
+    : recipe.ingredients.slice(0, 8);
+
+  return [
+    `Create a square 1024x1024 food photo of the finished prepared dish for this Foody Fam recipe: ${recipe.title}.`,
+    `The final cooked meal should naturally contain these ingredients: ${ingredients.join(", ")}.`,
+    "Show one cohesive, ready-to-eat plated meal in a ceramic bowl or on a plate, with the ingredients cooked together as the finished recipe.",
+    "Do not show raw ingredients, separated ingredient piles, a deconstructed plate, prep bowls, shopping ingredients, or multiple unfinished components arranged apart.",
+    "Warm natural food photography, premium family meal, baby-safe friendly presentation, soft daylight, clean kitchen surface.",
+    "Use a warm cream, peach, soft green, and cocoa color mood inspired by the Foody Fam brand.",
+    "No text, no logos, no watermark, no people, no hands, no baby, no utensils with sharp edges, no unsafe choking imagery.",
+    "The image should look appetizing, realistic, gentle, and suitable for both baby-adapted and adult family meals, but visually it must be one complete finished dish."
+  ].join(" ");
 }

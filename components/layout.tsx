@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Facebook, Instagram, LogOut, Menu, Settings, Sparkles, UserRound, X } from "lucide-react";
+import { Facebook, Instagram, LogOut, Mail, Menu, Settings, Sparkles, UserRound, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "./ui";
 import { cn } from "@/lib/utils";
@@ -70,7 +70,7 @@ export function Header() {
             <Link href="/dashboard">
               <Button variant="secondary">Dashboard</Button>
             </Link>
-            <Link href="/dashboard/profiles" className="flex items-center gap-2 rounded-full border border-white/70 bg-white/54 px-3 py-2 text-sm font-extrabold text-[#5c4a42] shadow-sm backdrop-blur-xl transition hover:-translate-y-0.5">
+            <Link href="/dashboard/profiles" className="flex items-center gap-2 rounded-full border border-[#eaded5] bg-white px-3 py-2 text-sm font-extrabold text-[#5c4a42] shadow-sm transition hover:bg-[#fffaf6]">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-[#ffccb2] text-xs font-black">
                 {authUser.displayName.slice(0, 1)}
               </span>
@@ -104,7 +104,7 @@ export function Header() {
         </button>
       </div>
       {open && (
-        <div className="fable-command-surface liquid-glass border-t border-white/52 bg-white/58 px-4 pb-4 shadow-[0_20px_50px_rgba(92,74,66,0.08)] backdrop-blur-xl lg:hidden">
+        <div className="border-t border-[#eaded5] bg-[#fffaf6] px-4 pb-4 shadow-[0_20px_50px_rgba(92,74,66,0.08)] lg:hidden">
           <div className="grid gap-2">
             {nav.map((item) => (
               <Link
@@ -242,50 +242,58 @@ export function Footer() {
   ];
 
   return (
-    <footer className="mt-16 bg-[radial-gradient(circle_at_18%_10%,rgba(255,204,178,0.36),transparent_34%),radial-gradient(circle_at_84%_20%,rgba(120,190,168,0.24),transparent_30%),linear-gradient(180deg,#e8f4ef_0%,#f7efe9_100%)] px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-      <div className="fable-command-surface liquid-glass mx-auto grid max-w-7xl gap-5 rounded-[32px] p-4 sm:gap-10 sm:p-7 lg:grid-cols-[1.2fr_2fr_1.2fr]">
-        <div className="relative z-10 rounded-[22px] border border-white/58 bg-white/40 p-4 backdrop-blur sm:border-0 sm:bg-transparent sm:p-0">
-          <Image src="/brand/logo.png" alt="Foody Fam" width={142} height={70} className="mx-auto mb-3 h-16 w-auto object-contain sm:mx-0" />
-          <p className="font-display mx-auto max-w-xs text-center text-3xl font-black leading-none text-[#5c4a42] sm:mx-0 sm:text-left sm:text-2xl">One meal, whole family.</p>
-          <p className="mx-auto mt-3 max-w-xs text-center text-sm font-bold leading-6 text-[#5c4a42] sm:mx-0 sm:text-left">
-            AI meals that keep baby portions, adult finishes, and shopping lists in one calm flow.
-          </p>
-          <div className="mt-4 flex justify-center gap-3 sm:justify-start">
-            <Link href="/contact" aria-label="Instagram" className="grid h-10 w-10 place-items-center rounded-full bg-white text-[#5c4a42] shadow-sm transition hover:-translate-y-0.5 hover:text-[#f59b78]">
-              <Instagram size={18} />
-            </Link>
-            <Link href="/contact" aria-label="Facebook" className="grid h-10 w-10 place-items-center rounded-full bg-white text-[#5c4a42] shadow-sm transition hover:-translate-y-0.5 hover:text-[#f59b78]">
-              <Facebook size={18} />
-            </Link>
-          </div>
-        </div>
-        <div className="relative z-10 grid gap-3 sm:grid-cols-3 sm:gap-8">
-          {columns.map((column) => (
-            <div key={column.title} className="rounded-[20px] bg-white/40 p-4 backdrop-blur sm:bg-transparent sm:p-0">
-              <p className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">{column.title}</p>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-1 sm:gap-3">
-                {column.links.map(([label, href]) => (
-                  <Link key={label} href={href} className="rounded-full bg-[#f7efe9]/80 px-3 py-2 text-sm font-extrabold text-[#5c4a42] transition hover:bg-[#ffccb2]/80 hover:text-[#1f1d1c] sm:bg-transparent sm:px-0 sm:py-0 sm:font-bold sm:hover:bg-transparent sm:hover:text-[#f59b78]">
-                    {label}
-                  </Link>
-                ))}
-              </div>
+    <footer className="mt-16 overflow-hidden bg-[#fffaf6] px-4 pb-7 pt-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-5 rounded-[32px] border border-[#eaded5] bg-white/86 p-5 shadow-[0_22px_60px_rgba(92,74,66,0.08)] sm:p-7 lg:grid-cols-[1.05fr_1.7fr_1.15fr] lg:gap-10">
+          <div>
+            <Image src="/brand/logo.png" alt="Foody Fam" width={142} height={70} className="mb-4 h-16 w-auto object-contain" />
+            <p className="[font-family:Georgia,serif] max-w-xs text-3xl font-normal leading-none tracking-[-0.03em] text-[#243929]">One meal, whole family.</p>
+            <p className="mt-4 max-w-sm text-sm font-semibold leading-6 text-[#5c4a42]">
+              AI meals that keep baby portions, adult finishes, and shopping lists in one calm flow.
+            </p>
+            <div className="mt-5 flex gap-3">
+              <Link href="/contact" aria-label="Instagram" className="grid h-11 w-11 place-items-center rounded-full border border-[#eaded5] bg-[#fffaf6] text-[#5c4a42] shadow-sm transition hover:bg-[#ffccb2]/70 hover:text-[#243929]">
+                <Instagram size={18} />
+              </Link>
+              <Link href="/contact" aria-label="Facebook" className="grid h-11 w-11 place-items-center rounded-full border border-[#eaded5] bg-[#fffaf6] text-[#5c4a42] shadow-sm transition hover:bg-[#ffccb2]/70 hover:text-[#243929]">
+                <Facebook size={18} />
+              </Link>
             </div>
-          ))}
-        </div>
-        <form className="relative z-10 grid content-start gap-3 rounded-[22px] border border-white/58 bg-white/40 p-4 backdrop-blur sm:border-0 sm:bg-transparent sm:p-0" onSubmit={(event) => event.preventDefault()}>
-          <p className="text-center text-sm font-extrabold text-[#5c4a42] sm:text-left">Stay in the loop</p>
-          <p className="text-center text-sm font-bold leading-6 text-[#5c4a42] sm:text-left">Weekly baby-safe meal ideas, swaps, and pantry tips.</p>
-          <div className="grid gap-2 rounded-[22px] bg-white p-2 shadow-sm sm:flex sm:rounded-full sm:p-1">
-            <input aria-label="Email address" placeholder="Your email address" className="min-h-11 min-w-0 flex-1 rounded-full bg-[#f7efe9]/70 px-4 text-sm font-bold outline-none sm:bg-transparent" />
-            <Button className="min-h-11 px-4">Subscribe</Button>
           </div>
-          <p className="text-center text-xs font-bold text-[#5c4a42]/70 sm:text-left">No spam. Just calmer dinners.</p>
-        </form>
-      </div>
-      <div className="mx-auto mt-5 flex max-w-7xl flex-col items-center justify-between gap-2 text-xs font-bold text-[#5c4a42]/70 sm:mt-8 sm:flex-row">
-        <span>Copyright 2026 Foody Fam</span>
-        <span>Built for one meal, many plates.</span>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            {columns.map((column) => (
+              <div key={column.title} className="rounded-[24px] border border-[#eaded5]/80 bg-[#fffaf6]/72 p-4 sm:border-0 sm:bg-transparent sm:p-0">
+                <p className="mb-4 text-[11px] font-black uppercase tracking-[0.2em] text-[#78bea8]">{column.title}</p>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-1 sm:gap-3">
+                  {column.links.map(([label, href]) => (
+                    <Link key={label} href={href} className="rounded-full px-0 py-1 text-sm font-extrabold text-[#5c4a42] transition hover:text-[#f59b78]">
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <form className="grid content-start gap-3 rounded-[26px] border border-[#eaded5] bg-[#fffaf6] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.84)]" onSubmit={(event) => event.preventDefault()}>
+            <span className="grid h-11 w-11 place-items-center rounded-full bg-[#e8f4ef] text-[#437967]">
+              <Mail size={18} />
+            </span>
+            <p className="text-base font-black text-[#243929]">Stay in the loop</p>
+            <p className="text-sm font-semibold leading-6 text-[#5c4a42]">Weekly baby-safe meal ideas, swaps, and pantry tips.</p>
+            <div className="grid gap-2 rounded-[18px] border border-[#eaded5] bg-white p-2 shadow-sm">
+              <input aria-label="Email address" placeholder="Your email address" className="min-h-11 min-w-0 rounded-full bg-transparent px-3 text-sm font-bold text-[#243929] outline-none placeholder:text-[#5c4a42]/45" />
+              <Button className="min-h-11 bg-[#405f46] px-4 text-white hover:bg-[#314b37]">Subscribe</Button>
+            </div>
+            <p className="text-xs font-bold text-[#5c4a42]/64">No spam. Just calmer dinners.</p>
+          </form>
+        </div>
+
+        <div className="flex flex-col items-center justify-between gap-2 border-t border-[#eaded5] px-1 pt-5 text-xs font-bold text-[#5c4a42]/70 sm:mt-5 sm:flex-row">
+          <span>Copyright 2026 Foody Fam</span>
+          <span>Built for one meal, many plates.</span>
+        </div>
       </div>
     </footer>
   );
