@@ -3,6 +3,7 @@ import { createDemoRecipe } from "@/lib/ai-demo";
 import { applyBabyNutritionGuardrails, babyNutritionPrompt } from "@/lib/baby-nutrition";
 import { buildCompactRecipeContext, buildGeneratorPreflight, FAMILY_RECIPE_RESEARCH_PACK } from "@/lib/family-recipe-intelligence";
 import { databaseRecipeToRecipe, findBestRecipeMatch } from "@/lib/recipe-database";
+import { normalizeRecipeFlow } from "@/lib/recipe-flow";
 import type { Recipe, RecipeMatchInput } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -145,7 +146,7 @@ export async function POST(request: Request) {
   };
   const matched = findBestRecipeMatch(body);
   const preflight = buildGeneratorPreflight(body, matched?.match);
-  const matchedRecipe = applyBabyNutritionGuardrails(matched ? databaseRecipeToRecipe(matched.recipe, matched.match) : createDemoRecipe(body), body);
+  const matchedRecipe = normalizeRecipeFlow(applyBabyNutritionGuardrails(matched ? databaseRecipeToRecipe(matched.recipe, matched.match) : createDemoRecipe(body), body));
   const includeGeneratedImage = body.subscriptionStatus === "Premium" || body.subscriptionStatus === "Unlimited";
   const recipeWithPlanImage = (recipe: Recipe) => withPlanRecipeImage(recipe, includeGeneratedImage);
 
@@ -174,7 +175,10 @@ export async function POST(request: Request) {
               [
                 "You create Foody Fam recipes for the product promise: One meal, whole family.",
                 "Always design one shared cooking process with a gentle base, a baby portion removed before salt/spice, then adult finishing instructions.",
-                "The main recipe value is ingredients with quantities and ordered steps. Steps must explicitly label 'Baby portion:' and 'Adult finish:' moments.",
+                "The main recipe value is ingredients with quantities and one canonical ordered cookingSteps array.",
+                "Do not repeat the same instructions across cookingSteps, steps, babyVersion, and adultVersion.",
+                "cookingSteps and steps must contain the same exact ordered flow: prep/base first, then 'Baby portion:' removal and texture steps, then 'Adult finish:' seasoning steps.",
+                "babyVersion must be a short baby serving summary only, not a repeated step list. adultVersion must be a short adult serving summary only, not a repeated step list.",
                 "Always include ingredientDetails with practical metric quantities, units, note as an empty string when not needed, and optional false unless it is truly optional.",
                 "Use the provided Foody Fam verified database recipe as the trusted base. Adapt it, but do not ignore it or invent an unrelated recipe.",
                 "Return practical family cooking language, not medical advice. Allergy and baby safety notes must be cautious and recommend checking with a qualified professional when needed.",
@@ -233,7 +237,7 @@ export async function POST(request: Request) {
         preflight
       });
     }
-    const guardedRecipe = applyBabyNutritionGuardrails({ ...parsed.recipe, image: fallbackRecipeImage, databaseMatch: matched?.match }, body);
+    const guardedRecipe = normalizeRecipeFlow(applyBabyNutritionGuardrails({ ...parsed.recipe, image: fallbackRecipeImage, databaseMatch: matched?.match }, body));
     return NextResponse.json({
       recipe: await recipeWithPlanImage(guardedRecipe),
       source: "openai",

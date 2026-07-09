@@ -24,6 +24,7 @@ import { z } from "zod";
 import { Button, Card, Field, GlassActionDock, KitchenLedger, LiquidGlassPanel, Pill, RecipeTicket, Select } from "./ui";
 import { cn } from "@/lib/utils";
 import { buildGeneratorPreflight } from "@/lib/family-recipe-intelligence";
+import { normalizeRecipeFlow } from "@/lib/recipe-flow";
 import type { GeneratorPreflight, Recipe } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -49,7 +50,7 @@ const generatorSchema = z.object({
 type GeneratorForm = z.infer<typeof generatorSchema>;
 
 const chips = ["Chicken", "Rice", "Eggs", "Spinach", "Pasta", "Broccoli", "Carrots", "Lentils"];
-const resultTabs = ["Overview", "Baby", "Adults", "Shopping", "Safety"] as const;
+const resultTabs = ["Overview", "Shopping", "Safety"] as const;
 const fallbackRecipeImage = "/brand/generated/hero-family-meal.png";
 const maxPersistedImageLength = 750_000;
 const smartChips = [
@@ -120,7 +121,8 @@ export function GeneratorPanel({
     setValue("goal", preferences.cookingGoals[0] || "Cook once for baby and adults with leftovers for lunch.");
   }, [babyProfiles, preferences, setValue]);
 
-  const currentResult = result ?? (showLatestResult ? generatedRecipes[0] ?? null : null);
+  const rawCurrentResult = result ?? (showLatestResult ? generatedRecipes[0] ?? null : null);
+  const currentResult = rawCurrentResult ? normalizeRecipeFlow(rawCurrentResult) : null;
 
   async function submit(values: GeneratorForm) {
     setLoading(true);
@@ -132,12 +134,13 @@ export function GeneratorPanel({
         body: JSON.stringify({ ...values, subscriptionStatus })
       });
       const data = (await response.json()) as { recipe: Recipe; preflight?: GeneratorPreflight };
-      setResult(data.recipe);
+      const normalizedRecipe = normalizeRecipeFlow(data.recipe);
+      setResult(normalizedRecipe);
       setShouldScrollToResult(true);
-      addGeneratedRecipe(createPersistableRecipe(data.recipe));
+      addGeneratedRecipe(createPersistableRecipe(normalizedRecipe));
       setActiveTab("Overview");
       setShoppingMessage("");
-      onResult?.(data.recipe);
+      onResult?.(normalizedRecipe);
     } finally {
       setLoading(false);
     }
@@ -350,7 +353,7 @@ export function GeneratorPanel({
             onToggleHistory={() => setHistoryOpen((open) => !open)}
             generatedRecipes={generatedRecipes}
             onSelectHistory={(recipe) => {
-              setResult(recipe);
+              setResult(normalizeRecipeFlow(recipe));
               setActiveTab("Overview");
               setSaved(false);
               setShoppingMessage("");
@@ -479,8 +482,6 @@ function RecipeResult({
   onSelectHistory: (recipe: Recipe) => void;
   shoppingMessage: string;
 }) {
-  const babyItems = recipe.babyVersion?.length ? recipe.babyVersion : recipe.baby;
-  const adultItems = recipe.adultVersion?.length ? recipe.adultVersion : recipe.adults;
   const cookingSteps = recipe.cookingSteps?.length ? recipe.cookingSteps : recipe.steps;
   const canNativeShare = typeof navigator !== "undefined" && "share" in navigator;
 
@@ -514,8 +515,6 @@ function RecipeResult({
         ))}
       </div>
 
-      {activeTab === "Baby" && <StepCard title="Baby version" items={babyItems} accent="mint" />}
-      {activeTab === "Adults" && <StepCard title="Adult version" items={adultItems} accent="coral" />}
       {activeTab === "Shopping" && (
         <div className="grid gap-4 md:grid-cols-3">
           {(recipe.shoppingList || [{ category: "Ingredients", items: recipe.ingredients }]).map((group) => (
