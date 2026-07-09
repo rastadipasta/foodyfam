@@ -13,7 +13,6 @@ import {
   PageHero,
   Pill,
   PlannerEventCard,
-  RecipeTicket,
   Field,
   Select,
   TextArea
@@ -1154,12 +1153,14 @@ function NutritionCharts() {
 }
 
 function Pricing() {
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
   const plans = [
     {
       name: "Free",
-      price: "€0",
+      monthlyPrice: "€0",
+      yearlyPrice: "€0",
+      cadence: "Forever",
       body: "Try the Foody Fam workflow with a small, useful starter plan.",
-      badge: "Starter",
       cta: "Start free",
       variant: "secondary" as const,
       featured: false,
@@ -1168,9 +1169,11 @@ function Pricing() {
     },
     {
       name: "Premium",
-      price: "€12 / month",
+      monthlyPrice: "€12",
+      yearlyPrice: "€8",
+      cadence: "/ month",
+      yearlyNote: "Billed €96 yearly",
       body: "For families who want planning and AI help, without the full recipe library or shopping list.",
-      badge: "Most popular",
       cta: "Upgrade to Premium",
       variant: "secondary" as const,
       featured: true,
@@ -1179,11 +1182,13 @@ function Pricing() {
     },
     {
       name: "Unlimited",
-      price: "€20 / month",
+      monthlyPrice: "€20",
+      yearlyPrice: "€13",
+      cadence: "/ month",
+      yearlyNote: "Billed €156 yearly",
       body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
-      badge: "Everything included",
       cta: "Go Unlimited",
-      variant: "coral" as const,
+      variant: "secondary" as const,
       featured: false,
       points: [
         "Unlimited meal generations",
@@ -1198,72 +1203,119 @@ function Pricing() {
   ];
 
   return (
-    <div>
-      <PageTitle eyebrow="Pricing" title="Choose your kitchen operating system" />
-      <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[#5c4a42]">
-        Choose how much of Foody Fam you want unlocked. Start simple, plan smarter, or open the full family food system.
-      </p>
-      <div className="mt-8 grid items-stretch gap-6 lg:grid-cols-3">
-        {plans.map((plan) => (
-          <RecipeTicket
-            key={plan.name}
-            className={
-              plan.featured
-                ? "relative flex h-full flex-col overflow-hidden border-[#405f46] bg-[#405f46] p-6 text-white shadow-[0_28px_70px_rgba(64,95,70,0.28)] lg:min-h-[650px] xl:min-h-[680px]"
-                : "relative flex h-full flex-col overflow-hidden border-[#eaded5] bg-white p-6 shadow-[0_18px_45px_rgba(92,74,66,0.08)] lg:min-h-[650px] xl:min-h-[680px]"
-            }
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <Pill className={plan.featured ? "mb-4 border-white/20 bg-white text-[#405f46]" : "mb-4 bg-[#e8f4ef]"}>
-                  {plan.badge}
-                </Pill>
-                <h2 className={`font-display text-3xl font-black ${plan.featured ? "text-white" : "text-[#243929]"}`}>{plan.name}</h2>
-              </div>
-              {plan.featured && <Sparkles className="text-[#ffccb2]" size={28} />}
-            </div>
-            <p className={`mt-3 text-3xl font-black ${plan.featured ? "text-white" : "text-[#f59b78]"}`}>{plan.price}</p>
-            <p className={`mt-3 min-h-24 text-sm font-extrabold leading-7 ${plan.featured ? "text-white/82" : "text-[#5c4a42]"}`}>{plan.body}</p>
-            <ul className="mt-6 grid gap-4">
-              {plan.points.map((point) => (
-                <li key={point} className={`flex gap-2 font-bold ${plan.featured ? "text-white/90" : "text-[#3d3632]"}`}>
-                  <Check className={`mt-0.5 shrink-0 ${plan.featured ? "text-[#ffccb2]" : "text-[#78bea8]"}`} size={18} />
-                  <span>{point}</span>
-                </li>
+    <div className="-m-4 bg-[#fffaf6] px-4 pb-12 pt-2 sm:-m-6 sm:px-6 lg:-m-8 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-6 py-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
+          <div>
+            <Pill className="border-[#e9c7b7] bg-white px-5 py-2 text-[11px] uppercase tracking-[0.16em]">
+              <Sparkles size={13} className="mr-2 text-[#5c4a42]" />
+              Pricing
+            </Pill>
+            <h1 className="mt-6 max-w-3xl [font-family:Georgia,serif] text-[clamp(3.2rem,8vw,6.4rem)] font-normal leading-[0.92] tracking-[-0.045em] text-[#243929]">
+              Choose your kitchen operating system.
+            </h1>
+          </div>
+          <p className="max-w-xl text-lg font-semibold leading-8 text-[#5c4a42] lg:justify-self-end">
+            Choose how much of Foody Fam you want unlocked. Start simple, plan smarter, or open the full family food system.
+          </p>
+        </div>
+
+        <section className="rounded-[42px] border border-[#eaded5] bg-white/88 p-4 shadow-[0_28px_80px_rgba(92,74,66,0.1)] sm:p-6 lg:p-8">
+          <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#5c4a42]/66">Choose your plan</p>
+            <div className="inline-flex w-fit rounded-full border border-[#eaded5] bg-[#fffaf6] p-1 shadow-[0_8px_20px_rgba(92,74,66,0.1)]">
+              {(["monthly", "yearly"] as const).map((cycle) => (
+                <button
+                  key={cycle}
+                  type="button"
+                  onClick={() => setBillingCycle(cycle)}
+                  className={`rounded-full px-5 py-2 text-sm font-black capitalize transition active:scale-[0.98] ${
+                    billingCycle === cycle ? "bg-[#405f46] text-white shadow-sm" : "text-[#5c4a42] hover:bg-white"
+                  }`}
+                >
+                  {cycle}
+                </button>
               ))}
-            </ul>
-            {plan.limits.length > 0 && (
-              <div className={`mt-7 rounded-[20px] p-5 ${plan.featured ? "bg-white/10" : "bg-[#f7efe9]/86"}`}>
-                <p className={`text-xs font-black uppercase tracking-[0.14em] ${plan.featured ? "text-white/68" : "text-[#5c4a42]/70"}`}>Not included</p>
-                <div className="mt-3 grid gap-2.5">
-                  {plan.limits.map((limit) => (
-                    <p key={limit} className={`flex gap-2 text-sm font-extrabold ${plan.featured ? "text-white/82" : "text-[#5c4a42]"}`}>
-                      <X className={`mt-0.5 shrink-0 ${plan.featured ? "text-[#ffccb2]" : "text-[#f59b78]"}`} size={16} />
-                      {limit}
+            </div>
+          </div>
+
+          <div className="grid items-stretch gap-6 lg:grid-cols-3">
+            {plans.map((plan) => (
+              <article
+                key={plan.name}
+                className={`relative flex min-h-[620px] flex-col rounded-[28px] border p-7 ${
+                  plan.featured
+                    ? "border-[#405f46] bg-[#405f46] text-white shadow-[0_28px_70px_rgba(64,95,70,0.28)]"
+                    : "border-[#eaded5] bg-white text-[#243929] shadow-[0_18px_45px_rgba(92,74,66,0.08)]"
+                }`}
+              >
+                {plan.featured && (
+                  <span className="absolute -top-4 right-5 rotate-[12deg] rounded-full border border-[#405f46]/15 bg-[#fffaf6] px-4 py-2 text-xs font-black italic text-[#405f46] shadow-[0_10px_22px_rgba(92,74,66,0.16)]">
+                    Most popular
+                  </span>
+                )}
+                <div>
+                  <h2 className={`font-display text-3xl font-black ${plan.featured ? "text-white" : "text-[#243929]"}`}>{plan.name}</h2>
+                  <div className="mt-8 flex items-end gap-2">
+                    <p className={`text-5xl font-black tracking-[-0.04em] ${plan.featured ? "text-white" : "text-[#243929]"}`}>
+                      {billingCycle === "monthly" ? plan.monthlyPrice : plan.yearlyPrice}
                     </p>
-                  ))}
+                    <span className={`pb-2 text-sm font-black ${plan.featured ? "text-white/72" : "text-[#5c4a42]/70"}`}>{plan.cadence}</span>
+                  </div>
+                  {billingCycle === "yearly" && plan.yearlyNote && (
+                    <p className={`mt-2 text-sm font-extrabold ${plan.featured ? "text-white/72" : "text-[#78bea8]"}`}>{plan.yearlyNote}</p>
+                  )}
+                  <p className={`mt-8 min-h-28 text-base font-extrabold leading-8 ${plan.featured ? "text-white/80" : "text-[#5c4a42]"}`}>{plan.body}</p>
                 </div>
-              </div>
-            )}
-            <Button className={`mt-auto w-full translate-y-0 ${plan.featured ? "min-h-12 border-white/20 bg-white text-[#243929] hover:bg-[#fffaf6]" : "min-h-12"}`} variant={plan.variant}>
-              {plan.cta}
+                <ul className="mt-7 grid gap-4">
+                  {plan.points.map((point) => (
+                    <li key={point} className={`flex gap-3 text-base font-bold leading-7 ${plan.featured ? "text-white/90" : "text-[#3d3632]"}`}>
+                      <Check className={`mt-1 shrink-0 ${plan.featured ? "text-[#ffccb2]" : "text-[#78bea8]"}`} size={18} />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+                {plan.limits.length > 0 && (
+                  <div className={`mt-7 rounded-[20px] p-5 ${plan.featured ? "bg-white/10" : "bg-[#f7efe9]/86"}`}>
+                    <p className={`text-xs font-black uppercase tracking-[0.14em] ${plan.featured ? "text-white/68" : "text-[#5c4a42]/70"}`}>Not included</p>
+                    <div className="mt-3 grid gap-2.5">
+                      {plan.limits.map((limit) => (
+                        <p key={limit} className={`flex gap-2 text-sm font-extrabold ${plan.featured ? "text-white/82" : "text-[#5c4a42]"}`}>
+                          <X className={`mt-0.5 shrink-0 ${plan.featured ? "text-[#ffccb2]" : "text-[#f59b78]"}`} size={16} />
+                          {limit}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <Link href="/register" className="mt-auto block pt-8">
+                  <Button className={`min-h-14 w-full translate-y-0 text-base ${plan.featured ? "border-white/20 bg-white text-[#243929] hover:bg-[#fffaf6]" : "bg-[#fffaf6] text-[#243929]"}`} variant={plan.variant}>
+                    {plan.cta}
+                  </Button>
+                </Link>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-10 rounded-[32px] bg-[#405f46] p-6 text-white shadow-[0_26px_60px_rgba(64,95,70,0.24)] sm:p-8 lg:flex lg:items-center lg:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-white/62">Foody Fam plans</p>
+            <h2 className="mt-3 [font-family:Georgia,serif] text-3xl font-normal tracking-[-0.03em]">Healthy babies. Happy families. Less stress.</h2>
+            <p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-white/76">
+              Free is for trying the generator, Premium is for weekly AI planning support, and Unlimited unlocks the complete Foody Fam system.
+            </p>
+          </div>
+          <Link href="/register" className="mt-6 block lg:mt-0">
+            <Button variant="secondary" className="min-h-14 w-full bg-white px-8 text-[#243929] lg:w-auto">
+              Get started
             </Button>
-          </RecipeTicket>
-        ))}
+          </Link>
+        </section>
       </div>
-      <SeoCopySection
-        className="mt-8"
-        title="Choose the meal planning workflow your family needs"
-        body="Free is for trying the generator, Premium is for weekly AI planning support, and Unlimited unlocks the complete Foody Fam system with verified recipes, shopping lists, saved meals, planner, nutrition, and priority assistant access."
-        links={[
-          ["Try the AI generator", "/generator"],
-          ["See verified recipes", "/recipes"]
-        ]}
-      />
     </div>
   );
 }
-
 function Blog() {
   return (
     <div>
@@ -1378,3 +1430,4 @@ function plannerSlots(day: MealPlanDay) {
     recipeId: mealType === "Dinner" ? day.recipeId : ""
   }));
 }
+
