@@ -14,6 +14,7 @@ import {
   ShoppingBasket,
   Sparkles,
   Utensils,
+  UtensilsCrossed,
   X
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -322,8 +323,12 @@ export function GeneratorPanel({
         </div>
 
         <GlassActionDock className="generator-action-dock border-[#eaded5] bg-white p-4 shadow-[0_16px_38px_rgba(92,74,66,0.06)]">
-          <Button type="submit" disabled={loading} className="min-h-14 w-full bg-[#405f46] px-7 text-base text-white shadow-[0_18px_40px_rgba(64,95,70,0.2)] hover:bg-[#314b37] lg:w-fit">
-            <Sparkles size={17} />
+          <Button
+            type="submit"
+            disabled={loading}
+            className="h-11 w-full min-w-[242px] gap-2 bg-[linear-gradient(90deg,#405f46_0%,#78bea8_100%)] px-7 py-0 text-sm text-white shadow-[0_12px_28px_rgba(64,95,70,0.24),inset_0_1px_0_rgba(255,255,255,0.28)] hover:bg-[linear-gradient(90deg,#314b37_0%,#69ad98_100%)] hover:shadow-[0_17px_34px_rgba(64,95,70,0.3)] lg:w-fit"
+          >
+            <UtensilsCrossed size={18} strokeWidth={1.8} />
             {loading ? "Cooking..." : "Generate family recipe"}
           </Button>
         </GlassActionDock>
