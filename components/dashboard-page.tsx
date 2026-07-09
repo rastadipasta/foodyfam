@@ -495,9 +495,6 @@ function SettingsInner() {
   const authProvider = useAppStore((state) => state.authProvider);
   const lastLoginAt = useAppStore((state) => state.lastLoginAt);
   const onboardingCompleted = useAppStore((state) => state.onboardingCompleted);
-  const babyProfiles = useAppStore((state) => state.babyProfiles);
-  const familyMembers = useAppStore((state) => state.familyMembers);
-  const preferences = useAppStore((state) => state.familyPreferences);
   const settingsPreferences = useAppStore((state) => state.settingsPreferences);
   const updateSettingsPreferences = useAppStore((state) => state.updateSettingsPreferences);
   const updateAuthUser = useAppStore((state) => state.updateAuthUser);
@@ -589,13 +586,15 @@ function SettingsInner() {
             </Button>
           </div>
         </Card>
-        <Card>
-          <h2 className="font-display text-2xl font-black">Profile coverage</h2>
-          <div className="mt-4 grid gap-3">
-            <Pill className="w-fit">{familyMembers.length} family members</Pill>
-            <Pill className="w-fit">{babyProfiles.length} baby profiles</Pill>
-            <Pill className="w-fit">{preferences.allergies.length ? preferences.allergies.join(", ") : "No allergy rules"}</Pill>
-            <Pill className="w-fit">{preferences.favoriteCuisines.join(", ") || "Any cuisine"}</Pill>
+        <Card className="flex min-h-40 flex-col justify-center border-[#e9c7b7] bg-[#fffaf6]">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between xl:flex-col xl:items-start 2xl:flex-row 2xl:items-center">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#78bea8]">Billing</p>
+              <h2 className="mt-2 font-display text-2xl font-black text-[#243929]">Subscription status</h2>
+            </div>
+            <Pill className="w-fit border border-[#78bea8]/35 bg-[#e8f4ef] px-5 py-2 text-[#5c4a42] shadow-sm">
+              {settingsPreferences.subscriptionStatus}
+            </Pill>
           </div>
         </Card>
       </div>
@@ -623,12 +622,6 @@ function SettingsInner() {
               onChange={(value) => updateSettingsPreferences({ temperatureUnit: value as "celsius" | "fahrenheit" })}
             />
           </div>
-        </Card>
-        <Card className="flex min-h-28 flex-col justify-center border-[#e9c7b7] bg-[#fffaf6] sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="font-display text-2xl font-black text-[#243929]">Subscription status</h2>
-          <Pill className="mt-3 w-fit border border-[#78bea8]/35 bg-[#e8f4ef] px-5 py-2 text-[#5c4a42] shadow-sm sm:mt-0">
-            {settingsPreferences.subscriptionStatus}
-          </Pill>
         </Card>
       </div>
     </div>
