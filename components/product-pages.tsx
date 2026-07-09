@@ -1136,7 +1136,7 @@ function NutritionCharts() {
         </div>
       </Card>
       <Card className="min-h-[320px]">
-        <h2 className="font-display text-2xl font-black">Todayâ€™s plate</h2>
+        <h2 className="font-display text-2xl font-black">Today&apos;s plate</h2>
         <div className="mt-4 h-64">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -1154,11 +1154,12 @@ function NutritionCharts() {
 
 function Pricing() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
+  const euro = "\u20ac";
   const plans = [
     {
       name: "Free",
-      monthlyPrice: "â‚¬0",
-      yearlyPrice: "â‚¬0",
+      monthlyPrice: `${euro}0`,
+      yearlyPrice: `${euro}0`,
       cadence: "Forever",
       body: "Try the Foody Fam workflow with a small, useful starter plan.",
       cta: "Start free",
@@ -1169,10 +1170,10 @@ function Pricing() {
     },
     {
       name: "Premium",
-      monthlyPrice: "â‚¬12",
-      yearlyPrice: "â‚¬8",
+      monthlyPrice: `${euro}12`,
+      yearlyPrice: `${euro}8`,
       cadence: "/ month",
-      yearlyNote: "Billed â‚¬96 yearly",
+      yearlyNote: `Billed ${euro}96 yearly`,
       body: "For families who want planning and AI help, without the full recipe library or shopping list.",
       cta: "Upgrade to Premium",
       variant: "secondary" as const,
@@ -1182,10 +1183,10 @@ function Pricing() {
     },
     {
       name: "Unlimited",
-      monthlyPrice: "â‚¬20",
-      yearlyPrice: "â‚¬13",
+      monthlyPrice: `${euro}20`,
+      yearlyPrice: `${euro}13`,
       cadence: "/ month",
-      yearlyNote: "Billed â‚¬156 yearly",
+      yearlyNote: `Billed ${euro}156 yearly`,
       body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
       cta: "Go Unlimited",
       variant: "secondary" as const,
@@ -1203,15 +1204,15 @@ function Pricing() {
   ];
 
   return (
-    <div className="-m-4 bg-[#fffaf6] px-4 pb-12 pt-2 sm:-m-6 sm:px-6 lg:-m-8 lg:px-8">
+    <div className="-m-4 bg-[#fffaf6] px-4 pb-10 pt-2 sm:-m-6 sm:px-6 lg:-m-8 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-6 py-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
+        <div className="grid gap-6 py-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
           <div>
             <Pill className="border-[#e9c7b7] bg-white px-5 py-2 text-[11px] uppercase tracking-[0.16em]">
               <Sparkles size={13} className="mr-2 text-[#5c4a42]" />
               Pricing
             </Pill>
-            <h1 className="mt-6 max-w-3xl [font-family:Georgia,serif] text-[clamp(3.2rem,8vw,6.4rem)] font-normal leading-[0.92] tracking-[-0.045em] text-[#243929]">
+            <h1 className="mt-6 max-w-3xl [font-family:Georgia,serif] text-[clamp(3rem,7vw,5.4rem)] font-normal leading-[0.95] tracking-[-0.04em] text-[#243929]">
               Choose your kitchen operating system.
             </h1>
           </div>
@@ -1296,21 +1297,6 @@ function Pricing() {
               </article>
             ))}
           </div>
-        </section>
-
-        <section className="mt-10 rounded-[32px] bg-[#405f46] p-6 text-white shadow-[0_26px_60px_rgba(64,95,70,0.24)] sm:p-8 lg:flex lg:items-center lg:justify-between">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-white/62">Foody Fam plans</p>
-            <h2 className="mt-3 [font-family:Georgia,serif] text-3xl font-normal tracking-[-0.03em]">Healthy babies. Happy families. Less stress.</h2>
-            <p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-white/76">
-              Free is for trying the generator, Premium is for weekly AI planning support, and Unlimited unlocks the complete Foody Fam system.
-            </p>
-          </div>
-          <Link href="/register" className="mt-6 block lg:mt-0">
-            <Button variant="secondary" className="min-h-14 w-full bg-white px-8 text-[#243929] lg:w-auto">
-              Get started
-            </Button>
-          </Link>
         </section>
       </div>
     </div>
