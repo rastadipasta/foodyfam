@@ -133,10 +133,10 @@ export function HomePage() {
                 AI meal planner for real families
               </Pill>
               <h1
-                className="mt-8 max-w-3xl text-[clamp(4.2rem,10vw,8.4rem)] font-normal leading-[0.82] tracking-[-0.055em] text-[#243929]"
+                className="mt-8 max-w-3xl text-[clamp(3.75rem,14vw,6.875rem)] font-normal leading-[0.86] tracking-[-0.045em] text-[#243929]"
                 style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
               >
-                One meal,<br />whole family.
+                One meal,<br /><span className="whitespace-nowrap">whole family.</span>
               </h1>
               <p className="mt-7 max-w-lg text-lg font-semibold leading-8 text-[#5c4a42]">
                 Foody Fam turns the ingredients you have into one shared meal with baby-safe adaptation and adult finishing.
