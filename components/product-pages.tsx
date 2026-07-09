@@ -1136,7 +1136,7 @@ function NutritionCharts() {
         </div>
       </Card>
       <Card className="min-h-[320px]">
-        <h2 className="font-display text-2xl font-black">Today’s plate</h2>
+        <h2 className="font-display text-2xl font-black">Todayâ€™s plate</h2>
         <div className="mt-4 h-64">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -1157,8 +1157,8 @@ function Pricing() {
   const plans = [
     {
       name: "Free",
-      monthlyPrice: "€0",
-      yearlyPrice: "€0",
+      monthlyPrice: "â‚¬0",
+      yearlyPrice: "â‚¬0",
       cadence: "Forever",
       body: "Try the Foody Fam workflow with a small, useful starter plan.",
       cta: "Start free",
@@ -1169,10 +1169,10 @@ function Pricing() {
     },
     {
       name: "Premium",
-      monthlyPrice: "€12",
-      yearlyPrice: "€8",
+      monthlyPrice: "â‚¬12",
+      yearlyPrice: "â‚¬8",
       cadence: "/ month",
-      yearlyNote: "Billed €96 yearly",
+      yearlyNote: "Billed â‚¬96 yearly",
       body: "For families who want planning and AI help, without the full recipe library or shopping list.",
       cta: "Upgrade to Premium",
       variant: "secondary" as const,
@@ -1182,10 +1182,10 @@ function Pricing() {
     },
     {
       name: "Unlimited",
-      monthlyPrice: "€20",
-      yearlyPrice: "€13",
+      monthlyPrice: "â‚¬20",
+      yearlyPrice: "â‚¬13",
       cadence: "/ month",
-      yearlyNote: "Billed €156 yearly",
+      yearlyNote: "Billed â‚¬156 yearly",
       body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
       cta: "Go Unlimited",
       variant: "secondary" as const,
@@ -1430,4 +1430,3 @@ function plannerSlots(day: MealPlanDay) {
     recipeId: mealType === "Dinner" ? day.recipeId : ""
   }));
 }
-
