@@ -33,9 +33,16 @@ SUPABASE_AUTH_GOOGLE_CLIENT_SECRET=
 SUPABASE_AUTH_APPLE_CLIENT_ID=
 SUPABASE_AUTH_APPLE_CLIENT_SECRET=
 STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+STRIPE_PRICE_PREMIUM_MONTHLY=
+STRIPE_PRICE_PREMIUM_YEARLY=
+STRIPE_PRICE_UNLIMITED_MONTHLY=
+STRIPE_PRICE_UNLIMITED_YEARLY=
 RESEND_API_KEY=
 NEXT_PUBLIC_POSTHOG_KEY=
 ```
+
+For six-digit signup verification, update the Supabase **Confirm signup** email template to display `{{ .Token }}`. In Stripe, create four recurring EUR prices and point the webhook endpoint to `/api/billing/webhook`.
 
 Keep `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY`, Stripe, and Resend values server-only. Do not prefix secrets with `NEXT_PUBLIC_`.
 

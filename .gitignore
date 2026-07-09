@@ -8,6 +8,7 @@ coverage
 .env.*.local
 !.env.local.example
 api.txt
+resources/stripe.txt
 next-dev.log
 next-dev.err.log
 .dev-server-*.log

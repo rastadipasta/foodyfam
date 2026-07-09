@@ -423,8 +423,16 @@ export const useAppStore = create<AppStore>()(
         }),
       updateSettingsPreferences: (preferences) =>
         set((state) => {
-          const settingsPreferences = { ...state.settingsPreferences, ...preferences };
-          void syncSettings(settingsPreferences);
+          const safePreferences = {
+            measurementSystem: preferences.measurementSystem,
+            temperatureUnit: preferences.temperatureUnit
+          };
+          const settingsPreferences = {
+            ...state.settingsPreferences,
+            ...(safePreferences.measurementSystem ? { measurementSystem: safePreferences.measurementSystem } : {}),
+            ...(safePreferences.temperatureUnit ? { temperatureUnit: safePreferences.temperatureUnit } : {})
+          };
+          void syncSettings(safePreferences);
           return { settingsPreferences };
         }),
       setOnboardingStep: (step) => set({ onboardingStep: Math.max(0, Math.min(6, step)) }),

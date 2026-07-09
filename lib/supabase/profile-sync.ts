@@ -153,6 +153,7 @@ export async function loadSupabaseSnapshot(user: User): Promise<SupabaseAppSnaps
       measurementSystem: profile?.measurement_system === "us" ? "us" : "metric",
       temperatureUnit: profile?.temperature_unit === "fahrenheit" ? "fahrenheit" : "celsius",
       subscriptionStatus: parseSubscriptionStatus(profile?.subscription_status),
+      subscriptionState: parseSubscriptionState(profile?.subscription_state),
       billingInterval: profile?.billing_interval === "yearly" ? "yearly" : "monthly",
       subscriptionCurrentPeriodEnd: asString(profile?.subscription_current_period_end) || undefined
     },
@@ -191,11 +192,6 @@ export async function syncSettings(preferences: Partial<SettingsPreferences>) {
   const payload: Record<string, unknown> = {};
   if (preferences.measurementSystem !== undefined) payload.measurement_system = preferences.measurementSystem;
   if (preferences.temperatureUnit !== undefined) payload.temperature_unit = preferences.temperatureUnit;
-  if (preferences.subscriptionStatus !== undefined) payload.subscription_status = preferences.subscriptionStatus;
-  if (preferences.billingInterval !== undefined) payload.billing_interval = preferences.billingInterval;
-  if (preferences.subscriptionCurrentPeriodEnd !== undefined) {
-    payload.subscription_current_period_end = preferences.subscriptionCurrentPeriodEnd || null;
-  }
   if (Object.keys(payload).length === 0) return;
   await supabase.from("profiles").update(payload).eq("id", userId);
 }
@@ -419,6 +415,11 @@ function parseBabyStyle(value: unknown): BabyProfile["style"] {
 function parseSubscriptionStatus(value: unknown): SettingsPreferences["subscriptionStatus"] {
   if (value === "Premium" || value === "Unlimited") return value;
   return "Free";
+}
+
+function parseSubscriptionState(value: unknown): SettingsPreferences["subscriptionState"] {
+  if (value === "trialing" || value === "past_due" || value === "canceled" || value === "unpaid") return value;
+  return "active";
 }
 
 function asString(value: unknown) {

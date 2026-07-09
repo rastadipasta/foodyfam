@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Facebook, Instagram, LogOut, Mail, Menu, ShieldCheck, Settings, Sparkles, UserRound, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "./ui";
+import { CookieSettingsButton } from "./cookie-consent";
 import { cn } from "@/lib/utils";
 import { ScrollProgressGlow } from "./motion";
 import { signOutActiveAuth } from "@/lib/auth-adapter";
@@ -255,7 +256,8 @@ export function Footer() {
       title: "Support",
       links: [
         ["Help Center", "/contact"],
-        ["Privacy Policy", "/contact"],
+        ["Privacy Policy", "/privacy"],
+        ["Cookie Policy", "/cookies"],
         ["Terms of Service", "/contact"],
         ["Allergy Safety", "/nutrition"]
       ]
@@ -292,6 +294,7 @@ export function Footer() {
                       {label}
                     </Link>
                   ))}
+                  {column.title === "Support" && <CookieSettingsButton />}
                 </div>
               </div>
             ))}

@@ -600,7 +600,7 @@ function SettingsInner() {
         </Card>
       </div>
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-        <Card>
+        <Card className="border-[#e9c7b7] bg-[#fffaf6]">
           <h2 className="font-display text-2xl font-black">Measurement units</h2>
           <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">Used for recipe amounts, generated recipe display, and shopping list labels.</p>
           <div className="mt-5 grid gap-4">
@@ -624,32 +624,11 @@ function SettingsInner() {
             />
           </div>
         </Card>
-        <Card>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <h2 className="font-display text-2xl font-black">Subscription status</h2>
-              <p className="mt-2 text-sm font-bold leading-6 text-[#5c4a42]">Demo billing state for the local SaaS flow.</p>
-            </div>
-            <Pill className="w-fit bg-[#e8f4ef]">{settingsPreferences.subscriptionStatus}</Pill>
-          </div>
-          <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            {(["Free", "Premium", "Unlimited"] as const).map((status) => (
-              <button
-                key={status}
-                type="button"
-                aria-label={status}
-                className={`rounded-[20px] border p-4 text-left transition active:scale-[0.98] ${
-                  settingsPreferences.subscriptionStatus === status
-                    ? "border-[#78bea8] bg-[#e8f4ef] shadow-sm"
-                    : "border-[#e9c7b7] bg-white/80 hover:border-[#78bea8]/70"
-                }`}
-                onClick={() => updateSettingsPreferences({ subscriptionStatus: status })}
-              >
-                <p className="font-black">{status}</p>
-                <p className="mt-2 text-xs font-bold leading-5 text-[#5c4a42]/72">{subscriptionCopy(status)}</p>
-              </button>
-            ))}
-          </div>
+        <Card className="flex min-h-28 flex-col justify-center border-[#e9c7b7] bg-[#fffaf6] sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="font-display text-2xl font-black text-[#243929]">Subscription status</h2>
+          <Pill className="mt-3 w-fit border border-[#78bea8]/35 bg-[#e8f4ef] px-5 py-2 text-[#5c4a42] shadow-sm sm:mt-0">
+            {settingsPreferences.subscriptionStatus}
+          </Pill>
         </Card>
       </div>
     </div>
@@ -676,7 +655,9 @@ function SettingToggle({
             key={optionValue}
             type="button"
             className={`rounded-full px-4 py-3 text-sm font-extrabold transition active:scale-[0.98] ${
-              value === optionValue ? "bg-[#78bea8] text-white shadow-sm" : "bg-white text-[#5c4a42] hover:bg-[#f7efe9]"
+              value === optionValue
+                ? "bg-[#405f46] text-[#fffaf6] shadow-[0_10px_24px_rgba(64,95,70,0.18)] focus-visible:ring-[#78bea8]"
+                : "border border-[#e9c7b7] bg-[#f7efe9] text-[#5c4a42] hover:bg-[#ffccb2]/35 focus-visible:ring-[#78bea8]"
             }`}
             onClick={() => onChange(optionValue)}
           >
@@ -686,12 +667,6 @@ function SettingToggle({
       </div>
     </div>
   );
-}
-
-function subscriptionCopy(status: "Free" | "Premium" | "Unlimited") {
-  if (status === "Free") return "3 meal generations and basic AI results.";
-  if (status === "Premium") return "14 weekly generations, planner, nutrition, and assistant.";
-  return "All recipes, shopping list, planner, saving, sharing, and priority AI.";
 }
 
 function fileToDataUrl(file: File) {

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Apple, ArrowRight, CheckCircle2, Chrome, Eye, EyeOff, LockKeyhole, Mail, UserRound } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -41,6 +41,14 @@ type LoadingTarget = "password" | OAuthProvider | null;
 type LoginForm = z.infer<typeof loginSchema>;
 type RegisterForm = z.infer<typeof registerSchema>;
 type ForgotForm = z.infer<typeof forgotSchema>;
+type RegistrationPlan = "Free" | "Premium" | "Unlimited";
+type BillingInterval = "monthly" | "yearly";
+
+const registrationPlans = [
+  { name: "Free" as const, monthly: "€0", yearly: "€0", body: "3 meal generations and baby/adult split instructions." },
+  { name: "Premium" as const, monthly: "€12", yearly: "€8", body: "14 weekly generations, planner, nutrition, and assistant." },
+  { name: "Unlimited" as const, monthly: "€20", yearly: "€13", body: "The complete recipe, shopping, planner, and AI system." }
+];
 
 export function AuthPage({ mode }: { mode: AuthMode }) {
   return (
@@ -77,6 +85,12 @@ export function AuthCallbackPage() {
         const snapshot = await loadSupabaseSnapshot(data.user);
         if (!mounted) return;
         hydrateFromSupabaseSnapshot(snapshot);
+        const registrationIntent = window.sessionStorage.getItem("foodyfam-oauth-register");
+        if (registrationIntent) {
+          window.sessionStorage.removeItem("foodyfam-oauth-register");
+          router.replace("/register?step=plan&oauth=1");
+          return;
+        }
         router.replace("/dashboard");
       } catch {
         if (!mounted) return;
@@ -161,6 +175,7 @@ function AuthCard({ mode }: { mode: AuthMode }) {
     setLoading(provider);
     setError("");
     try {
+      if (mode === "register") window.sessionStorage.setItem("foodyfam-oauth-register", "1");
       const adapter = getPreferredAuthAdapter();
       const user = await adapter.signInWithOAuth(provider);
       const completed = mode === "register" ? false : onboardingCompleted;
@@ -216,28 +231,16 @@ function AuthCard({ mode }: { mode: AuthMode }) {
       )}
 
       {mode === "register" && (
-        <RegisterFormView
+        <RegistrationFlow
           loading={loading}
+          setLoading={setLoading}
           showPassword={showPassword}
           setShowPassword={setShowPassword}
-          onSubmit={async (values) => {
-            setLoading("password");
-            setError("");
-            try {
-              const adapter = getPreferredAuthAdapter();
-              const user = await adapter.signUpWithPassword(values);
-              if (isSupabaseConfigured()) {
-                loginSupabaseUser(user, false);
-              } else {
-                registerDemoUser(user);
-              }
-              router.push("/onboarding");
-            } catch {
-              setError("Registration failed. Try again in a moment.");
-            } finally {
-              setLoading(null);
-            }
-          }}
+          setError={setError}
+          runProvider={runProvider}
+          loginSupabaseUser={loginSupabaseUser}
+          registerDemoUser={registerDemoUser}
+          hydrateFromSupabaseSnapshot={hydrateFromSupabaseSnapshot}
         />
       )}
 
@@ -261,7 +264,7 @@ function AuthCard({ mode }: { mode: AuthMode }) {
         />
       )}
 
-      {mode !== "forgot" && (
+      {mode === "login" && (
         <>
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-xs font-black uppercase tracking-[0.16em] text-[#5c4a42]/55">
             <span className="h-px bg-[#e9c7b7]" />
@@ -322,23 +325,208 @@ function LoginFormView({
   );
 }
 
-function RegisterFormView({
+function RegistrationFlow({
   loading,
+  setLoading,
   showPassword,
   setShowPassword,
-  onSubmit
+  setError,
+  runProvider,
+  loginSupabaseUser,
+  registerDemoUser,
+  hydrateFromSupabaseSnapshot
 }: {
   loading: LoadingTarget;
+  setLoading: (value: LoadingTarget) => void;
   showPassword: boolean;
   setShowPassword: (value: boolean) => void;
-  onSubmit: (values: RegisterForm) => Promise<void>;
+  setError: (value: string) => void;
+  runProvider: (provider: OAuthProvider) => Promise<void>;
+  loginSupabaseUser: ReturnType<typeof useAppStore.getState>["loginSupabaseUser"];
+  registerDemoUser: ReturnType<typeof useAppStore.getState>["registerDemoUser"];
+  hydrateFromSupabaseSnapshot: ReturnType<typeof useAppStore.getState>["hydrateFromSupabaseSnapshot"];
 }) {
+  const router = useRouter();
+  const [step, setStep] = useState<"account" | "plan" | "verify">("account");
+  const [checkoutCancelled, setCheckoutCancelled] = useState(false);
+  const [draft, setDraft] = useState<RegisterForm | null>(null);
+  const [plan, setPlan] = useState<RegistrationPlan>("Free");
+  const [interval, setInterval] = useState<BillingInterval>("monthly");
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [resendSeconds, setResendSeconds] = useState(0);
+  const inputs = useRef<Array<HTMLInputElement | null>>([]);
   const form = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
     defaultValues: { name: "", email: "", password: "", confirmPassword: "" }
   });
+
+  useEffect(() => {
+    const params = new URL(window.location.href).searchParams;
+    const timer = window.setTimeout(() => {
+      if (params.get("step") === "plan" && params.get("oauth") === "1") setStep("plan");
+      setCheckoutCancelled(params.get("checkout") === "cancelled");
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!resendSeconds) return;
+    const timer = window.setInterval(() => setResendSeconds((value) => Math.max(0, value - 1)), 1000);
+    return () => window.clearInterval(timer);
+  }, [resendSeconds]);
+
+  async function openCheckout(selectedPlan: Exclude<RegistrationPlan, "Free">) {
+    const supabase = getSupabaseBrowserClient();
+    const { data } = await supabase!.auth.getSession();
+    if (!data.session) throw new Error("Confirm your email before opening checkout.");
+    const response = await fetch("/api/billing/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.session.access_token}` },
+      body: JSON.stringify({ plan: selectedPlan, interval })
+    });
+    const result = await response.json();
+    if (!response.ok || !result.url) throw new Error(result.error || "Could not open checkout.");
+    window.location.assign(result.url);
+  }
+
+  async function finishRegistration() {
+    if (plan === "Free") {
+      router.push("/dashboard");
+      return;
+    }
+    await openCheckout(plan);
+  }
+
+  async function choosePlan() {
+    setLoading("password");
+    setError("");
+    try {
+      const oauthRegistration = new URL(window.location.href).searchParams.get("oauth") === "1";
+      if (oauthRegistration) {
+        await finishRegistration();
+        return;
+      }
+      if (!draft) throw new Error("Add your account details first.");
+      const user = await getPreferredAuthAdapter().signUpWithPassword(draft);
+      if (!isSupabaseConfigured()) {
+        registerDemoUser(user);
+        if (plan === "Free") router.push("/dashboard");
+        else throw new Error("Stripe checkout requires Supabase configuration.");
+        return;
+      }
+      setStep("verify");
+      setResendSeconds(60);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Registration failed. Try again.");
+    } finally {
+      setLoading(null);
+    }
+  }
+
+  async function verifyCode() {
+    setLoading("password");
+    setError("");
+    try {
+      if (!draft) throw new Error("Registration details are missing.");
+      const user = await getPreferredAuthAdapter().verifySignupOtp(draft.email, otp.join(""));
+      loginSupabaseUser(user, false);
+      const supabase = getSupabaseBrowserClient();
+      const { data } = await supabase!.auth.getUser();
+      if (data.user) hydrateFromSupabaseSnapshot(await loadSupabaseSnapshot(data.user));
+      await finishRegistration();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "That code is not valid. Try again.");
+    } finally {
+      setLoading(null);
+    }
+  }
+
+  if (step === "plan") {
+    return (
+      <div className="grid gap-5">
+        <RegistrationSteps current={2} />
+        {checkoutCancelled && <p className="rounded-2xl bg-[#fff0eb] px-4 py-3 text-sm font-extrabold text-[#b45435]">Checkout was cancelled. Your account remains on Free.</p>}
+        <div className="flex justify-center">
+          <div className="inline-flex rounded-full border border-[#e9c7b7] bg-[#f7efe9] p-1">
+            {(["monthly", "yearly"] as const).map((value) => (
+              <button key={value} type="button" onClick={() => setInterval(value)} className={`rounded-full px-5 py-2 text-sm font-extrabold capitalize ${interval === value ? "bg-[#405f46] text-[#fffaf6]" : "text-[#5c4a42]"}`}>
+                {value}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="grid gap-3 lg:grid-cols-3">
+          {registrationPlans.map((item) => (
+            <button key={item.name} type="button" onClick={() => setPlan(item.name)} className={`flex min-h-52 flex-col rounded-[24px] border p-5 text-left transition active:scale-[0.99] ${plan === item.name ? "border-[#405f46] bg-[#405f46] text-[#fffaf6] shadow-lg" : "border-[#e9c7b7] bg-[#fffaf6] text-[#243929]"}`}>
+              <span className="text-xl font-black">{item.name}</span>
+              <span className="mt-4 text-3xl font-black">{interval === "monthly" ? item.monthly : item.yearly}<small className="ml-1 text-sm">/mo</small></span>
+              {interval === "yearly" && item.name !== "Free" && <span className="mt-1 text-xs font-bold opacity-75">Billed {item.name === "Premium" ? "€96" : "€156"} yearly</span>}
+              <span className="mt-4 text-sm font-bold leading-6 opacity-85">{item.body}</span>
+            </button>
+          ))}
+        </div>
+        <div className="flex gap-3">
+          <Button type="button" variant="secondary" onClick={() => setStep("account")}>Back</Button>
+          <Button type="button" className="flex-1" disabled={loading !== null} onClick={() => void choosePlan()}>
+            {loading ? "Preparing..." : plan === "Free" ? "Continue free" : "Continue to verification"} <ArrowRight size={17} />
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === "verify") {
+    return (
+      <div className="grid gap-5">
+        <RegistrationSteps current={3} />
+        <div>
+          <h2 className="text-2xl font-black text-[#243929]">Check your email</h2>
+          <p className="mt-2 text-sm font-bold text-[#5c4a42]">Enter the six-digit code sent to {draft?.email}.</p>
+        </div>
+        <div className="grid grid-cols-6 gap-2">
+          {otp.map((value, index) => (
+            <input
+              key={index}
+              ref={(node) => { inputs.current[index] = node; }}
+              value={value}
+              inputMode="numeric"
+              maxLength={1}
+              aria-label={`Verification digit ${index + 1}`}
+              className="h-14 min-w-0 rounded-2xl border border-[#e9c7b7] bg-[#fffaf6] text-center text-xl font-black text-[#243929] outline-none focus:border-[#78bea8] focus:ring-4 focus:ring-[#78bea8]/15"
+              onChange={(event) => {
+                const digit = event.target.value.replace(/\D/g, "").slice(-1);
+                const next = [...otp]; next[index] = digit; setOtp(next);
+                if (digit) inputs.current[index + 1]?.focus();
+              }}
+              onKeyDown={(event) => { if (event.key === "Backspace" && !value) inputs.current[index - 1]?.focus(); }}
+              onPaste={(event) => {
+                const code = event.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+                if (code.length === 6) { event.preventDefault(); setOtp(code.split("")); inputs.current[5]?.focus(); }
+              }}
+            />
+          ))}
+        </div>
+        <Button type="button" disabled={loading !== null || otp.join("").length !== 6} onClick={() => void verifyCode()}>
+          {loading ? "Verifying..." : "Verify email"} <ArrowRight size={17} />
+        </Button>
+        <button
+          type="button"
+          disabled={resendSeconds > 0}
+          className="text-sm font-extrabold text-[#405f46] disabled:opacity-50"
+          onClick={() => {
+            if (!draft) return;
+            void getPreferredAuthAdapter().resendSignupOtp(draft.email).then(() => setResendSeconds(60)).catch(() => setError("Could not resend the code."));
+          }}
+        >
+          {resendSeconds ? `Resend code in ${resendSeconds}s` : "Resend code"}
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <form className="grid gap-4" onSubmit={form.handleSubmit((values) => void onSubmit(values))}>
+    <form className="grid gap-4" onSubmit={form.handleSubmit((values) => { setDraft(values); setStep("plan"); })}>
+      <RegistrationSteps current={1} />
       <InputShell icon={<UserRound size={18} />} error={form.formState.errors.name?.message}>
         <Field placeholder="Full name" {...form.register("name")} className="pl-11" />
       </InputShell>
@@ -355,9 +543,26 @@ function RegisterFormView({
         <Field placeholder="Confirm password" type={showPassword ? "text" : "password"} {...form.register("confirmPassword")} className="pl-11" />
       </InputShell>
       <Button type="submit" disabled={loading !== null}>
-        {loading === "password" ? "Creating account..." : "Create account"} <ArrowRight size={17} />
+        Choose a plan <ArrowRight size={17} />
       </Button>
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-xs font-black uppercase tracking-[0.16em] text-[#5c4a42]/55">
+        <span className="h-px bg-[#e9c7b7]" /> Or continue with <span className="h-px bg-[#e9c7b7]" />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <ProviderButton provider="google" loading={loading} onClick={() => void runProvider("google")} />
+        <ProviderButton provider="apple" loading={loading} onClick={() => void runProvider("apple")} />
+      </div>
     </form>
+  );
+}
+
+function RegistrationSteps({ current }: { current: number }) {
+  return (
+    <div className="grid grid-cols-3 gap-2" aria-label={`Registration step ${current} of 3`}>
+      {["Account", "Choose plan", "Verify"].map((label, index) => (
+        <div key={label} className={`rounded-full px-3 py-2 text-center text-xs font-black ${index + 1 <= current ? "bg-[#405f46] text-[#fffaf6]" : "bg-[#f7efe9] text-[#5c4a42]/65"}`}>{label}</div>
+      ))}
+    </div>
   );
 }
 

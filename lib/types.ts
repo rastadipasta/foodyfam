@@ -62,6 +62,7 @@ export type SettingsPreferences = {
   measurementSystem: "metric" | "us";
   temperatureUnit: "celsius" | "fahrenheit";
   subscriptionStatus: "Free" | "Premium" | "Unlimited";
+  subscriptionState?: "active" | "trialing" | "past_due" | "canceled" | "unpaid";
   billingInterval?: "monthly" | "yearly";
   subscriptionCurrentPeriodEnd?: string;
 };

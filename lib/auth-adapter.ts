@@ -14,6 +14,8 @@ export type AuthAdapter = {
   signInWithPassword: (credentials: PasswordCredentials) => Promise<AuthUser>;
   signUpWithPassword: (credentials: PasswordCredentials) => Promise<AuthUser>;
   signInWithOAuth: (provider: OAuthProvider) => Promise<AuthUser>;
+  verifySignupOtp: (email: string, token: string) => Promise<AuthUser>;
+  resendSignupOtp: (email: string) => Promise<void>;
   getSession?: () => Promise<AuthUser | null>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ ok: true }>;
@@ -65,6 +67,13 @@ export const demoAuthAdapter: AuthAdapter = {
     await wait(720);
     return createDemoUser(provider);
   },
+  async verifySignupOtp(email) {
+    await wait(520);
+    return createDemoUser("password", email);
+  },
+  async resendSignupOtp() {
+    await wait(420);
+  },
   async signOut() {
     await wait(220);
   },
@@ -111,6 +120,18 @@ export const supabaseAuthAdapter: AuthAdapter = {
     });
     if (error) throw error;
     return new Promise<AuthUser>(() => undefined);
+  },
+  async verifySignupOtp(email, token) {
+    const supabase = requireSupabase();
+    const { data, error } = await supabase.auth.verifyOtp({ email: email.trim().toLowerCase(), token, type: "signup" });
+    if (error || !data.user) throw error || new Error("Could not verify signup code.");
+    const profile = await ensureSupabaseProfile(data.user);
+    return authUserFromSupabase(data.user, profile);
+  },
+  async resendSignupOtp(email) {
+    const supabase = requireSupabase();
+    const { error } = await supabase.auth.resend({ type: "signup", email: email.trim().toLowerCase() });
+    if (error) throw error;
   },
   async getSession() {
     const supabase = requireSupabase();

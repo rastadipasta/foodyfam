@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Nunito, Nunito_Sans } from "next/font/google";
 import { BackToTop } from "@/components/back-to-top";
+import { CookieConsent } from "@/components/cookie-consent";
 import { absoluteUrl, defaultOgImage, getSiteUrl, siteName } from "@/lib/seo";
 import "./globals.css";
 
@@ -75,6 +76,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${display.variable} ${body.variable} ${dacherry.variable}`}>
         {children}
+        <CookieConsent />
         <BackToTop />
       </body>
     </html>
