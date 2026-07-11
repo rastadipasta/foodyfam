@@ -1164,7 +1164,6 @@ function Pricing() {
       body: "Try the Foody Fam workflow with a small, useful starter plan.",
       cta: "Start free",
       variant: "secondary" as const,
-      featured: false,
       points: ["3 meal generations", "Basic AI meal result", "Baby/adult split instructions", "Local demo profile setup"],
       limits: ["Limited generation history"]
     },
@@ -1177,7 +1176,6 @@ function Pricing() {
       body: "For families who want planning and AI help, without the full recipe library or shopping list.",
       cta: "Upgrade to Premium",
       variant: "secondary" as const,
-      featured: true,
       points: ["14 meal generations per week", "Meal planner access", "Nutrition insights", "AI assistant"],
       limits: ["No recipe library access", "No shopping list"]
     },
@@ -1190,7 +1188,6 @@ function Pricing() {
       body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
       cta: "Go Unlimited",
       variant: "secondary" as const,
-      featured: false,
       points: [
         "Unlimited meal generations",
         "Full verified recipe library",
@@ -1241,48 +1238,51 @@ function Pricing() {
           </div>
 
           <div className="grid items-stretch gap-6 lg:grid-cols-3">
-            {plans.map((plan) => (
-              <article
-                key={plan.name}
-                className={`relative flex min-h-[620px] flex-col rounded-[28px] border p-7 ${
-                  plan.featured
-                    ? "border-[#405f46] bg-[#405f46] text-white shadow-[0_28px_70px_rgba(64,95,70,0.28)]"
-                    : "border-[#eaded5] bg-white text-[#243929] shadow-[0_18px_45px_rgba(92,74,66,0.08)]"
-                }`}
-              >
-                {plan.featured && (
+            {plans.map((plan) => {
+              const featured = billingCycle === "monthly" ? plan.name === "Premium" : plan.name === "Unlimited";
+
+              return (
+                <article
+                  key={plan.name}
+                  className={`relative flex min-h-[620px] flex-col rounded-[28px] border p-7 ${
+                    featured
+                      ? "border-[#405f46] bg-[#405f46] text-white shadow-[0_28px_70px_rgba(64,95,70,0.28)]"
+                      : "border-[#eaded5] bg-white text-[#243929] shadow-[0_18px_45px_rgba(92,74,66,0.08)]"
+                  }`}
+                >
+                {featured && (
                   <span className="absolute -top-4 right-5 rotate-[12deg] rounded-full border border-[#405f46]/15 bg-[#fffaf6] px-4 py-2 text-xs font-black italic text-[#405f46] shadow-[0_10px_22px_rgba(92,74,66,0.16)]">
                     Most popular
                   </span>
                 )}
                 <div>
-                  <h2 className={`font-display text-3xl font-black ${plan.featured ? "text-white" : "text-[#243929]"}`}>{plan.name}</h2>
+                  <h2 className={`font-display text-3xl font-black ${featured ? "text-white" : "text-[#243929]"}`}>{plan.name}</h2>
                   <div className="mt-8 flex items-end gap-2">
-                    <p className={`text-5xl font-black tracking-[-0.04em] ${plan.featured ? "text-white" : "text-[#243929]"}`}>
+                    <p className={`text-5xl font-black tracking-[-0.04em] ${featured ? "text-white" : "text-[#243929]"}`}>
                       {billingCycle === "monthly" ? plan.monthlyPrice : plan.yearlyPrice}
                     </p>
-                    <span className={`pb-2 text-sm font-black ${plan.featured ? "text-white/72" : "text-[#5c4a42]/70"}`}>{plan.cadence}</span>
+                    <span className={`pb-2 text-sm font-black ${featured ? "text-white/72" : "text-[#5c4a42]/70"}`}>{plan.cadence}</span>
                   </div>
                   {billingCycle === "yearly" && plan.yearlyNote && (
-                    <p className={`mt-2 text-sm font-extrabold ${plan.featured ? "text-white/72" : "text-[#78bea8]"}`}>{plan.yearlyNote}</p>
+                    <p className={`mt-2 text-sm font-extrabold ${featured ? "text-white/72" : "text-[#78bea8]"}`}>{plan.yearlyNote}</p>
                   )}
-                  <p className={`mt-8 min-h-28 text-base font-extrabold leading-8 ${plan.featured ? "text-white/80" : "text-[#5c4a42]"}`}>{plan.body}</p>
+                  <p className={`mt-8 min-h-28 text-base font-extrabold leading-8 ${featured ? "text-white/80" : "text-[#5c4a42]"}`}>{plan.body}</p>
                 </div>
                 <ul className="mt-7 grid gap-4">
                   {plan.points.map((point) => (
-                    <li key={point} className={`flex gap-3 text-base font-bold leading-7 ${plan.featured ? "text-white/90" : "text-[#3d3632]"}`}>
-                      <Check className={`mt-1 shrink-0 ${plan.featured ? "text-[#ffccb2]" : "text-[#78bea8]"}`} size={18} />
+                    <li key={point} className={`flex gap-3 text-base font-bold leading-7 ${featured ? "text-white/90" : "text-[#3d3632]"}`}>
+                      <Check className={`mt-1 shrink-0 ${featured ? "text-[#ffccb2]" : "text-[#78bea8]"}`} size={18} />
                       <span>{point}</span>
                     </li>
                   ))}
                 </ul>
                 {plan.limits.length > 0 && (
-                  <div className={`mt-7 rounded-[20px] p-5 ${plan.featured ? "bg-white/10" : "bg-[#f7efe9]/86"}`}>
-                    <p className={`text-xs font-black uppercase tracking-[0.14em] ${plan.featured ? "text-white/68" : "text-[#5c4a42]/70"}`}>Not included</p>
+                  <div className={`mt-7 rounded-[20px] p-5 ${featured ? "bg-white/10" : "bg-[#f7efe9]/86"}`}>
+                    <p className={`text-xs font-black uppercase tracking-[0.14em] ${featured ? "text-white/68" : "text-[#5c4a42]/70"}`}>Not included</p>
                     <div className="mt-3 grid gap-2.5">
                       {plan.limits.map((limit) => (
-                        <p key={limit} className={`flex gap-2 text-sm font-extrabold ${plan.featured ? "text-white/82" : "text-[#5c4a42]"}`}>
-                          <X className={`mt-0.5 shrink-0 ${plan.featured ? "text-[#ffccb2]" : "text-[#f59b78]"}`} size={16} />
+                        <p key={limit} className={`flex gap-2 text-sm font-extrabold ${featured ? "text-white/82" : "text-[#5c4a42]"}`}>
+                          <X className={`mt-0.5 shrink-0 ${featured ? "text-[#ffccb2]" : "text-[#f59b78]"}`} size={16} />
                           {limit}
                         </p>
                       ))}
@@ -1290,12 +1290,13 @@ function Pricing() {
                   </div>
                 )}
                 <Link href="/register" className="mt-auto block pt-8">
-                  <Button className={`min-h-14 w-full translate-y-0 text-base ${plan.featured ? "border-white/20 bg-white text-[#243929] hover:bg-[#fffaf6]" : "bg-[#fffaf6] text-[#243929]"}`} variant={plan.variant}>
+                  <Button className={`min-h-14 w-full translate-y-0 text-base ${featured ? "border-white/20 bg-white text-[#243929] hover:bg-[#fffaf6]" : "bg-[#fffaf6] text-[#243929]"}`} variant={plan.variant}>
                     {plan.cta}
                   </Button>
                 </Link>
               </article>
-            ))}
+              );
+            })}
           </div>
         </section>
       </div>
