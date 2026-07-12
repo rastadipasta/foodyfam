@@ -302,7 +302,6 @@ export function HomePage() {
                         </li>
                       ))}
                     </ul>
-                    {featured && <p className="mt-4 text-center text-xs font-bold text-white/66">7-day free trial</p>}
                     <Link href="/pricing" className="mt-auto block pt-6">
                       <Button variant="secondary" className={`min-h-12 w-full whitespace-nowrap px-3 text-sm ${featured ? "border-white/20 bg-white text-[#243929] hover:bg-[#fffaf6]" : "border-[#eaded5] bg-[#fffaf6]"}`}>
                         {plan.cta}
