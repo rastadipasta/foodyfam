@@ -278,7 +278,7 @@ async function generateRecipeImage(recipe: Recipe) {
       body: JSON.stringify({
         model: process.env.OPENAI_IMAGE_MODEL || "gpt-image-1-mini",
         prompt: buildRecipeImagePrompt(recipe),
-        size: process.env.OPENAI_IMAGE_SIZE || "1024x1024",
+        size: process.env.OPENAI_IMAGE_SIZE || "512x512",
         quality: process.env.OPENAI_IMAGE_QUALITY || "medium",
         output_format: process.env.OPENAI_IMAGE_FORMAT || "webp",
         output_compression: Number(process.env.OPENAI_IMAGE_COMPRESSION || 80),
@@ -302,7 +302,7 @@ function buildRecipeImagePrompt(recipe: Recipe) {
     : recipe.ingredients.slice(0, 8);
 
   return [
-    `Create a square 1024x1024 food photo of the finished prepared dish for this Foody Fam recipe: ${recipe.title}.`,
+    `Create a square 512x512 food photo of the finished prepared dish for this Foody Fam recipe: ${recipe.title}.`,
     `The final cooked meal should naturally contain these ingredients: ${ingredients.join(", ")}.`,
     "Show one cohesive, ready-to-eat plated meal in a ceramic bowl or on a plate, with the ingredients cooked together as the finished recipe.",
     "Do not show raw ingredients, separated ingredient piles, a deconstructed plate, prep bowls, shopping ingredients, or multiple unfinished components arranged apart.",

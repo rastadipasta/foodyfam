@@ -54,10 +54,12 @@ const workflowSteps = [
   }
 ];
 
+const euro = "\u20ac";
+
 const yearlyPricingPreview = [
   {
     name: "Free",
-    price: "€0",
+    price: `${euro}0`,
     detail: "",
     body: "Try the Foody Fam workflow with a small, useful starter plan.",
     features: ["3 meal generations", "Basic AI meal result", "Baby/adult split instructions"],
@@ -65,16 +67,15 @@ const yearlyPricingPreview = [
   },
   {
     name: "Premium",
-    price: "€8",
+    price: `${euro}8`,
     detail: "/ month",
     body: "For families who want planning and AI help, without the full recipe library or shopping list.",
     features: ["14 meal generations per week", "Meal planner access", "Nutrition insights", "AI assistant"],
-    cta: "Upgrade to Premium",
-    featured: true
+    cta: "Upgrade to Premium"
   },
   {
     name: "Unlimited",
-    price: "€13",
+    price: `${euro}13`,
     detail: "/ month",
     body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
     features: ["Unlimited meal generations", "Full verified recipe library", "Shopping list and pantry matching", "Priority AI assistant"],
@@ -85,7 +86,7 @@ const yearlyPricingPreview = [
 const monthlyPricingPreview = [
   {
     name: "Free",
-    price: "€0",
+    price: `${euro}0`,
     detail: "",
     body: "Try the Foody Fam workflow with a small, useful starter plan.",
     features: ["3 meal generations", "Basic AI meal result", "Baby/adult split instructions"],
@@ -93,23 +94,21 @@ const monthlyPricingPreview = [
   },
   {
     name: "Premium",
-    price: "€12",
+    price: `${euro}12`,
     detail: "/ month",
     body: "For families who want planning and AI help, without the full recipe library or shopping list.",
     features: ["14 meal generations per week", "Meal planner access", "Nutrition insights", "AI assistant"],
-    cta: "Upgrade to Premium",
-    featured: true
+    cta: "Upgrade to Premium"
   },
   {
     name: "Unlimited",
-    price: "€20",
+    price: `${euro}20`,
     detail: "/ month",
     body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
     features: ["Unlimited meal generations", "Full verified recipe library", "Shopping list and pantry matching", "Priority AI assistant"],
     cta: "Go Unlimited"
   }
 ];
-
 const trustLogos = ["babycenter", "Good Housekeeping", "Parents", "yahoo!", "Forbes", "TODAY"];
 
 export function HomePage() {
@@ -280,34 +279,38 @@ export function HomePage() {
                 </div>
               </div>
               <div className="grid gap-4 md:grid-cols-3">
-                {visiblePricing.map((plan) => (
+                {visiblePricing.map((plan) => {
+                  const featured = billingCycle === "monthly" ? plan.name === "Premium" : plan.name === "Unlimited";
+
+                  return (
                   <article
                     key={plan.name}
-                    className={`relative flex h-full min-h-[390px] flex-col rounded-[22px] border p-5 ${plan.featured ? "border-[#405f46] bg-[#405f46] text-white shadow-[0_22px_58px_rgba(64,95,70,0.28)]" : "border-[#eaded5] bg-white"}`}
+                    className={`relative flex h-full min-h-[390px] flex-col rounded-[22px] border p-5 ${featured ? "border-[#405f46] bg-[#405f46] text-white shadow-[0_22px_58px_rgba(64,95,70,0.28)]" : "border-[#eaded5] bg-white"}`}
                   >
-                    {plan.featured && <span className="absolute -top-3 right-4 rounded-full bg-[#fffaf6] px-3 py-1 text-[10px] font-black text-[#405f46] shadow-sm">Most popular</span>}
-                    <h3 className={`text-lg font-black ${plan.featured ? "text-white" : "text-[#243929]"}`}>{plan.name}</h3>
+                    {featured && <span className="absolute -top-3 right-4 rounded-full bg-[#fffaf6] px-3 py-1 text-[10px] font-black text-[#405f46] shadow-sm">Most popular</span>}
+                    <h3 className={`text-lg font-black ${featured ? "text-white" : "text-[#243929]"}`}>{plan.name}</h3>
                     <div className="mt-4 flex items-end gap-1">
-                      <span className={`text-4xl font-black ${plan.featured ? "text-white" : "text-[#243929]"}`}>{plan.price}</span>
-                      <span className={`pb-1 text-xs font-bold ${plan.featured ? "text-white/72" : "text-[#5c4a42]/66"}`}>{plan.detail}</span>
+                      <span className={`text-4xl font-black ${featured ? "text-white" : "text-[#243929]"}`}>{plan.price}</span>
+                      <span className={`pb-1 text-xs font-bold ${featured ? "text-white/72" : "text-[#5c4a42]/66"}`}>{plan.detail}</span>
                     </div>
-                    <p className={`mt-3 min-h-10 text-sm font-bold leading-5 ${plan.featured ? "text-white/78" : "text-[#5c4a42]/76"}`}>{plan.body}</p>
+                    <p className={`mt-3 min-h-10 text-sm font-bold leading-5 ${featured ? "text-white/78" : "text-[#5c4a42]/76"}`}>{plan.body}</p>
                     <ul className="mt-5 grid gap-2">
                       {plan.features.map((feature) => (
-                        <li key={feature} className={`flex items-center gap-2 text-sm font-bold ${plan.featured ? "text-white/88" : "text-[#5c4a42]"}`}>
-                          <Check size={15} className={plan.featured ? "text-[#ffccb2]" : "text-[#78bea8]"} />
+                        <li key={feature} className={`flex items-center gap-2 text-sm font-bold ${featured ? "text-white/88" : "text-[#5c4a42]"}`}>
+                          <Check size={15} className={featured ? "text-[#ffccb2]" : "text-[#78bea8]"} />
                           {feature}
                         </li>
                       ))}
                     </ul>
-                    {plan.featured && <p className="mt-4 text-center text-xs font-bold text-white/66">7-day free trial</p>}
+                    {featured && <p className="mt-4 text-center text-xs font-bold text-white/66">7-day free trial</p>}
                     <Link href="/pricing" className="mt-auto block pt-6">
-                      <Button variant="secondary" className={`min-h-12 w-full whitespace-nowrap px-3 text-sm ${plan.featured ? "border-white/20 bg-white text-[#243929] hover:bg-[#fffaf6]" : "border-[#eaded5] bg-[#fffaf6]"}`}>
+                      <Button variant="secondary" className={`min-h-12 w-full whitespace-nowrap px-3 text-sm ${featured ? "border-white/20 bg-white text-[#243929] hover:bg-[#fffaf6]" : "border-[#eaded5] bg-[#fffaf6]"}`}>
                         {plan.cta}
                       </Button>
                     </Link>
                   </article>
-                ))}
+                  );
+                })}
               </div>
             </section>
           </div>
@@ -326,7 +329,7 @@ export function HomePage() {
             </div>
             <Link href="/register" className="mt-6 block lg:mt-0">
               <Button variant="secondary" className="min-h-14 w-full bg-white px-8 text-[#243929] lg:w-auto">
-                Get started — it&apos;s free
+                Get started - it&apos;s free
                 <ArrowRight size={18} />
               </Button>
             </Link>
