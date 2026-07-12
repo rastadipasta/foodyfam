@@ -330,7 +330,7 @@ export function GeneratorPanel({
         <div ref={resultRef} className="scroll-mt-24">
           <RecipeResult
             recipe={currentResult}
-            showImage={subscriptionStatus !== "Free"}
+            showImage={subscriptionStatus !== "Free" && isGeneratedRecipeImage(currentResult.image)}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             saved={saved}
@@ -599,7 +599,7 @@ function RecipeResult({
 }
 
 function RecipeImageFrame({ recipe }: { recipe: Recipe }) {
-  const image = isValidRecipeImage(recipe.image) ? recipe.image : fallbackRecipeImage;
+  const image = recipe.image;
   return (
     <div className="relative aspect-square overflow-hidden rounded-[28px] border border-white/72 bg-[#f7efe9] shadow-[0_18px_44px_rgba(92,74,66,0.12)]">
       <Image
@@ -724,8 +724,8 @@ function formatQuantity(value: number) {
   return Number.isInteger(value) ? `${value}` : value.toFixed(1);
 }
 
-function isValidRecipeImage(image: string | undefined) {
-  return Boolean(image && (image.startsWith("/") || image.startsWith("data:image/")));
+function isGeneratedRecipeImage(image: string | undefined) {
+  return Boolean(image?.startsWith("data:image/"));
 }
 
 function createPersistableRecipe(recipe: Recipe): Recipe {

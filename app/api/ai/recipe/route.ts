@@ -155,8 +155,9 @@ export async function POST(request: Request) {
 
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({
-      recipe: await recipeWithPlanImage({ ...matchedRecipe, image: fallbackRecipeImage }),
+      recipe: { ...matchedRecipe, image: "" },
       source: "database-demo",
+      warning: "OpenAI API key is missing, so recipe text and image generation used local fallback.",
       databaseMatch: matched?.match,
       preflight
     });
@@ -272,7 +273,7 @@ async function withPlanRecipeImage(recipe: Recipe, includeGeneratedImage: boolea
 
 async function withGeneratedRecipeImage(recipe: Recipe): Promise<Recipe> {
   const generatedImage = await generateRecipeImage(recipe);
-  return { ...recipe, image: generatedImage || recipe.image || fallbackRecipeImage };
+  return { ...recipe, image: generatedImage || "" };
 }
 
 async function generateRecipeImage(recipe: Recipe) {
@@ -336,19 +337,16 @@ function finalizeRecipeForRequest(recipe: Recipe, input: { ingredients?: string;
   const requestedIngredients = parseRequestedIngredients(input.ingredients);
   if (!requestedIngredients.length) return recipe;
 
-  const existingNames = new Set(recipe.ingredients.map((item) => item.toLowerCase()));
-  const requestedHits = requestedIngredients.filter((item) => existingNames.has(item.toLowerCase())).length;
-  const shouldRewriteTitle = requestedHits < Math.ceil(requestedIngredients.length / 2);
   const ingredientDetails = requestedIngredients.map((ingredient, index) => {
     const existing = recipe.ingredientDetails?.find((item) => item.name.toLowerCase() === ingredient.toLowerCase());
     return existing || estimateRequestedIngredientDetail(ingredient, index);
   });
-  const title = shouldRewriteTitle ? `${titleCase(requestedIngredients.slice(0, 2).join(" + "))} Family Meal` : recipe.title;
+  const title = `${titleCase(requestedIngredients.slice(0, 2).join(" + "))} Family Meal`;
 
   return {
     ...recipe,
     title,
-    slug: shouldRewriteTitle ? slugify(title) : recipe.slug,
+    slug: slugify(title),
     description: `A Foody Fam recipe built around ${requestedIngredients.join(", ")} with one shared base, a baby-safe portion, and an adult finish.`,
     familyPitch: `Cook ${requestedIngredients.slice(0, 4).join(", ")} once, remove the baby's portion before salt or strong seasoning, then finish the adult plates.`,
     ingredients: requestedIngredients,
