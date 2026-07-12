@@ -12,7 +12,6 @@ import {
   Share2,
   ShieldCheck,
   ShoppingBasket,
-  Sparkles,
   Utensils,
   UtensilsCrossed,
   X
@@ -49,19 +48,28 @@ const generatorSchema = z.object({
 
 type GeneratorForm = z.infer<typeof generatorSchema>;
 
-const chips = ["Chicken", "Rice", "Eggs", "Spinach", "Pasta", "Broccoli", "Carrots", "Lentils"];
+const chips = [
+  "Chicken",
+  "Rice",
+  "Lentils",
+  "Carrots",
+  "Broccoli",
+  "Sweet potato",
+  "Avocado",
+  "Banana",
+  "Oats",
+  "Peas",
+  "Zucchini",
+  "Apple",
+  "Salmon",
+  "Turkey",
+  "Greek yogurt",
+  "Pasta"
+];
 const resultTabs = ["Overview", "Shopping", "Safety"] as const;
 const fallbackRecipeImage = "/brand/generated/hero-family-meal.png";
 const maxPersistedImageLength = 1_500_000;
 const minCookingLoaderMs = 2200;
-const smartChips = [
-  { label: "Use profile pantry", icon: ShoppingBasket, values: { ingredients: "Eggs, milk, rice, olive oil", pantryItems: "Eggs, milk, rice, olive oil" } },
-  { label: "Iron-rich dinner", icon: Utensils, values: { ingredients: "Beef, lentils, spinach, tomato", mealType: "Dinner", goal: "Build an iron-rich family dinner with a baby-safe portion." } },
-  { label: "BLW-friendly", icon: Baby, values: { feedingStyle: "BLW", babyTexture: "Finger foods", ingredients: "Salmon, potato, zucchini, avocado" } },
-  { label: "Puree-friendly", icon: ShieldCheck, values: { feedingStyle: "Puree", babyTexture: "Smooth puree", ingredients: "Carrot, lentils, rice, olive oil" } },
-  { label: "Under 30 min", icon: Clock, values: { cookingTime: "25 min or less", skillLevel: "Easy" } },
-  { label: "Use leftovers", icon: Sparkles, values: { goal: "Cook once for baby and adults with leftovers for lunch.", mealType: "Dinner" } }
-] as const;
 
 export function GeneratorPanel({
   onResult,
@@ -172,13 +180,6 @@ export function GeneratorPanel({
     }
   }
 
-  function applySmartChip(values: Partial<GeneratorForm>) {
-    for (const [key, value] of Object.entries(values) as [keyof GeneratorForm, string][]) {
-      setValue(key, value, { shouldDirty: true, shouldValidate: true });
-      if (key === "ingredients") setIngredientsValue(value);
-    }
-  }
-
   function saveResult() {
     if (!currentResult) return;
     upsertRecipe(createPersistableRecipe(currentResult), true);
@@ -259,19 +260,6 @@ export function GeneratorPanel({
                 </button>
               ))}
             </div>
-            <div className="mt-5 flex flex-wrap gap-3">
-              {smartChips.map((chip) => {
-                const Icon = chip.icon;
-                return (
-                  <button key={chip.label} type="button" onClick={() => applySmartChip(chip.values)}>
-                    <Pill className="gap-2 border-[#e9e2dc] bg-[#f8f6f2] px-4 py-2 text-sm shadow-none transition hover:-translate-y-0.5 hover:bg-[#e8f4ef]">
-                      <Icon size={15} className="text-[#6f8b80]" />
-                      {chip.label}
-                    </Pill>
-                  </button>
-                );
-              })}
-            </div>
             {errors.ingredients && <p className="mt-2 text-xs font-bold text-[#d85f4c]">{errors.ingredients.message}</p>}
           </div>
         </div>
@@ -303,12 +291,9 @@ export function GeneratorPanel({
           <FormBoxLabel label="Baby age">
             <Select aria-label="Baby age" className={controlClassName} {...register("babyAge")}>
               <option>Any</option>
-              <option>Select age</option>
-              <option>6–8 months</option>
               <option>6-8 months</option>
-              <option>8–10 months</option>
-              <option>10–12 months</option>
-              <option>9-12 months</option>
+              <option>8-10 months</option>
+              <option>10-12 months</option>
               <option>12-18 months</option>
               <option>2+ years</option>
             </Select>
