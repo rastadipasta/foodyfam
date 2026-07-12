@@ -52,7 +52,8 @@ type GeneratorForm = z.infer<typeof generatorSchema>;
 const chips = ["Chicken", "Rice", "Eggs", "Spinach", "Pasta", "Broccoli", "Carrots", "Lentils"];
 const resultTabs = ["Overview", "Shopping", "Safety"] as const;
 const fallbackRecipeImage = "/brand/generated/hero-family-meal.png";
-const maxPersistedImageLength = 750_000;
+const maxPersistedImageLength = 1_500_000;
+const minCookingLoaderMs = 2200;
 const smartChips = [
   { label: "Use profile pantry", icon: ShoppingBasket, values: { ingredients: "Eggs, milk, rice, olive oil", pantryItems: "Eggs, milk, rice, olive oil" } },
   { label: "Iron-rich dinner", icon: Utensils, values: { ingredients: "Beef, lentils, spinach, tomato", mealType: "Dinner", goal: "Build an iron-rich family dinner with a baby-safe portion." } },
@@ -127,6 +128,7 @@ export function GeneratorPanel({
   async function submit(values: GeneratorForm) {
     setLoading(true);
     setSaved(false);
+    const minimumLoader = new Promise((resolve) => window.setTimeout(resolve, minCookingLoaderMs));
     try {
       const response = await fetch("/api/ai/recipe", {
         method: "POST",
@@ -142,6 +144,7 @@ export function GeneratorPanel({
       setShoppingMessage("");
       onResult?.(normalizedRecipe);
     } finally {
+      await minimumLoader;
       setLoading(false);
     }
   }
@@ -486,10 +489,10 @@ function RecipeResult({
   const canNativeShare = typeof navigator !== "undefined" && "share" in navigator;
 
   return (
-    <KitchenLedger className="grid gap-5 rounded-[34px] bg-white p-5 shadow-[0_18px_45px_rgba(92,74,66,0.08)] sm:p-6">
-      <div className={cn("grid gap-5 lg:items-center", showImage ? "lg:grid-cols-[0.78fr_1.22fr]" : "lg:grid-cols-1")}>
+    <KitchenLedger className="grid gap-6 rounded-[34px] bg-white p-5 shadow-[0_18px_45px_rgba(92,74,66,0.08)] sm:p-6">
+      <div className={cn("grid gap-5 lg:items-center", showImage ? "lg:grid-cols-[0.72fr_1.28fr]" : "lg:grid-cols-1")}>
         {showImage && <RecipeImageFrame recipe={recipe} />}
-        <div>
+        <div className="grid gap-4">
           <div className="flex flex-wrap gap-2">
             {recipe.tags.map((tag) => (
               <Pill key={tag}>{tag}</Pill>
@@ -499,12 +502,27 @@ function RecipeResult({
           <p className="mt-3 max-w-4xl text-base font-bold leading-7 text-[#5c4a42]">
             {recipe.description || recipe.familyPitch || "A family recipe adapted for baby and adults."}
           </p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <Button type="button" onClick={onSave}>
+              {saved ? <Check size={17} /> : <Save size={17} />}
+              {saved ? "Saved" : "Save recipe"}
+            </Button>
+            <Button type="button" variant="secondary" onClick={onAddToShoppingList}>
+              <ShoppingBasket size={17} />
+              Add to shopping list
+            </Button>
+            <Button type="button" variant="secondary" onClick={onShare}>
+              {canNativeShare ? <Share2 size={17} /> : <Copy size={17} />}
+              Share
+            </Button>
+          </div>
+          {shoppingMessage && <p className="text-sm font-extrabold text-[#78bea8]">{shoppingMessage}</p>}
         </div>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
         <IngredientCard recipe={recipe} />
-        <StepCard title="Cooking steps" items={cookingSteps} />
+        <StepCard title="Cooking steps" items={cookingSteps.slice(0, 5)} compact />
       </div>
 
       <div className="flex flex-wrap gap-2 border-t border-[#5c4a42]/10 pt-5">
@@ -562,14 +580,6 @@ function RecipeResult({
       </div>
 
       <div className="flex flex-wrap gap-3 border-t border-[#5c4a42]/10 pt-5">
-        <Button type="button" onClick={onSave}>
-          {saved ? <Check size={17} /> : <Save size={17} />}
-          {saved ? "Saved" : "Save recipe"}
-        </Button>
-        <Button type="button" variant="secondary" onClick={onAddToShoppingList}>
-          <ShoppingBasket size={17} />
-          Add to shopping list
-        </Button>
         <Button type="button" variant="secondary" onClick={onToggleHistory}>
           <Clock size={17} />
           View history
@@ -578,12 +588,7 @@ function RecipeResult({
           <Printer size={17} />
           Print
         </Button>
-        <Button type="button" variant="secondary" onClick={onShare}>
-          {canNativeShare ? <Share2 size={17} /> : <Copy size={17} />}
-          Share
-        </Button>
       </div>
-      {shoppingMessage && <p className="text-sm font-extrabold text-[#78bea8]">{shoppingMessage}</p>}
       {historyOpen && (
         <div className="rounded-[24px] border border-[#e9c7b7]/60 bg-[#fffaf6] p-4">
           <p className="font-display text-xl font-black">Generated recipe history</p>
@@ -679,27 +684,55 @@ function IngredientCard({ recipe }: { recipe: Recipe }) {
   );
 }
 
-function StepCard({ title, items, accent }: { title: string; items: string[]; accent?: "mint" | "coral" }) {
+function StepCard({
+  title,
+  items,
+  accent,
+  compact = false
+}: {
+  title: string;
+  items: string[];
+  accent?: "mint" | "coral";
+  compact?: boolean;
+}) {
   return (
     <RecipeTicket className={`rounded-[24px] p-5 ${accent === "coral" ? "bg-[#ffccb2]/58" : accent === "mint" ? "bg-[#e8f4ef]/72" : "bg-[#f7efe9]/62"}`}>
       <p className="font-display text-xl font-black">{title}</p>
-      <ol className="mt-4 grid gap-3 text-sm font-bold leading-6 text-[#5c4a42]">
-        {items.map((item, index) => (
-          <li key={`${title}-${item}`} className="flex gap-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-black text-[#78bea8]">{index + 1}</span>
-            <span className={stepClassName(item)}>{item}</span>
-          </li>
-        ))}
+      <ol className={cn("mt-4 grid font-bold text-[#5c4a42]", compact ? "gap-4 text-[15px] leading-7" : "gap-3 text-sm leading-6")}>
+        {items.map((item, index) => {
+          const step = splitStepLabel(item);
+          return (
+            <li key={`${title}-${item}`} className="flex gap-3">
+              <span className={cn("flex shrink-0 items-center justify-center rounded-full bg-white text-xs font-black text-[#78bea8]", compact ? "h-7 w-7" : "h-6 w-6")}>
+                {index + 1}
+              </span>
+              <span className={cn("min-w-0", step.kind === "baby" && "text-[#315f52]", step.kind === "adult" && "text-[#5c4a42]")}>
+                {step.label && (
+                  <span
+                    className={cn(
+                      "mr-2 inline-flex rounded-full px-2 py-0.5 text-[11px] font-black uppercase tracking-[0.08em]",
+                      step.kind === "baby" ? "bg-[#e8f4ef] text-[#315f52]" : "bg-[#ffccb2]/72 text-[#5c4a42]"
+                    )}
+                  >
+                    {step.label}
+                  </span>
+                )}
+                {step.body}
+              </span>
+            </li>
+          );
+        })}
       </ol>
     </RecipeTicket>
   );
 }
 
-function stepClassName(item: string) {
-  const lower = item.toLowerCase();
-  if (lower.includes("baby portion")) return "rounded-xl bg-[#e8f4ef] px-2 py-1 text-[#315f52]";
-  if (lower.includes("adult finish")) return "rounded-xl bg-[#ffccb2]/70 px-2 py-1 text-[#5c4a42]";
-  return "";
+function splitStepLabel(item: string) {
+  const baby = item.match(/^Baby portion:\s*(.*)$/i);
+  if (baby) return { label: "Baby portion", body: baby[1], kind: "baby" as const };
+  const adult = item.match(/^Adult finish:\s*(.*)$/i);
+  if (adult) return { label: "Adult finish", body: adult[1], kind: "adult" as const };
+  return { label: "", body: item, kind: "base" as const };
 }
 
 function formatQuantity(value: number) {

@@ -176,6 +176,7 @@ export async function POST(request: Request) {
                 "You create Foody Fam recipes for the product promise: One meal, whole family.",
                 "Always design one shared cooking process with a gentle base, a baby portion removed before salt/spice, then adult finishing instructions.",
                 "The main recipe value is ingredients with quantities and one canonical ordered cookingSteps array.",
+                "Return 4-5 cookingSteps only; no duplicate baby/adult wording; no separate repeated instruction lists.",
                 "Do not repeat the same instructions across cookingSteps, steps, babyVersion, and adultVersion.",
                 "cookingSteps and steps must contain the same exact ordered flow: prep/base first, then 'Baby portion:' removal and texture steps, then 'Adult finish:' seasoning steps.",
                 "babyVersion must be a short baby serving summary only, not a repeated step list. adultVersion must be a short adult serving summary only, not a repeated step list.",

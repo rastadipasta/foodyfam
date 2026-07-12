@@ -1,82 +1,81 @@
 import type { Recipe } from "./types";
 
-const babyFallbacks = [
-  "Baby portion: remove the baby's serving before salt, pepper, chili, honey, hard toppings, or strong adult seasoning.",
-  "Baby portion: mash, blend, or cut the serving to match the baby's age and texture stage."
-];
+const unsafeAdultItems = "salt, strong spices, honey, crunchy toppings, or adult garnishes";
 
-const adultFallbacks = [
-  "Adult finish: after the baby portion is separate, season the remaining pan with salt, pepper, herbs, acid, cheese, or gentle heat."
-];
-
-function cleanStep(step: string) {
-  return step.replace(/\s+/g, " ").trim();
+function cleanText(value: string | undefined) {
+  return (value || "").replace(/\s+/g, " ").trim();
 }
 
-function fingerprint(step: string) {
-  return cleanStep(step)
-    .toLowerCase()
-    .replace(/^(prep|base|step|baby version|baby portion|adult version|adult finish):\s*/i, "")
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
+function sentence(value: string, fallback: string) {
+  const cleaned = cleanText(value || fallback);
+  return cleaned.endsWith(".") ? cleaned : `${cleaned}.`;
 }
 
-function uniqueSteps(steps: string[]) {
+function uniqueShortItems(items: string[], max = 5) {
   const seen = new Set<string>();
-  return steps.map(cleanStep).filter((step) => {
-    if (!step) return false;
-    const key = fingerprint(step);
-    if (!key || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+  return items
+    .map(cleanText)
+    .filter(Boolean)
+    .filter((item) => {
+      const key = item.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, max);
 }
 
-function isBabyStep(step: string) {
-  const lower = step.toLowerCase();
-  return lower.includes("baby portion") || lower.includes("baby's") || lower.startsWith("baby ") || lower.includes("baby-safe");
+function ingredientNames(recipe: Recipe) {
+  const details = recipe.ingredientDetails?.map((item) => item.name).filter(Boolean) || [];
+  return uniqueShortItems(details.length ? details : recipe.ingredients || [], 4);
 }
 
-function isAdultStep(step: string) {
-  const lower = step.toLowerCase();
-  return lower.includes("adult finish") || lower.includes("adult portion") || lower.includes("adult pan") || lower.startsWith("adult ") || lower.includes("season with salt");
+function buildPrepStep(recipe: Recipe) {
+  const names = ingredientNames(recipe);
+  if (!names.length) return "Prep the ingredients into soft, baby-safe pieces.";
+  return `Prep ${names.join(", ")} into soft, baby-safe pieces.`;
 }
 
-function withLabel(step: string, label: "Baby portion" | "Adult finish") {
-  const cleaned = cleanStep(step);
-  const lower = cleaned.toLowerCase();
-  if (lower.startsWith(`${label.toLowerCase()}:`)) return cleaned;
-  return `${label}: ${cleaned.replace(/^(baby version|adult version|baby portion|adult finish):\s*/i, "")}`;
+function buildBaseStep(recipe: Recipe) {
+  const time = recipe.time ? ` for about ${recipe.time}` : "";
+  return `Cook the shared base gently${time} until everything is tender and easy to mash.`;
+}
+
+function buildBabyTextureStep(recipe: Recipe) {
+  const texture = recipe.babyTexture || recipe.babyVersion?.[0] || recipe.baby?.[0] || "the selected baby texture";
+  return `Baby portion: mash, blend, or cut the reserved serving to ${cleanText(texture).toLowerCase()}.`;
+}
+
+function buildAdultFinishStep(recipe: Recipe) {
+  const adultFinish = uniqueShortItems([...(recipe.adultVersion || []), ...(recipe.adults || [])], 2)
+    .map((item) => item.replace(/^Adult finish:\s*/i, ""))
+    .join(" ");
+  return sentence(
+    `Adult finish: season the remaining portion with ${adultFinish || "salt, pepper, herbs, lemon, cheese, or gentle heat"} and serve warm`,
+    "Adult finish: season the remaining portion and serve warm."
+  );
 }
 
 export function normalizeRecipeFlow(recipe: Recipe): Recipe {
-  const originalCookingSteps = recipe.cookingSteps?.length ? recipe.cookingSteps : recipe.steps;
-  const prepSteps = uniqueSteps(recipe.prepSteps || []);
-  const baseSteps = uniqueSteps([...(recipe.steps || []), ...(originalCookingSteps || [])].filter((step) => !isBabyStep(step) && !isAdultStep(step)));
-  const babySteps = uniqueSteps([
-    ...(originalCookingSteps || []).filter(isBabyStep),
-    ...(recipe.babyVersion || []),
-    ...(recipe.baby || [])
-  ]).map((step) => withLabel(step, "Baby portion"));
-  const adultSteps = uniqueSteps([
-    ...(originalCookingSteps || []).filter(isAdultStep),
-    ...(recipe.adultVersion || []),
-    ...(recipe.adults || [])
-  ]).map((step) => withLabel(step, "Adult finish"));
-
-  const orderedSteps = uniqueSteps([
-    ...prepSteps,
-    ...baseSteps,
-    ...(babySteps.length ? babySteps : babyFallbacks),
-    ...(adultSteps.length ? adultSteps : adultFallbacks)
-  ]);
+  const cookingSteps = [
+    buildPrepStep(recipe),
+    buildBaseStep(recipe),
+    `Baby portion: remove the baby's serving before adding ${unsafeAdultItems}.`,
+    buildBabyTextureStep(recipe),
+    buildAdultFinishStep(recipe)
+  ];
+  const babyVersion = [
+    `Baby portion: reserved before ${unsafeAdultItems}.`,
+    buildBabyTextureStep(recipe)
+  ];
+  const adultVersion = [buildAdultFinishStep(recipe)];
 
   return {
     ...recipe,
-    prepSteps,
-    cookingSteps: orderedSteps,
-    steps: orderedSteps,
-    babyVersion: babySteps.length ? babySteps : babyFallbacks,
-    adultVersion: adultSteps.length ? adultSteps : adultFallbacks
+    prepSteps: cookingSteps.slice(0, 1),
+    cookingSteps,
+    steps: cookingSteps,
+    babyVersion,
+    adultVersion
   };
 }
