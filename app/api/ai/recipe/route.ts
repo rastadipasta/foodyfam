@@ -146,7 +146,10 @@ export async function POST(request: Request) {
   };
   const matched = findBestRecipeMatch(body);
   const preflight = buildGeneratorPreflight(body, matched?.match);
-  const matchedRecipe = normalizeRecipeFlow(applyBabyNutritionGuardrails(matched ? databaseRecipeToRecipe(matched.recipe, matched.match) : createDemoRecipe(body), body));
+  const matchedRecipe = finalizeRecipeForRequest(
+    normalizeRecipeFlow(applyBabyNutritionGuardrails(matched ? databaseRecipeToRecipe(matched.recipe, matched.match) : createDemoRecipe(body), body)),
+    body
+  );
   const includeGeneratedImage = body.subscriptionStatus === "Premium" || body.subscriptionStatus === "Unlimited";
   const recipeWithPlanImage = (recipe: Recipe) => withPlanRecipeImage(recipe, includeGeneratedImage);
 
@@ -175,6 +178,8 @@ export async function POST(request: Request) {
               [
                 "You create Foody Fam recipes for the product promise: One meal, whole family.",
                 "Always design one shared cooking process with a gentle base, a baby portion removed before salt/spice, then adult finishing instructions.",
+                "The user-provided Ingredients are mandatory and are the source of truth for the final recipe title, ingredientDetails, shoppingList, and cooking flow.",
+                "If the verified database recipe uses different ingredients, use it only as a cooking pattern and adapt it to the user's ingredients instead of returning the database ingredients.",
                 "The main recipe value is ingredients with quantities and one canonical ordered cookingSteps array.",
                 "Return 4-5 cookingSteps only; no duplicate baby/adult wording; no separate repeated instruction lists.",
                 "Do not repeat the same instructions across cookingSteps, steps, babyVersion, and adultVersion.",
@@ -193,6 +198,7 @@ export async function POST(request: Request) {
             role: "user",
             content: [
               `Ingredients: ${body.ingredients || "family pantry"}.`,
+              `Mandatory final ingredient list from the user: ${parseRequestedIngredients(body.ingredients).join(", ") || "not provided"}.`,
               `Pantry items: ${body.pantryItems || "not provided"}.`,
               `Baby profile: ${body.babyProfile || "baby"}; baby age: ${body.babyAge || "8 months"}; texture: ${body.babyTexture || "age-appropriate"}; feeding style: ${body.feedingStyle || "mixed"}.`,
               `Servings: ${body.servings || "4"}. Meal type: ${body.mealType || "dinner"}. Cuisine: ${body.cuisine || "flexible"}.`,
@@ -238,7 +244,10 @@ export async function POST(request: Request) {
         preflight
       });
     }
-    const guardedRecipe = normalizeRecipeFlow(applyBabyNutritionGuardrails({ ...parsed.recipe, image: fallbackRecipeImage, databaseMatch: matched?.match }, body));
+    const guardedRecipe = finalizeRecipeForRequest(
+      normalizeRecipeFlow(applyBabyNutritionGuardrails({ ...parsed.recipe, image: fallbackRecipeImage, databaseMatch: matched?.match }, body)),
+      body
+    );
     return NextResponse.json({
       recipe: await recipeWithPlanImage(guardedRecipe),
       source: "openai",
@@ -279,7 +288,7 @@ async function generateRecipeImage(recipe: Recipe) {
       body: JSON.stringify({
         model: process.env.OPENAI_IMAGE_MODEL || "gpt-image-1-mini",
         prompt: buildRecipeImagePrompt(recipe),
-        size: process.env.OPENAI_IMAGE_SIZE || "512x512",
+        size: resolveOpenAIImageSize(process.env.OPENAI_IMAGE_SIZE),
         quality: process.env.OPENAI_IMAGE_QUALITY || "medium",
         output_format: process.env.OPENAI_IMAGE_FORMAT || "webp",
         output_compression: Number(process.env.OPENAI_IMAGE_COMPRESSION || 80),
@@ -287,7 +296,10 @@ async function generateRecipeImage(recipe: Recipe) {
       })
     });
 
-    if (!response.ok) return null;
+    if (!response.ok) {
+      console.warn("[foody-fam] recipe image generation failed", await response.text().catch(() => "Unknown image API error"));
+      return null;
+    }
     const data = (await response.json()) as { data?: Array<{ b64_json?: string }> };
     const imageBase64 = data.data?.[0]?.b64_json;
     if (!imageBase64) return null;
@@ -303,7 +315,7 @@ function buildRecipeImagePrompt(recipe: Recipe) {
     : recipe.ingredients.slice(0, 8);
 
   return [
-    `Create a square 512x512 food photo of the finished prepared dish for this Foody Fam recipe: ${recipe.title}.`,
+    `Create a square food photo of the finished prepared dish for this Foody Fam recipe: ${recipe.title}.`,
     `The final cooked meal should naturally contain these ingredients: ${ingredients.join(", ")}.`,
     "Show one cohesive, ready-to-eat plated meal in a ceramic bowl or on a plate, with the ingredients cooked together as the finished recipe.",
     "Do not show raw ingredients, separated ingredient piles, a deconstructed plate, prep bowls, shopping ingredients, or multiple unfinished components arranged apart.",
@@ -312,4 +324,77 @@ function buildRecipeImagePrompt(recipe: Recipe) {
     "No text, no logos, no watermark, no people, no hands, no baby, no utensils with sharp edges, no unsafe choking imagery.",
     "The image should look appetizing, realistic, gentle, and suitable for both baby-adapted and adult family meals, but visually it must be one complete finished dish."
   ].join(" ");
+}
+
+function resolveOpenAIImageSize(value?: string) {
+  const allowed = new Set(["1024x1024", "1024x1536", "1536x1024", "auto"]);
+  if (!value || value === "512x512") return "1024x1024";
+  return allowed.has(value) ? value : "1024x1024";
+}
+
+function finalizeRecipeForRequest(recipe: Recipe, input: { ingredients?: string; servings?: string | number }): Recipe {
+  const requestedIngredients = parseRequestedIngredients(input.ingredients);
+  if (!requestedIngredients.length) return recipe;
+
+  const existingNames = new Set(recipe.ingredients.map((item) => item.toLowerCase()));
+  const requestedHits = requestedIngredients.filter((item) => existingNames.has(item.toLowerCase())).length;
+  const shouldRewriteTitle = requestedHits < Math.ceil(requestedIngredients.length / 2);
+  const ingredientDetails = requestedIngredients.map((ingredient, index) => {
+    const existing = recipe.ingredientDetails?.find((item) => item.name.toLowerCase() === ingredient.toLowerCase());
+    return existing || estimateRequestedIngredientDetail(ingredient, index);
+  });
+  const title = shouldRewriteTitle ? `${titleCase(requestedIngredients.slice(0, 2).join(" + "))} Family Meal` : recipe.title;
+
+  return {
+    ...recipe,
+    title,
+    slug: shouldRewriteTitle ? slugify(title) : recipe.slug,
+    description: `A Foody Fam recipe built around ${requestedIngredients.join(", ")} with one shared base, a baby-safe portion, and an adult finish.`,
+    familyPitch: `Cook ${requestedIngredients.slice(0, 4).join(", ")} once, remove the baby's portion before salt or strong seasoning, then finish the adult plates.`,
+    ingredients: requestedIngredients,
+    ingredientDetails,
+    shoppingList: [
+      {
+        category: "Ingredients",
+        items: ingredientDetails.map((item) => `${formatRequestedQuantity(item.quantity)} ${item.unit} ${item.name}`.trim())
+      }
+    ],
+    tags: Array.from(new Set(["User ingredients", ...recipe.tags])).slice(0, 8),
+    servings: Number(input.servings) || recipe.servings
+  };
+}
+
+function parseRequestedIngredients(value?: string) {
+  return (value || "")
+    .split(/[,;\n]+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .filter((item, index, all) => all.findIndex((entry) => entry.toLowerCase() === item.toLowerCase()) === index)
+    .slice(0, 8);
+}
+
+function estimateRequestedIngredientDetail(name: string, index: number) {
+  const lower = name.toLowerCase();
+  const isLiquid = /milk|stock|broth|sauce|water|cream|yogurt/.test(lower);
+  const isSmall = /oil|spice|herb|salt|pepper|lemon|lime|parsley|basil|cilantro/.test(lower);
+  const isCount = /egg|onion|carrot|banana|apple|potato|zucchini|avocado/.test(lower);
+  return {
+    name,
+    quantity: isSmall ? 1 : isLiquid ? 250 : isCount ? Math.min(4, Math.max(1, index + 1)) : index === 0 ? 400 : 220,
+    unit: isSmall ? "tbsp" : isLiquid ? "ml" : isCount ? "piece" : "g",
+    note: "",
+    optional: false
+  };
+}
+
+function formatRequestedQuantity(value: number) {
+  return Number.isInteger(value) ? `${value}` : value.toFixed(1);
+}
+
+function titleCase(value: string) {
+  return value.replace(/\w\S*/g, (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+}
+
+function slugify(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "generated-family-meal";
 }
