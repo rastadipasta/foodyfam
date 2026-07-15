@@ -113,7 +113,7 @@ const trustLogos = ["babycenter", "Good Housekeeping", "Parents", "yahoo!", "For
 
 export function HomePage() {
   const router = useRouter();
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("yearly");
   const visiblePricing = billingCycle === "monthly" ? monthlyPricingPreview : yearlyPricingPreview;
 
   return (
