@@ -61,7 +61,7 @@ export type IngredientDetail = {
 export type SettingsPreferences = {
   measurementSystem: "metric" | "us";
   temperatureUnit: "celsius" | "fahrenheit";
-  subscriptionStatus: "Free" | "Premium" | "Unlimited";
+  subscriptionStatus: "Free" | "Family" | "Unlimited";
   subscriptionState?: "active" | "trialing" | "past_due" | "canceled" | "unpaid";
   billingInterval?: "monthly" | "yearly";
   subscriptionCurrentPeriodEnd?: string;

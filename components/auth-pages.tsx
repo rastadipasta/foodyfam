@@ -9,8 +9,10 @@ import { useForm } from "react-hook-form";
 import type { UseFormRegisterReturn } from "react-hook-form";
 import { z } from "zod";
 import { getPreferredAuthAdapter, type OAuthProvider } from "@/lib/auth-adapter";
+import { formatPlanPrice, pricingPlans, yearlyBillingNote, type PaidPlan, type SubscriptionPlan } from "@/lib/pricing";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadSupabaseSnapshot } from "@/lib/supabase/profile-sync";
+import { trackEvent } from "@/lib/tracking";
 import { useAppStore } from "@/store/useAppStore";
 import { SiteShell } from "./layout";
 import { Button, Card, Field, Pill } from "./ui";
@@ -41,14 +43,10 @@ type LoadingTarget = "password" | OAuthProvider | null;
 type LoginForm = z.infer<typeof loginSchema>;
 type RegisterForm = z.infer<typeof registerSchema>;
 type ForgotForm = z.infer<typeof forgotSchema>;
-type RegistrationPlan = "Free" | "Premium" | "Unlimited";
+type RegistrationPlan = SubscriptionPlan;
 type BillingInterval = "monthly" | "yearly";
 
-const registrationPlans = [
-  { name: "Free" as const, monthly: "€0", yearly: "€0", body: "3 meal generations and baby/adult split instructions." },
-  { name: "Premium" as const, monthly: "€12", yearly: "€8", body: "14 weekly generations, planner, nutrition, and assistant." },
-  { name: "Unlimited" as const, monthly: "€20", yearly: "€13", body: "The complete recipe, shopping, planner, and AI system." }
-];
+const registrationPlans = pricingPlans;
 
 export function AuthPage({ mode }: { mode: AuthMode }) {
   return (
@@ -375,7 +373,7 @@ function RegistrationFlow({
     return () => window.clearInterval(timer);
   }, [resendSeconds]);
 
-  async function openCheckout(selectedPlan: Exclude<RegistrationPlan, "Free">) {
+  async function openCheckout(selectedPlan: PaidPlan) {
     const supabase = getSupabaseBrowserClient();
     const { data } = await supabase!.auth.getSession();
     if (!data.session) throw new Error("Confirm your email before opening checkout.");
@@ -384,6 +382,7 @@ function RegistrationFlow({
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.session.access_token}` },
       body: JSON.stringify({ plan: selectedPlan, interval })
     });
+    trackEvent("checkout_started", { plan: selectedPlan, interval });
     const result = await response.json();
     if (!response.ok || !result.url) throw new Error(result.error || "Could not open checkout.");
     window.location.assign(result.url);
@@ -401,6 +400,7 @@ function RegistrationFlow({
     setLoading("password");
     setError("");
     try {
+      trackEvent("plan_selected", { plan, interval });
       const oauthRegistration = new URL(window.location.href).searchParams.get("oauth") === "1";
       if (oauthRegistration) {
         await finishRegistration();
@@ -408,6 +408,7 @@ function RegistrationFlow({
       }
       if (!draft) throw new Error("Add your account details first.");
       const user = await getPreferredAuthAdapter().signUpWithPassword(draft);
+      trackEvent("signup_started", { plan, interval });
       if (!isSupabaseConfigured()) {
         registerDemoUser(user);
         if (plan === "Free") router.push("/dashboard");
@@ -433,6 +434,7 @@ function RegistrationFlow({
       const supabase = getSupabaseBrowserClient();
       const { data } = await supabase!.auth.getUser();
       if (data.user) hydrateFromSupabaseSnapshot(await loadSupabaseSnapshot(data.user));
+      trackEvent("signup_completed", { plan, interval });
       await finishRegistration();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "That code is not valid. Try again.");
@@ -459,8 +461,8 @@ function RegistrationFlow({
           {registrationPlans.map((item) => (
             <button key={item.name} type="button" onClick={() => setPlan(item.name)} className={`flex min-h-52 flex-col rounded-[24px] border p-5 text-left transition active:scale-[0.99] ${plan === item.name ? "border-[#405f46] bg-[#405f46] text-[#fffaf6] shadow-lg" : "border-[#e9c7b7] bg-[#fffaf6] text-[#243929]"}`}>
               <span className="text-xl font-black">{item.name}</span>
-              <span className="mt-4 text-3xl font-black">{interval === "monthly" ? item.monthly : item.yearly}<small className="ml-1 text-sm">/mo</small></span>
-              {interval === "yearly" && item.name !== "Free" && <span className="mt-1 text-xs font-bold opacity-75">Billed {item.name === "Premium" ? "€96" : "€156"} yearly</span>}
+              <span className="mt-4 text-3xl font-black">{formatPlanPrice(item.name, interval)}<small className="ml-1 text-sm">/mo</small></span>
+              {interval === "yearly" && yearlyBillingNote(item.name) && <span className="mt-1 text-xs font-bold opacity-75">{yearlyBillingNote(item.name)}</span>}
               <span className="mt-4 text-sm font-bold leading-6 opacity-85">{item.body}</span>
             </button>
           ))}

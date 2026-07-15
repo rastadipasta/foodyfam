@@ -5,7 +5,7 @@ import { coreFaqs, faqSchema, pageMetadata, softwareApplicationSchema } from "@/
 export const metadata = pageMetadata({
   title: "Foody Fam Pricing",
   description:
-    "Compare Foody Fam Free, Premium, and Unlimited plans for AI meal generation, weekly planning, recipes, and shopping lists.",
+    "Compare Foody Fam Free, Family, and Unlimited plans for family meal generation, weekly planning, recipes, and shopping lists.",
   path: "/pricing"
 });
 

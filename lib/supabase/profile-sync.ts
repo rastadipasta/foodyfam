@@ -14,6 +14,7 @@ import type {
   ShoppingListItem
 } from "@/lib/types";
 import { getSupabaseBrowserClient } from "./client";
+import { normalizeSubscriptionPlan } from "@/lib/pricing";
 
 export type SupabaseAppSnapshot = {
   authUser: AuthUser;
@@ -413,8 +414,7 @@ function parseBabyStyle(value: unknown): BabyProfile["style"] {
 }
 
 function parseSubscriptionStatus(value: unknown): SettingsPreferences["subscriptionStatus"] {
-  if (value === "Premium" || value === "Unlimited") return value;
-  return "Free";
+  return normalizeSubscriptionPlan(value);
 }
 
 function parseSubscriptionState(value: unknown): SettingsPreferences["subscriptionState"] {

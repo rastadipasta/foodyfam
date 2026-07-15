@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { loadSupabaseSnapshot } from "@/lib/supabase/profile-sync";
+import { trackEvent } from "@/lib/tracking";
 import { useAppStore } from "@/store/useAppStore";
 import { Card } from "./ui";
 
@@ -28,6 +29,7 @@ export function BillingSuccess() {
       const { data: userData } = await supabase!.auth.getUser();
       if (userData.user && active) hydrate(await loadSupabaseSnapshot(userData.user));
       if (active) {
+        trackEvent("checkout_completed");
         setMessage("Subscription ready. Opening your dashboard...");
         window.setTimeout(() => router.replace("/dashboard"), 650);
       }

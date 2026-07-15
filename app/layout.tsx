@@ -28,11 +28,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   applicationName: siteName,
   title: {
-    default: "Foody Fam - AI Meal Planner for One Family Meal",
+    default: "Foody Fam - One Meal, Two Age-Appropriate Plates",
     template: `%s | ${siteName}`
   },
   description:
-    "Foody Fam turns one cooking process into baby-safe portions, adult finishes, shopping lists, and weekly meal plans.",
+    "Foody Fam turns ingredients into one shared family meal with age-aware baby portion timing, adult finishes, shopping lists, and weekly meal plans.",
   keywords: [
     "AI meal planner",
     "baby-safe recipes",
@@ -46,9 +46,9 @@ export const metadata: Metadata = {
     canonical: absoluteUrl("/")
   },
   openGraph: {
-    title: "Foody Fam - One meal, whole family",
+    title: "Foody Fam - One meal, two age-aware plates",
     description:
-      "AI recipes that turn one cooking process into baby-friendly, kid-friendly, and adult-ready meals.",
+      "One shared cooking process with baby portion timing, adult finishing, and calmer family dinners.",
     url: getSiteUrl(),
     siteName,
     type: "website",
@@ -56,9 +56,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Foody Fam - One meal, whole family",
+    title: "Foody Fam - One meal, two age-aware plates",
     description:
-      "AI recipes that turn one cooking process into baby-friendly, kid-friendly, and adult-ready meals.",
+      "One shared cooking process with baby portion timing, adult finishing, and calmer family dinners.",
     images: [absoluteUrl(defaultOgImage)]
   },
   icons: {

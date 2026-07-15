@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getPriceId, getStripe, type BillingInterval, type PaidPlan } from "@/lib/billing";
+import { getPriceId, getStripe } from "@/lib/billing";
+import { normalizeSubscriptionPlan, type BillingInterval, type PaidPlan } from "@/lib/pricing";
 import { getSupabaseAdmin, getUserFromBearer } from "@/lib/supabase/server-admin";
 
 export async function POST(request: Request) {
@@ -7,12 +8,13 @@ export async function POST(request: Request) {
     const user = await getUserFromBearer(request);
     if (!user?.email) return NextResponse.json({ error: "Sign in before choosing a paid plan." }, { status: 401 });
 
-    const body = (await request.json()) as { plan?: PaidPlan; interval?: BillingInterval };
-    if (!["Premium", "Unlimited"].includes(body.plan || "") || !["monthly", "yearly"].includes(body.interval || "")) {
+    const body = (await request.json()) as { plan?: PaidPlan | "Premium"; interval?: BillingInterval };
+    const normalizedPlan = normalizeSubscriptionPlan(body.plan);
+    if (!["Family", "Unlimited"].includes(normalizedPlan) || !["monthly", "yearly"].includes(body.interval || "")) {
       return NextResponse.json({ error: "Choose a valid plan and billing interval." }, { status: 400 });
     }
 
-    const plan = body.plan as PaidPlan;
+    const plan = normalizedPlan as PaidPlan;
     const interval = body.interval as BillingInterval;
     const stripe = getStripe();
     const admin = getSupabaseAdmin();

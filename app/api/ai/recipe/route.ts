@@ -142,7 +142,7 @@ export async function POST(request: Request) {
     avoidIngredients?: string;
     mealType?: string;
     goal?: string;
-    subscriptionStatus?: "Free" | "Premium" | "Unlimited";
+    subscriptionStatus?: "Free" | "Premium" | "Family" | "Unlimited";
   };
   const matched = findBestRecipeMatch(body);
   const preflight = buildGeneratorPreflight(body, matched?.match);
@@ -150,7 +150,7 @@ export async function POST(request: Request) {
     normalizeRecipeFlow(applyBabyNutritionGuardrails(matched ? databaseRecipeToRecipe(matched.recipe, matched.match) : createDemoRecipe(body), body)),
     body
   );
-  const includeGeneratedImage = body.subscriptionStatus === "Premium" || body.subscriptionStatus === "Unlimited";
+  const includeGeneratedImage = body.subscriptionStatus === "Premium" || body.subscriptionStatus === "Family" || body.subscriptionStatus === "Unlimited";
   const recipeWithPlanImage = (recipe: Recipe) => withPlanRecipeImage(recipe, includeGeneratedImage);
 
   if (!process.env.OPENAI_API_KEY) {

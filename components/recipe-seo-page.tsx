@@ -1,11 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import { JsonLd } from "@/components/json-ld";
-import { breadcrumbSchema, recipeSchema } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, recipeSchema } from "@/lib/seo";
 import type { DatabaseRecipe } from "@/lib/types";
 
 export function RecipeSeoPage({ recipe }: { recipe: DatabaseRecipe }) {
   const totalTime = recipe.prepTime + recipe.cookTime;
+  const faqs = [
+    {
+      question: `When do I remove the baby portion for ${recipe.title}?`,
+      answer: "Remove the baby portion before added salt, strong spices, honey, crunchy toppings, or adult finishing ingredients."
+    },
+    {
+      question: `What allergens are tagged for ${recipe.title}?`,
+      answer: recipe.allergens.length ? `Tagged allergens: ${recipe.allergens.join(", ")}. Parents should confirm every ingredient label.` : "No major allergen is tagged in the recipe database, but parents should still confirm every ingredient label."
+    },
+    {
+      question: "Is this recipe medical advice?",
+      answer: "No. Foody Fam provides age-aware cooking guidance. Parents should confirm allergies, readiness, texture, and medical questions with a qualified professional."
+    }
+  ];
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
@@ -16,7 +30,8 @@ export function RecipeSeoPage({ recipe }: { recipe: DatabaseRecipe }) {
             { name: "Recipes", path: "/recipes" },
             { name: recipe.title, path: `/recipes/${recipe.slug}` }
           ]),
-          recipeSchema(recipe)
+          recipeSchema(recipe),
+          faqSchema(faqs)
         ]}
       />
       <nav className="text-sm font-extrabold text-[#5c4a42]/70">
@@ -94,9 +109,16 @@ export function RecipeSeoPage({ recipe }: { recipe: DatabaseRecipe }) {
             <p>Protein: {recipe.nutrition.protein}g</p>
             <p>Iron: {recipe.nutrition.iron}</p>
             <p>Allergens: {recipe.allergens.length ? recipe.allergens.join(", ") : "No major allergen tagged"}</p>
+            <p>No honey under 12 months, no added salt in baby portions, and prepare round or firm foods to reduce choking risk.</p>
             <p>Always confirm suitability for diagnosed allergies or feeding concerns with a qualified professional.</p>
           </div>
         </div>
+      </section>
+
+      <section className="mt-8 rounded-[28px] bg-[#405f46] p-6 text-white sm:p-8">
+        <h2 className="[font-family:Georgia,serif] text-3xl font-normal">Generate a version from your own ingredients</h2>
+        <p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-white/78">Use your pantry, baby age, and allergy notes to create one shared cooking flow with baby portion timing and adult finish.</p>
+        <Link href="/generator" className="mt-5 inline-flex rounded-full bg-white px-6 py-3 text-sm font-black text-[#243929]">Generate tonight&apos;s family meal free</Link>
       </section>
     </main>
   );

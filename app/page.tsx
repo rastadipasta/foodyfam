@@ -3,9 +3,9 @@ import { JsonLd } from "@/components/json-ld";
 import { coreFaqs, faqSchema, organizationSchema, pageMetadata, softwareApplicationSchema, websiteSchema } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "AI Meal Planner for Baby-Safe Family Recipes",
+  title: "One Meal. Two Age-Appropriate Plates.",
   description:
-    "Foody Fam creates one family meal with a baby-safe portion, adult finish, shopping list, and weekly planner.",
+    "Enter ingredients you already have and Foody Fam proposes one shared dinner with baby portion timing, adult finish, shopping list, and weekly planner.",
   path: "/"
 });
 

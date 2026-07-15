@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Baby,
   Check,
@@ -24,6 +25,8 @@ import { Button, Card, Field, GlassActionDock, KitchenLedger, LiquidGlassPanel, 
 import { cn } from "@/lib/utils";
 import { buildGeneratorPreflight } from "@/lib/family-recipe-intelligence";
 import { normalizeRecipeFlow } from "@/lib/recipe-flow";
+import { getPlanLimit } from "@/lib/plan-gating";
+import { trackEvent } from "@/lib/tracking";
 import type { GeneratorPreflight, Recipe } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -86,12 +89,14 @@ export function GeneratorPanel({
   const [saved, setSaved] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [shoppingMessage, setShoppingMessage] = useState("");
+  const [limitMessage, setLimitMessage] = useState("");
   const [shouldScrollToResult, setShouldScrollToResult] = useState(false);
   const resultRef = useRef<HTMLDivElement | null>(null);
   const upsertRecipe = useAppStore((state) => state.upsertRecipe);
   const addGeneratedRecipe = useAppStore((state) => state.addGeneratedRecipe);
   const addRecipeToShoppingList = useAppStore((state) => state.addRecipeToShoppingList);
   const generatedRecipes = useAppStore((state) => state.generatedRecipes);
+  const isAuthenticated = useAppStore((state) => state.isAuthenticated);
   const babyProfiles = useAppStore((state) => state.babyProfiles);
   const preferences = useAppStore((state) => state.familyPreferences);
   const subscriptionStatus = useAppStore((state) => state.settingsPreferences.subscriptionStatus);
@@ -134,8 +139,14 @@ export function GeneratorPanel({
   const currentResult = rawCurrentResult ? normalizeRecipeFlow(rawCurrentResult) : null;
 
   async function submit(values: GeneratorForm) {
+    if (!canGenerateNow(isAuthenticated, subscriptionStatus, generatedRecipes.length)) {
+      setLimitMessage(isAuthenticated ? `Your Free plan includes ${getPlanLimit("Free")}. Upgrade when you are ready to keep generating.` : "You can generate one full recipe before creating a free profile.");
+      return;
+    }
     setLoading(true);
     setSaved(false);
+    setLimitMessage("");
+    trackEvent("generator_started", { plan: subscriptionStatus, anonymous: !isAuthenticated });
     const minimumLoader = new Promise((resolve) => window.setTimeout(resolve, minCookingLoaderMs));
     try {
       const response = await fetch("/api/ai/recipe", {
@@ -148,6 +159,8 @@ export function GeneratorPanel({
       setResult(normalizedRecipe);
       setShouldScrollToResult(true);
       addGeneratedRecipe(createPersistableRecipe(normalizedRecipe));
+      incrementLocalGenerationCount(isAuthenticated);
+      trackEvent("recipe_generated", { plan: subscriptionStatus, source: data.recipe.databaseMatch ? "database" : "generated" });
       setActiveTab("Overview");
       setShoppingMessage("");
       onResult?.(normalizedRecipe);
@@ -182,7 +195,12 @@ export function GeneratorPanel({
 
   function saveResult() {
     if (!currentResult) return;
+    if (!isAuthenticated) {
+      setLimitMessage("Create a free profile to save recipes, keep history, and plan the rest of the week.");
+      return;
+    }
     upsertRecipe(createPersistableRecipe(currentResult), true);
+    trackEvent("recipe_saved", { recipeId: currentResult.id, title: currentResult.title });
     setSaved(true);
   }
 
@@ -323,6 +341,7 @@ export function GeneratorPanel({
             {loading ? "Cooking..." : "Generate family recipe"}
           </Button>
         </GlassActionDock>
+        {limitMessage && <AccountCta message={limitMessage} />}
       </form>
 
       {loading && <SmartGeneratorLoader />}
@@ -348,6 +367,7 @@ export function GeneratorPanel({
               setHistoryOpen(false);
             }}
             shoppingMessage={shoppingMessage}
+            isAuthenticated={isAuthenticated}
           />
         </div>
       )}
@@ -454,7 +474,8 @@ function RecipeResult({
   onToggleHistory,
   generatedRecipes,
   onSelectHistory,
-  shoppingMessage
+  shoppingMessage,
+  isAuthenticated
 }: {
   recipe: Recipe;
   showImage: boolean;
@@ -469,6 +490,7 @@ function RecipeResult({
   generatedRecipes: Recipe[];
   onSelectHistory: (recipe: Recipe) => void;
   shoppingMessage: string;
+  isAuthenticated: boolean;
 }) {
   const cookingSteps = recipe.cookingSteps?.length ? recipe.cookingSteps : recipe.steps;
   const canNativeShare = typeof navigator !== "undefined" && "share" in navigator;
@@ -509,6 +531,7 @@ function RecipeResult({
         <IngredientCard recipe={recipe} />
         <StepCard title="Cooking steps" items={cookingSteps.slice(0, 5)} compact />
       </div>
+      <SafetyDisclaimer />
 
       <div className="flex flex-wrap gap-2 border-t border-[#5c4a42]/10 pt-5">
         {resultTabs.filter((tab) => tab !== "Overview").map((tab) => (
@@ -564,6 +587,11 @@ function RecipeResult({
         </LiquidGlassPanel>
       </div>
 
+      {!isAuthenticated && (
+        <AccountCta message="Want to save this recipe, build a profile, or plan the rest of the week? Create a free profile after your first recipe." />
+      )}
+      <RecipeFeedback recipe={recipe} />
+
       <div className="flex flex-wrap gap-3 border-t border-[#5c4a42]/10 pt-5">
         <Button type="button" variant="secondary" onClick={onToggleHistory}>
           <Clock size={17} />
@@ -610,6 +638,98 @@ function RecipeImageFrame({ recipe }: { recipe: Recipe }) {
         className="object-cover"
         unoptimized={image.startsWith("data:")}
       />
+    </div>
+  );
+}
+
+function AccountCta({ message }: { message: string }) {
+  return (
+    <div className="rounded-[24px] border border-[#eaded5] bg-[#fffaf6] p-4 shadow-[0_16px_34px_rgba(92,74,66,0.06)] sm:flex sm:items-center sm:justify-between sm:gap-4">
+      <p className="text-sm font-extrabold leading-6 text-[#5c4a42]">{message}</p>
+      <div className="mt-3 flex flex-col gap-2 sm:mt-0 sm:flex-row">
+        <Link href="/register"><Button type="button" className="w-full sm:w-auto">Create a free profile</Button></Link>
+        <Link href="/pricing"><Button type="button" variant="secondary" className="w-full sm:w-auto">Plan the week</Button></Link>
+      </div>
+    </div>
+  );
+}
+
+function RecipeFeedback({ recipe }: { recipe: Recipe }) {
+  const [submitted, setSubmitted] = useState(false);
+  const [confusion, setConfusion] = useState("");
+  const [willingness, setWillingness] = useState("€8");
+  const [cooked, setCooked] = useState<boolean | null>(null);
+  const [babyAte, setBabyAte] = useState<boolean | null>(null);
+
+  async function submitFeedback() {
+    await fetch("/api/beta-feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        recipeId: recipe.id,
+        recipeTitle: recipe.title,
+        cooked,
+        babyAte,
+        confusion,
+        willingnessToPay: willingness,
+        consent: true
+      })
+    }).catch(() => undefined);
+    trackEvent("feedback_submitted", { recipeId: recipe.id, cooked, babyAte, willingness });
+    setSubmitted(true);
+  }
+
+  if (submitted) {
+    return (
+      <div className="rounded-[24px] border border-[#dce9e3] bg-[#e8f4ef] p-5 text-sm font-extrabold text-[#315f52]">
+        Thank you. This helps shape Foody Fam around real beta family dinners.
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-[24px] border border-[#eaded5] bg-white p-5">
+      <p className="font-display text-xl font-black">Cooked this recipe?</p>
+      <div className="mt-4 grid gap-3 md:grid-cols-4">
+        <FeedbackToggle label="Did you cook it?" value={cooked} onChange={setCooked} />
+        <FeedbackToggle label="Did baby eat it?" value={babyAte} onChange={setBabyAte} />
+        <label className="grid gap-2 md:col-span-2">
+          <span className="text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]">Would you pay?</span>
+          <Select value={willingness} onChange={(event) => setWillingness(event.target.value)}>
+            <option>€7</option>
+            <option>€10</option>
+            <option>€13</option>
+            <option>Not yet</option>
+          </Select>
+        </label>
+      </div>
+      <Field className="mt-3" value={confusion} onChange={(event) => setConfusion(event.target.value)} placeholder="Was anything confusing?" />
+      <Button type="button" className="mt-3" variant="secondary" onClick={() => void submitFeedback()}>
+        Send feedback
+      </Button>
+    </div>
+  );
+}
+
+function SafetyDisclaimer() {
+  return (
+    <div className="rounded-[24px] border border-[#eaded5] bg-[#fffaf6] p-5 text-sm font-bold leading-6 text-[#5c4a42]">
+      <p className="font-black text-[#243929]">Age-aware guidance, not medical advice.</p>
+      <p className="mt-2">
+        Parents should confirm allergies and individual readiness. Avoid honey under 12 months, keep baby portions without added salt, prepare round or firm foods to reduce choking risk, and check texture and temperature before serving.
+      </p>
+    </div>
+  );
+}
+
+function FeedbackToggle({ label, value, onChange }: { label: string; value: boolean | null; onChange: (value: boolean) => void }) {
+  return (
+    <div>
+      <p className="text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]">{label}</p>
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        <button type="button" className={cn("rounded-full px-3 py-2 text-sm font-black", value === true ? "bg-[#405f46] text-white" : "bg-[#f7efe9] text-[#5c4a42]")} onClick={() => onChange(true)}>Yes</button>
+        <button type="button" className={cn("rounded-full px-3 py-2 text-sm font-black", value === false ? "bg-[#405f46] text-white" : "bg-[#f7efe9] text-[#5c4a42]")} onClick={() => onChange(false)}>No</button>
+      </div>
     </div>
   );
 }
@@ -733,4 +853,18 @@ function createPersistableRecipe(recipe: Recipe): Recipe {
     return recipe;
   }
   return { ...recipe, image: fallbackRecipeImage };
+}
+
+function canGenerateNow(isAuthenticated: boolean, plan: string, generatedCount: number) {
+  if (plan === "Unlimited") return true;
+  if (plan === "Family" || plan === "Premium") return generatedCount < 14;
+  if (isAuthenticated) return generatedCount < 5;
+  if (typeof window === "undefined") return true;
+  return Number(window.localStorage.getItem("foodyfam-anon-generations") || "0") < 1;
+}
+
+function incrementLocalGenerationCount(isAuthenticated: boolean) {
+  if (isAuthenticated || typeof window === "undefined") return;
+  const current = Number(window.localStorage.getItem("foodyfam-anon-generations") || "0");
+  window.localStorage.setItem("foodyfam-anon-generations", String(current + 1));
 }

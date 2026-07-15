@@ -13,6 +13,7 @@ const publicRoutes = [
   "/pricing",
   "/blog",
   "/about",
+  "/experts",
   "/contact",
   "/privacy",
   "/cookies"

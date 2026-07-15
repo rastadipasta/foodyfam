@@ -51,7 +51,7 @@ function GatedDashboardSection({
   feature,
   children
 }: {
-  plan: "Free" | "Premium" | "Unlimited";
+  plan: "Free" | "Family" | "Unlimited";
   feature: PlanFeature;
   children: React.ReactNode;
 }) {

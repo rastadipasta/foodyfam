@@ -21,7 +21,26 @@ type AdminUserRow = {
   created_at: string;
 };
 
-const plans: SettingsPreferences["subscriptionStatus"][] = ["Free", "Premium", "Unlimited"];
+const plans: SettingsPreferences["subscriptionStatus"][] = ["Free", "Family", "Unlimited"];
+
+type BetaFeedbackRow = {
+  id: number;
+  email: string | null;
+  baby_age: string | null;
+  recipe_title: string | null;
+  cooked: boolean | null;
+  baby_ate: boolean | null;
+  confusion: string | null;
+  willingness_to_pay: string | null;
+  created_at: string;
+};
+
+type AdminMetrics = {
+  generated: number;
+  saved: number;
+  signupCompleted: number;
+  feedback: number;
+};
 
 export function AdminPage() {
   const authUser = useAppStore((state) => state.authUser);
@@ -35,6 +54,8 @@ export function AdminPage() {
   const [message, setMessage] = useState("");
   const [query, setQuery] = useState("");
   const [planFilter, setPlanFilter] = useState("All");
+  const [feedback, setFeedback] = useState<BetaFeedbackRow[]>([]);
+  const [metrics, setMetrics] = useState<AdminMetrics>({ generated: 0, saved: 0, signupCompleted: 0, feedback: 0 });
 
   useEffect(() => {
     if (!canAdmin || !isSupabaseConfigured()) return;
@@ -56,6 +77,20 @@ export function AdminPage() {
     } else {
       setUsers((data || []) as AdminUserRow[]);
     }
+    const { data: eventRows } = await supabase.from("analytics_events").select("event_name").limit(1000);
+    const { data: feedbackRows } = await supabase
+      .from("beta_feedback")
+      .select("id,email,baby_age,recipe_title,cooked,baby_ate,confusion,willingness_to_pay,created_at")
+      .order("created_at", { ascending: false })
+      .limit(25);
+    const eventNames = (eventRows || []).map((row) => row.event_name as string);
+    setFeedback((feedbackRows || []) as BetaFeedbackRow[]);
+    setMetrics({
+      generated: eventNames.filter((name) => name === "recipe_generated").length,
+      saved: eventNames.filter((name) => name === "recipe_saved").length,
+      signupCompleted: eventNames.filter((name) => name === "signup_completed").length,
+      feedback: (feedbackRows || []).length
+    });
     setLoading(false);
   }
 
@@ -124,12 +159,31 @@ export function AdminPage() {
           <p className="mt-1 font-display text-4xl font-black">{users.length}</p>
         </Card>
         <Card className="!rounded-[28px]">
-          <p className="text-sm font-black uppercase tracking-[0.14em] text-[#5c4a42]/70">Premium+</p>
+          <p className="text-sm font-black uppercase tracking-[0.14em] text-[#5c4a42]/70">Family+</p>
           <p className="mt-1 font-display text-4xl font-black">{users.filter((user) => user.subscription_status !== "Free").length}</p>
         </Card>
         <Card className="!rounded-[28px]">
           <p className="text-sm font-black uppercase tracking-[0.14em] text-[#5c4a42]/70">Admins</p>
           <p className="mt-1 font-display text-4xl font-black">{users.filter((user) => user.role === "admin").length}</p>
+        </Card>
+      </div>
+
+      <div className="mt-4 grid gap-4 md:grid-cols-4">
+        <Card className="!rounded-[24px]">
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]/70">Recipes generated</p>
+          <p className="mt-1 font-display text-3xl font-black">{metrics.generated}</p>
+        </Card>
+        <Card className="!rounded-[24px]">
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]/70">Recipes saved</p>
+          <p className="mt-1 font-display text-3xl font-black">{metrics.saved}</p>
+        </Card>
+        <Card className="!rounded-[24px]">
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]/70">First recipe to account</p>
+          <p className="mt-1 font-display text-3xl font-black">{metrics.generated ? Math.round((metrics.signupCompleted / metrics.generated) * 100) : 0}%</p>
+        </Card>
+        <Card className="!rounded-[24px]">
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-[#5c4a42]/70">Beta feedback</p>
+          <p className="mt-1 font-display text-3xl font-black">{metrics.feedback}</p>
         </Card>
       </div>
 
@@ -215,6 +269,26 @@ export function AdminPage() {
               Supabase is not configured locally, so live account rows cannot load here yet. Add Supabase env vars and apply the migrations to activate this panel.
             </p>
           )}
+        </div>
+      </Card>
+
+      <Card className="mt-8">
+        <h2 className="font-display text-3xl font-black text-[#243929]">Beta insights</h2>
+        <div className="mt-5 grid gap-3">
+          {feedback.map((item) => (
+            <article key={item.id} className="rounded-[22px] bg-[#fffaf6] p-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <Pill>{item.recipe_title || "Beta signup"}</Pill>
+                {item.baby_age && <Pill>{item.baby_age}</Pill>}
+                {item.willingness_to_pay && <Pill>{item.willingness_to_pay}</Pill>}
+              </div>
+              <p className="mt-3 text-sm font-bold leading-6 text-[#5c4a42]">{item.confusion || "No confusion note."}</p>
+              <p className="mt-2 text-xs font-black uppercase tracking-[0.12em] text-[#5c4a42]/60">
+                Cooked: {item.cooked === null ? "n/a" : item.cooked ? "yes" : "no"} / Baby ate: {item.baby_ate === null ? "n/a" : item.baby_ate ? "yes" : "no"} / {item.email || "No email"}
+              </p>
+            </article>
+          ))}
+          {!feedback.length && <p className="text-sm font-bold text-[#5c4a42]">No beta feedback yet.</p>}
         </div>
       </Card>
     </main>

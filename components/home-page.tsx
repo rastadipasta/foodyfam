@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -13,21 +12,20 @@ import {
   Leaf,
   Salad,
   Sparkles,
-  Star,
   Timer,
   Utensils
 } from "lucide-react";
 import { SiteShell } from "./layout";
 import { Button, Pill, SectionShell } from "./ui";
 import { GeneratorPanel } from "./generator-panel";
-import { testimonials } from "@/lib/data";
 import { Reveal } from "./motion";
+import { formatPlanPrice, pricingPlans, yearlyBillingNote } from "@/lib/pricing";
 
 const heroBenefits = [
-  { icon: Baby, label: "Baby-safe", detail: "from 6+ months" },
-  { icon: Sparkles, label: "AI-powered", detail: "adaptations" },
+  { icon: Baby, label: "Age-aware", detail: "from 6+ months" },
+  { icon: Sparkles, label: "Guided", detail: "adaptations" },
   { icon: Timer, label: "Save time,", detail: "eat together" },
-  { icon: Heart, label: "Loved by", detail: "10k+ families" }
+  { icon: Heart, label: "Built for", detail: "beta families" }
 ];
 
 const workflowSteps = [
@@ -54,67 +52,15 @@ const workflowSteps = [
   }
 ];
 
-const euro = "\u20ac";
-
-const yearlyPricingPreview = [
-  {
-    name: "Free",
-    price: `${euro}0`,
-    detail: "",
-    body: "Try the Foody Fam workflow with a small, useful starter plan.",
-    features: ["3 meal generations", "Basic AI meal result", "Baby/adult split instructions"],
-    cta: "Start free"
-  },
-  {
-    name: "Premium",
-    price: `${euro}8`,
-    detail: "/ month",
-    body: "For families who want planning and AI help, without the full recipe library or shopping list.",
-    features: ["14 meal generations per week", "Meal planner access", "Nutrition insights", "AI assistant"],
-    cta: "Upgrade to Premium"
-  },
-  {
-    name: "Unlimited",
-    price: `${euro}13`,
-    detail: "/ month",
-    body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
-    features: ["Unlimited meal generations", "Full verified recipe library", "Shopping list and pantry matching", "Priority AI assistant"],
-    cta: "Go Unlimited"
-  }
+const betaInsights = [
+  "Parents want one dinner flow, not separate baby cooking.",
+  "Baby portion timing matters more than fancy recipe copy.",
+  "Shopping and leftovers become valuable after the first recipe."
 ];
-
-const monthlyPricingPreview = [
-  {
-    name: "Free",
-    price: `${euro}0`,
-    detail: "",
-    body: "Try the Foody Fam workflow with a small, useful starter plan.",
-    features: ["3 meal generations", "Basic AI meal result", "Baby/adult split instructions"],
-    cta: "Start free"
-  },
-  {
-    name: "Premium",
-    price: `${euro}12`,
-    detail: "/ month",
-    body: "For families who want planning and AI help, without the full recipe library or shopping list.",
-    features: ["14 meal generations per week", "Meal planner access", "Nutrition insights", "AI assistant"],
-    cta: "Upgrade to Premium"
-  },
-  {
-    name: "Unlimited",
-    price: `${euro}20`,
-    detail: "/ month",
-    body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
-    features: ["Unlimited meal generations", "Full verified recipe library", "Shopping list and pantry matching", "Priority AI assistant"],
-    cta: "Go Unlimited"
-  }
-];
-const trustLogos = ["babycenter", "Good Housekeeping", "Parents", "yahoo!", "Forbes", "TODAY"];
 
 export function HomePage() {
-  const router = useRouter();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("yearly");
-  const visiblePricing = billingCycle === "monthly" ? monthlyPricingPreview : yearlyPricingPreview;
+  const visiblePricing = pricingPlans;
 
   return (
     <SiteShell>
@@ -129,22 +75,22 @@ export function HomePage() {
             >
               <Pill className="border-[#e9c7b7] bg-white px-5 py-2 text-[11px] uppercase tracking-[0.16em]">
                 <Sparkles size={13} className="mr-2 text-[#5c4a42]" />
-                AI meal planner for real families
+                Family meal planner for early beta families
               </Pill>
               <h1
                 className="mt-8 max-w-3xl text-[clamp(3.75rem,14vw,6.875rem)] font-normal leading-[0.86] tracking-[-0.045em] text-[#243929]"
                 style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
               >
-                One meal,<br /><span className="whitespace-nowrap">whole family.</span>
+                One meal.<br /><span className="whitespace-nowrap">Two age-aware plates.</span>
               </h1>
               <p className="mt-7 max-w-lg text-lg font-semibold leading-8 text-[#5c4a42]">
-                Foody Fam turns the ingredients you have into one shared meal with baby-safe adaptation and adult finishing.
+                Enter ingredients you already have. Foody Fam proposes one shared dinner, when to remove the baby portion, and how to finish the adult plate.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href="/generator">
                   <Button className="min-h-14 bg-[#405f46] px-7 text-white shadow-[0_18px_38px_rgba(64,95,70,0.24)] hover:bg-[#314b37]">
                     <Sparkles size={18} />
-                    Generate today&apos;s meal
+                    Generate tonight&apos;s family meal free
                   </Button>
                 </Link>
                 <Link href="/pricing">
@@ -200,7 +146,7 @@ export function HomePage() {
         </section>
 
         <SectionShell className="-mt-2 pb-8 pt-8 sm:-mt-4">
-          <GeneratorPanel variant="homepage" onResult={() => router.push("/dashboard/generator")} />
+          <GeneratorPanel variant="homepage" />
         </SectionShell>
 
         <SectionShell id="how" className="py-12">
@@ -231,30 +177,30 @@ export function HomePage() {
         <SectionShell className="py-12">
           <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
             <section>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#78bea8]">Loved by families</p>
-              <h2 className="mt-3 [font-family:Georgia,serif] text-4xl font-normal tracking-[-0.03em] text-[#243929] sm:text-5xl">Real families, real results</h2>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#78bea8]">Early beta notes</p>
+              <h2 className="mt-3 [font-family:Georgia,serif] text-4xl font-normal tracking-[-0.03em] text-[#243929] sm:text-5xl">Built around real dinner friction</h2>
               <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                {testimonials.slice(0, 3).map((quote, index) => (
+                {betaInsights.map((quote, index) => (
                   <article key={quote} className="rounded-[22px] border border-[#eaded5] bg-white p-5 shadow-[0_16px_38px_rgba(92,74,66,0.07)]">
-                    <div className="flex gap-1 text-[#f8bd2e]">
-                      {Array.from({ length: 5 }).map((_, star) => <Star key={star} size={14} fill="currentColor" />)}
+                    <div className="flex gap-1 text-[#78bea8]">
+                      <Check size={16} />
                     </div>
-                    <p className="mt-4 text-sm font-bold leading-6 text-[#5c4a42]">&quot;{quote}&quot;</p>
+                    <p className="mt-4 text-sm font-bold leading-6 text-[#5c4a42]">{quote}</p>
                     <div className="mt-5 flex items-center gap-3">
                       <span className="grid h-10 w-10 place-items-center rounded-full bg-[#ffccb2] text-sm font-black text-[#5c4a42]">
                         {["S", "J", "P"][index]}
                       </span>
                       <div>
-                        <p className="text-sm font-black text-[#243929]">{["Sarah K.", "James T.", "Priya M."][index]}</p>
-                        <p className="text-xs font-bold text-[#5c4a42]/66">{["Mom of 1", "Dad of 2", "Mom of 2"][index]}</p>
+                        <p className="text-sm font-black text-[#243929]">{["Beta need", "Safety cue", "Planning signal"][index]}</p>
+                        <p className="text-xs font-bold text-[#5c4a42]/66">Product research</p>
                       </div>
                     </div>
                   </article>
                 ))}
               </div>
-              <p className="mt-8 text-sm font-bold text-[#5c4a42]/72">Trusted by 10,000+ families worldwide</p>
-              <div className="mt-4 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm font-black text-[#5c4a42]/62">
-                {trustLogos.map((logo) => <span key={logo}>{logo}</span>)}
+              <p className="mt-8 text-sm font-bold text-[#5c4a42]/72">Built for early beta families who want less duplicate cooking.</p>
+              <div className="mt-4 flex flex-wrap items-center gap-2 text-sm font-black text-[#5c4a42]/70">
+                {["Age-aware guidance", "Parent confirms allergies", "Baby portion first", "Adult finish last"].map((item) => <Pill key={item} className="bg-white">{item}</Pill>)}
               </div>
             </section>
 
@@ -280,7 +226,7 @@ export function HomePage() {
               </div>
               <div className="grid gap-4 md:grid-cols-3">
                 {visiblePricing.map((plan) => {
-                  const featured = billingCycle === "monthly" ? plan.name === "Premium" : plan.name === "Unlimited";
+                  const featured = billingCycle === "monthly" ? plan.name === "Family" : plan.name === "Unlimited";
 
                   return (
                   <article
@@ -290,9 +236,10 @@ export function HomePage() {
                     {featured && <span className="absolute -top-3 right-4 rounded-full bg-[#fffaf6] px-3 py-1 text-[10px] font-black text-[#405f46] shadow-sm">Most popular</span>}
                     <h3 className={`text-lg font-black ${featured ? "text-white" : "text-[#243929]"}`}>{plan.name}</h3>
                     <div className="mt-4 flex items-end gap-1">
-                      <span className={`text-4xl font-black ${featured ? "text-white" : "text-[#243929]"}`}>{plan.price}</span>
-                      <span className={`pb-1 text-xs font-bold ${featured ? "text-white/72" : "text-[#5c4a42]/66"}`}>{plan.detail}</span>
+                      <span className={`text-4xl font-black ${featured ? "text-white" : "text-[#243929]"}`}>{formatPlanPrice(plan.name, billingCycle)}</span>
+                      <span className={`pb-1 text-xs font-bold ${featured ? "text-white/72" : "text-[#5c4a42]/66"}`}>{plan.cadence}</span>
                     </div>
+                    {billingCycle === "yearly" && yearlyBillingNote(plan.name) && <p className={`mt-2 text-xs font-black ${featured ? "text-white/72" : "text-[#78bea8]"}`}>{yearlyBillingNote(plan.name)}</p>}
                     <p className={`mt-3 min-h-10 text-sm font-bold leading-5 ${featured ? "text-white/78" : "text-[#5c4a42]/76"}`}>{plan.body}</p>
                     <ul className="mt-5 grid gap-2">
                       {plan.features.map((feature) => (

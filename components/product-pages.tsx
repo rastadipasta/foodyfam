@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import type { FormEvent } from "react";
 import { useRef, useState } from "react";
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { CalendarPlus, Check, Clock, Download, Heart, Mail, Plus, Search, Send, ShoppingBasket, Sparkles, Trash2, X } from "lucide-react";
@@ -23,6 +24,8 @@ import { RecipeShowcase } from "./recipe-showcase";
 import { demoRecipes, pagePhotos } from "@/lib/data";
 import { databaseRecipes, databaseRecipeToRecipe } from "@/lib/recipe-database";
 import { seoGuides } from "@/lib/seo-content";
+import { formatPlanPrice, pricingPlans, yearlyBillingNote } from "@/lib/pricing";
+import { trackEvent } from "@/lib/tracking";
 import type { BabyProfile, FamilyMember, FamilyPreferences, MealPlanDay, MealSlotType, Recipe, RecipeDatabaseMatch } from "@/lib/types";
 import { useAppStore } from "@/store/useAppStore";
 import { FloatingPhoto, MetricCard, Reveal } from "./motion";
@@ -58,8 +61,6 @@ export function SimpleMarketingPage({ type }: { type: "pricing" | "blog" | "abou
 }
 
 export function GeneratorPage() {
-  const router = useRouter();
-
   return (
     <SiteShell>
       <main className="app-page">
@@ -70,7 +71,7 @@ export function GeneratorPage() {
             title="Build one family meal"
             body="Start with ingredients, then let Foody Fam split the same cooking flow into a baby portion and an adult finish."
           />
-          <GeneratorPanel onResult={() => router.push("/dashboard/generator")} />
+          <GeneratorPanel />
           <SeoCopySection
             title="AI recipe generation for one family meal"
             body="Foody Fam is built for parents who want one meal for babies and adults. The generator starts with ingredients, family profiles, baby age, allergy notes, and a verified recipe base, then returns ingredient quantities and steps that show exactly when to remove the baby portion and when to finish the adult plate."
@@ -1154,51 +1155,7 @@ function NutritionCharts() {
 
 function Pricing() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
-  const euro = "\u20ac";
-  const plans = [
-    {
-      name: "Free",
-      monthlyPrice: `${euro}0`,
-      yearlyPrice: `${euro}0`,
-      cadence: "Forever",
-      body: "Try the Foody Fam workflow with a small, useful starter plan.",
-      cta: "Start free",
-      variant: "secondary" as const,
-      points: ["3 meal generations", "Basic AI meal result", "Baby/adult split instructions", "Local demo profile setup"],
-      limits: ["Limited generation history"]
-    },
-    {
-      name: "Premium",
-      monthlyPrice: `${euro}12`,
-      yearlyPrice: `${euro}8`,
-      cadence: "/ month",
-      yearlyNote: `Billed ${euro}96 yearly`,
-      body: "For families who want planning and AI help, without the full recipe library or shopping list.",
-      cta: "Upgrade to Premium",
-      variant: "secondary" as const,
-      points: ["14 meal generations per week", "Meal planner access", "Nutrition insights", "AI assistant"],
-      limits: ["No recipe library access", "No shopping list"]
-    },
-    {
-      name: "Unlimited",
-      monthlyPrice: `${euro}20`,
-      yearlyPrice: `${euro}13`,
-      cadence: "/ month",
-      yearlyNote: `Billed ${euro}156 yearly`,
-      body: "Everything: generator, verified recipes, planner, pantry, shopping list, nutrition, assistant, saving and sharing.",
-      cta: "Go Unlimited",
-      variant: "secondary" as const,
-      points: [
-        "Unlimited meal generations",
-        "Full verified recipe library",
-        "Shopping list and pantry matching",
-        "Meal planner and saved recipes",
-        "PDF, print, and share tools",
-        "Priority AI assistant"
-      ],
-      limits: []
-    }
-  ];
+  const plans = pricingPlans;
 
   return (
     <div className="-m-4 bg-[#fffaf6] px-4 pb-10 pt-2 sm:-m-6 sm:px-6 lg:-m-8 lg:px-8">
@@ -1239,7 +1196,7 @@ function Pricing() {
 
           <div className="grid items-stretch gap-6 lg:grid-cols-3">
             {plans.map((plan) => {
-              const featured = billingCycle === "monthly" ? plan.name === "Premium" : plan.name === "Unlimited";
+              const featured = billingCycle === "monthly" ? plan.name === "Family" : plan.name === "Unlimited";
 
               return (
                 <article
@@ -1259,17 +1216,17 @@ function Pricing() {
                   <h2 className={`font-display text-3xl font-black ${featured ? "text-white" : "text-[#243929]"}`}>{plan.name}</h2>
                   <div className="mt-8 flex items-end gap-2">
                     <p className={`text-5xl font-black tracking-[-0.04em] ${featured ? "text-white" : "text-[#243929]"}`}>
-                      {billingCycle === "monthly" ? plan.monthlyPrice : plan.yearlyPrice}
+                      {formatPlanPrice(plan.name, billingCycle)}
                     </p>
                     <span className={`pb-2 text-sm font-black ${featured ? "text-white/72" : "text-[#5c4a42]/70"}`}>{plan.cadence}</span>
                   </div>
-                  {billingCycle === "yearly" && plan.yearlyNote && (
-                    <p className={`mt-2 text-sm font-extrabold ${featured ? "text-white/72" : "text-[#78bea8]"}`}>{plan.yearlyNote}</p>
+                  {billingCycle === "yearly" && yearlyBillingNote(plan.name) && (
+                    <p className={`mt-2 text-sm font-extrabold ${featured ? "text-white/72" : "text-[#78bea8]"}`}>{yearlyBillingNote(plan.name)}</p>
                   )}
                   <p className={`mt-8 min-h-28 text-base font-extrabold leading-8 ${featured ? "text-white/80" : "text-[#5c4a42]"}`}>{plan.body}</p>
                 </div>
                 <ul className="mt-7 grid gap-4">
-                  {plan.points.map((point) => (
+                  {plan.features.map((point) => (
                     <li key={point} className={`flex gap-3 text-base font-bold leading-7 ${featured ? "text-white/90" : "text-[#3d3632]"}`}>
                       <Check className={`mt-1 shrink-0 ${featured ? "text-[#ffccb2]" : "text-[#78bea8]"}`} size={18} />
                       <span>{point}</span>
@@ -1290,7 +1247,7 @@ function Pricing() {
                   </div>
                 )}
                 <Link href="/register" className="mt-auto block pt-8">
-                  <Button className={`min-h-14 w-full translate-y-0 text-base ${featured ? "border-white/20 bg-white text-[#243929] hover:bg-[#fffaf6]" : "bg-[#fffaf6] text-[#243929]"}`} variant={plan.variant}>
+                  <Button className={`min-h-14 w-full translate-y-0 text-base ${featured ? "border-white/20 bg-white text-[#243929] hover:bg-[#fffaf6]" : "bg-[#fffaf6] text-[#243929]"}`} variant="secondary">
                     {plan.cta}
                   </Button>
                 </Link>
@@ -1335,7 +1292,66 @@ function About() {
         <Pill className="mb-5 bg-[#e8f4ef]">Designed around real families</Pill>
         <p className="text-lg font-bold leading-8 text-[#5c4a42]">Foody Fam turns one shared cooking process into safe, age-aware plates for babies, kids, and adults. The product is intentionally centered on reducing duplicate cooking, duplicate planning, and duplicate grocery lists.</p>
       </Card>
+      <BetaSignupCard />
     </div>
+  );
+}
+
+function BetaSignupCard() {
+  const [form, setForm] = useState({
+    email: "",
+    babyAge: "",
+    cookingFrequency: "",
+    biggestDinnerProblem: "",
+    consent: false
+  });
+  const [message, setMessage] = useState("");
+
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    setMessage("Saving...");
+    const response = await fetch("/api/beta-feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form)
+    });
+    if (response.ok) {
+      trackEvent("feedback_submitted", { source: "beta_signup", babyAge: form.babyAge });
+      setMessage("Thanks. You are on the beta feedback list.");
+      setForm({ email: "", babyAge: "", cookingFrequency: "", biggestDinnerProblem: "", consent: false });
+    } else {
+      setMessage("Could not save yet. Please try again.");
+    }
+  }
+
+  return (
+    <Card className="max-w-4xl !rounded-[30px] !bg-white">
+      <Pill className="mb-5 bg-[#e8f4ef]">Early beta families</Pill>
+      <h2 className="[font-family:Georgia,serif] text-3xl font-normal tracking-[-0.03em] text-[#243929]">Help shape calmer family dinners</h2>
+      <p className="mt-3 font-bold leading-7 text-[#5c4a42]">Share how dinner works in your home. We use this to improve recipes, safety notes, and first-use flow.</p>
+      <form className="mt-5 grid gap-3" onSubmit={(event) => void submit(event)}>
+        <div className="grid gap-3 md:grid-cols-3">
+          <Field aria-label="Email" placeholder="Email for follow-up" value={form.email} onChange={(event) => setForm((value) => ({ ...value, email: event.target.value }))} />
+          <Field aria-label="Baby age" placeholder="Baby age" value={form.babyAge} onChange={(event) => setForm((value) => ({ ...value, babyAge: event.target.value }))} />
+          <Select aria-label="Cooking frequency" value={form.cookingFrequency} onChange={(event) => setForm((value) => ({ ...value, cookingFrequency: event.target.value }))}>
+            <option value="">Cooking frequency</option>
+            <option>Most nights</option>
+            <option>3-4 times per week</option>
+            <option>1-2 times per week</option>
+            <option>Mostly batch cooking</option>
+          </Select>
+        </div>
+        <TextArea aria-label="Biggest dinner problem" placeholder="Biggest dinner problem" value={form.biggestDinnerProblem} onChange={(event) => setForm((value) => ({ ...value, biggestDinnerProblem: event.target.value }))} />
+        <label className="flex gap-3 text-sm font-bold leading-6 text-[#5c4a42]">
+          <input type="checkbox" className="mt-1 h-4 w-4 accent-[#405f46]" checked={form.consent} onChange={(event) => setForm((value) => ({ ...value, consent: event.target.checked }))} />
+          I consent to follow-up about Foody Fam beta research.
+        </label>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Button type="submit" disabled={!form.consent}>Join beta feedback</Button>
+          {message && <p className="text-sm font-extrabold text-[#437967]">{message}</p>}
+        </div>
+      </form>
+    </Card>
   );
 }
 

@@ -138,6 +138,45 @@ export const seoGuides: SeoGuide[] = [
       { question: "Is the full recipe database stored in Supabase?", answer: "No. The recipe database stays local; Supabase stores user state and saved/generated recipe snapshots." }
     ],
     links: [{ label: "Recipe library", href: "/recipes" }, { label: "Generator", href: "/generator" }]
+  },
+  {
+    slug: "baby-friendly-chicken-recipes",
+    title: "Baby-Friendly Chicken Recipes",
+    description: "How to cook chicken once for a baby portion and an adult family plate.",
+    summary:
+      "Baby-friendly chicken recipes work best when chicken is cooked tender in a mild base, the baby portion is shredded, mashed, or blended before seasoning, and adults finish the remaining portion with herbs, acidity, or spice.",
+    steps: ["Cook chicken until fully tender.", "Remove a salt-free baby portion.", "Shred, mash, or blend to the right texture.", "Season the adult portion after the baby serving is separate."],
+    faqs: [
+      { question: "Can babies eat chicken from a family dinner?", answer: "Often yes when it is fully cooked, tender, age-appropriate in texture, and free from added salt in the baby portion." },
+      { question: "What adult finishes work with chicken?", answer: "Adults can add lemon, herbs, pepper, parmesan, chili, or sauces after the baby portion is removed." }
+    ],
+    links: [{ label: "Generate chicken dinner", href: "/generator" }, { label: "Recipe library", href: "/recipes" }]
+  },
+  {
+    slug: "no-salt-family-recipes",
+    title: "No-Salt Family Recipes",
+    description: "How to keep baby portions salt-free without making adult food bland.",
+    summary:
+      "No-salt family recipes start with a flavorful but unsalted base. The baby portion is removed first, then adults add salt, cheese, sauces, or strong seasoning at the end.",
+    steps: ["Use aromatics, vegetables, and gentle herbs in the shared base.", "Remove the baby portion before salty ingredients.", "Add adult salt and finishers separately.", "Label leftovers so baby portions stay salt-free."],
+    faqs: [
+      { question: "Do adults have to eat unsalted food?", answer: "No. Adults can season after the baby portion is separate." },
+      { question: "What should parents check?", answer: "Check packaged stock, cheese, sauces, and processed ingredients because salt can hide there." }
+    ],
+    links: [{ label: "Try the generator", href: "/generator" }, { label: "Safety foundation", href: "/experts" }]
+  },
+  {
+    slug: "chicken-and-rice-for-baby-and-family",
+    title: "What Can I Cook With Chicken and Rice for My Baby?",
+    description: "A simple chicken and rice family meal framework with baby portion timing.",
+    summary:
+      "Chicken and rice can become one shared family meal when rice and chicken are cooked soft, vegetables are added for moisture, the baby portion is removed before seasoning, and adults finish with brighter flavor.",
+    steps: ["Cook rice, chicken, and vegetables until soft.", "Remove the baby portion before salt or strong sauces.", "Mash or blend with liquid for younger babies.", "Finish adult plates with herbs, pepper, lemon, or parmesan."],
+    faqs: [
+      { question: "Is chicken and rice a good baby-family base?", answer: "It can be practical because it cooks soft and can be mashed, blended, or served as soft pieces depending on age." },
+      { question: "What vegetables work well?", answer: "Carrot, broccoli, peas, zucchini, sweet potato, and spinach can work when cooked soft and prepared safely." }
+    ],
+    links: [{ label: "Chicken broccoli risotto", href: "/recipes/chicken-broccoli-risotto" }, { label: "Generate from ingredients", href: "/generator" }]
   }
 ];
 

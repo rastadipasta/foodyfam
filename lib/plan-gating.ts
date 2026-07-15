@@ -34,7 +34,7 @@ const access: Record<SubscriptionPlan, Record<PlanFeature, boolean>> = {
     assistant: false,
     unlimitedGenerationHistory: false
   },
-  Premium: {
+  Family: {
     generatedImages: true,
     recipeLibrary: false,
     savedRecipes: true,
@@ -64,11 +64,11 @@ export function getUpgradeTarget(feature: PlanFeature): SubscriptionPlan {
   if (feature === "recipeLibrary" || feature === "shoppingList" || feature === "unlimitedGenerationHistory") {
     return "Unlimited";
   }
-  return "Premium";
+  return "Family";
 }
 
 export function getPlanLimit(plan: SubscriptionPlan) {
-  if (plan === "Free") return "3 meal generations";
-  if (plan === "Premium") return "14 meal generations per week";
+  if (plan === "Free") return "5 full recipes";
+  if (plan === "Family") return "14 meal generations per week";
   return "Unlimited meal generations";
 }

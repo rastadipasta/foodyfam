@@ -19,7 +19,8 @@ const nav = [
   { href: "/recipes", label: "Recipes" },
   { href: "/planner", label: "Meal Planner" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/about", label: "About us" }
+  { href: "/about", label: "About us" },
+  { href: "/experts", label: "Safety" }
 ];
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
@@ -247,6 +248,7 @@ export function Footer() {
       title: "Company",
       links: [
         ["About us", "/about"],
+        ["Safety foundation", "/experts"],
         ["Blog", "/blog"],
         ["Contact", "/contact"],
         ["Generator", "/generator"]
@@ -272,7 +274,7 @@ export function Footer() {
             <Image src="/brand/logo.png" alt="Foody Fam" width={142} height={70} className="mb-4 h-16 w-auto object-contain" />
             <p className="[font-family:Georgia,serif] max-w-xs text-3xl font-normal leading-none tracking-[-0.03em] text-[#243929]">One meal, whole family.</p>
             <p className="mt-4 max-w-sm text-sm font-semibold leading-6 text-[#5c4a42]">
-              AI meals that keep baby portions, adult finishes, and shopping lists in one calm flow.
+              One shared family meal with baby portion timing, adult finishes, and shopping lists in one calm flow.
             </p>
             <div className="mt-5 flex gap-3">
               <Link href="/contact" aria-label="Instagram" className="grid h-11 w-11 place-items-center rounded-full border border-[#eaded5] bg-[#fffaf6] text-[#5c4a42] shadow-sm transition hover:bg-[#ffccb2]/70 hover:text-[#243929]">

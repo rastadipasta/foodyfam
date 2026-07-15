@@ -92,11 +92,11 @@ export function softwareApplicationSchema(path = "/") {
     operatingSystem: "Web",
     url: absoluteUrl(path),
     description:
-      "Foody Fam is an AI meal planner that turns one family cooking process into baby-safe portions, adult finishes, shopping lists, and weekly plans.",
+      "Foody Fam turns ingredients into one shared family meal with age-aware baby portion timing, adult finishes, shopping lists, and weekly plans.",
     offers: [
-      { "@type": "Offer", name: "Free", price: "0", priceCurrency: "USD" },
-      { "@type": "Offer", name: "Premium", price: "12", priceCurrency: "USD" },
-      { "@type": "Offer", name: "Unlimited", price: "20", priceCurrency: "USD" }
+      { "@type": "Offer", name: "Free", price: "0", priceCurrency: "EUR" },
+      { "@type": "Offer", name: "Family", price: "8", priceCurrency: "EUR" },
+      { "@type": "Offer", name: "Unlimited", price: "13", priceCurrency: "EUR" }
     ]
   };
 }
@@ -155,7 +155,7 @@ export const coreFaqs = [
   {
     question: "What does Foody Fam do?",
     answer:
-      "Foody Fam turns one cooking process into a family meal with a baby-safe portion, adult finish, shopping list, and weekly planner."
+      "Foody Fam turns one cooking process into a family meal with age-aware baby portion timing, adult finish, shopping list, and weekly planner."
   },
   {
     question: "Can Foody Fam support BLW and puree feeding?",
