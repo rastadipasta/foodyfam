@@ -120,9 +120,9 @@ export function HomePage() {
                 <div className="absolute inset-y-0 left-0 hidden w-1/3 bg-gradient-to-r from-[#fffaf6] to-transparent lg:block" />
               </div>
 
-              <div className="absolute bottom-5 left-4 right-4 z-10 flex max-w-full items-center gap-3 overflow-x-auto rounded-[28px] border border-white/82 bg-white/88 p-3 shadow-[0_20px_48px_rgba(92,74,66,0.14)] backdrop-blur-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:rounded-full sm:px-4 lg:bottom-7 lg:left-6 lg:right-6 lg:justify-between lg:gap-5 lg:overflow-visible lg:px-6">
+              <div className="absolute bottom-5 left-1/2 z-10 flex w-[min(calc(100vw-2rem),760px)] -translate-x-1/2 flex-wrap items-center justify-between gap-3 overflow-visible rounded-[28px] border border-white/82 bg-white/90 p-3 shadow-[0_20px_48px_rgba(92,74,66,0.14)] backdrop-blur-md sm:flex-nowrap sm:rounded-full sm:px-5 lg:bottom-7 lg:w-[min(780px,calc(100vw-4rem))] lg:gap-5 lg:px-6">
                 {heroBenefits.map(({ icon: Icon, label, detail }) => (
-                  <div key={label} className="flex min-w-[145px] shrink-0 items-center gap-3 text-left text-[#5c4a42] sm:min-w-[164px] lg:min-w-0 lg:flex-1 lg:shrink">
+                  <div key={label} className="flex min-w-0 basis-[calc(50%-0.375rem)] items-center justify-start gap-2.5 text-left text-[#5c4a42] sm:basis-0 sm:flex-1 sm:gap-3">
                     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#eaded5] bg-[#fffaf6] sm:h-11 sm:w-11">
                       <Icon size={17} />
                     </span>
