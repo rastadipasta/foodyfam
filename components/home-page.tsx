@@ -120,13 +120,13 @@ export function HomePage() {
                 <div className="absolute inset-y-0 left-0 hidden w-1/3 bg-gradient-to-r from-[#fffaf6] to-transparent lg:block" />
               </div>
 
-              <div className="absolute bottom-5 left-4 right-4 z-10 grid grid-cols-2 gap-3 rounded-[28px] border border-white/82 bg-white/82 p-4 shadow-[0_20px_48px_rgba(92,74,66,0.14)] backdrop-blur-md sm:grid-cols-4 sm:rounded-full sm:px-5 lg:bottom-7 lg:left-6 lg:right-6 lg:flex lg:items-center lg:justify-between lg:gap-6 lg:px-6">
+              <div className="absolute bottom-5 left-4 right-4 z-10 flex max-w-full items-center gap-3 overflow-x-auto rounded-[28px] border border-white/82 bg-white/88 p-3 shadow-[0_20px_48px_rgba(92,74,66,0.14)] backdrop-blur-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:rounded-full sm:px-4 lg:bottom-7 lg:left-6 lg:right-6 lg:justify-between lg:gap-5 lg:overflow-visible lg:px-6">
                 {heroBenefits.map(({ icon: Icon, label, detail }) => (
-                  <div key={label} className="flex min-w-0 items-center gap-3 text-[#5c4a42] lg:flex-1">
+                  <div key={label} className="flex min-w-[145px] shrink-0 items-center gap-3 text-left text-[#5c4a42] sm:min-w-[164px] lg:min-w-0 lg:flex-1 lg:shrink">
                     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#eaded5] bg-[#fffaf6] sm:h-11 sm:w-11">
                       <Icon size={17} />
                     </span>
-                    <span className="break-normal text-xs font-extrabold leading-5 [overflow-wrap:normal]">
+                    <span className="whitespace-nowrap text-xs font-extrabold leading-5">
                       {label}<br />
                       <span className="font-bold text-[#5c4a42]/68">{detail}</span>
                     </span>
