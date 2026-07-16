@@ -417,9 +417,12 @@ function buildDefaultGeneratorValues(
 function SafetyWarnings({ preflight }: { preflight: GeneratorPreflight }) {
   if (!preflight.safetyFlags.length) {
     return (
-      <div className="flex items-center gap-3 border-b border-[#eaded5] bg-[#f4f8f3] px-4 py-3 text-sm font-extrabold text-[#437967] sm:px-6">
-        <ShieldCheck size={18} className="shrink-0" />
-        <p>Baby safety check: no risky ingredient detected yet.</p>
+      <div className="border-b border-[#eaded5] bg-[#f4f8f3] px-4 py-3 sm:px-6">
+        <div className="flex items-center gap-3 text-sm font-extrabold text-[#437967]">
+          <ShieldCheck size={18} className="shrink-0" />
+          <p>Baby safety check: no risky ingredient detected yet.</p>
+        </div>
+        <AiAccuracyNotice />
       </div>
     );
   }
@@ -434,7 +437,16 @@ function SafetyWarnings({ preflight }: { preflight: GeneratorPreflight }) {
           </p>
         </div>
       ))}
+      <AiAccuracyNotice />
     </div>
+  );
+}
+
+function AiAccuracyNotice() {
+  return (
+    <p className="mt-2 max-w-3xl text-xs font-bold leading-5 text-[#5c4a42]/72">
+      AI can make mistakes. Please double-check allergens, choking risks, and age suitability before serving.
+    </p>
   );
 }
 
